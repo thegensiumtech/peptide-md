@@ -47,7 +47,7 @@ export function buildIcs(context: BookingEmailContext): string {
   return [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Peptide MD//Consultations//EN',
+    'PRODID:-//Peptides MD//Consultations//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:REQUEST',
     'BEGIN:VEVENT',
@@ -79,7 +79,7 @@ function shell(heading: string, body: string, footer: string): string {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
 <table role="presentation" width="100%" style="max-width:560px;background:#FFFFFF;border:1px solid #DDE2DE;border-radius:6px;">
 <tr><td style="padding:28px 28px 8px;">
-<p style="margin:0 0 20px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6B7A76;">Peptide MD</p>
+<p style="margin:0 0 20px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6B7A76;">Peptides MD</p>
 <h1 style="margin:0 0 16px;font-size:22px;line-height:1.25;font-weight:600;">${heading}</h1>
 ${body}
 </td></tr>
@@ -136,7 +136,7 @@ export function patientConfirmation(context: BookingEmailContext): OutgoingEmail
     html: shell(
       'You are in the diary.',
       body,
-      'Peptide MD provides private medical consultations. We do not supply, prescribe or dispense any compound.'
+      'Peptides MD provides private medical consultations. We do not supply, prescribe or dispense any compound.'
     ),
     icsContent: buildIcs(context),
     icsFilename: `${context.reference}.ics`,
@@ -272,8 +272,8 @@ export function accessCodeNotice(input: {
 
   return {
     to: input.to,
-    subject: `${spaced} is your Peptide MD code`,
-    text: `Your Peptide MD code is ${input.code}.\n\nIt works once, and expires in ${input.minutes} minutes.\n\nIf you did not ask for this, ignore it — nothing has changed.`,
+    subject: `${spaced} is your Peptides MD code`,
+    text: `Your Peptides MD code is ${input.code}.\n\nIt works once, and expires in ${input.minutes} minutes.\n\nIf you did not ask for this, ignore it — nothing has changed.`,
     html: shell(
       'Your access code',
       body,

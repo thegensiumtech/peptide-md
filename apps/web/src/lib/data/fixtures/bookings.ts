@@ -211,7 +211,7 @@ export const bookings: Booking[] = seeds.map((seed, index) => {
     patientEmail: seed.email,
     patientPhone: seed.phone,
     intake: intake(seed),
-    // Partner bookings are paid for on the partner's own site, so Peptide MD
+    // Partner bookings are paid for on the partner's own site, so Peptides MD
     // holds no payment against them — only the billable appointment count.
     amountPaid: seed.channel === 'direct' && seed.payment === 'paid' ? 9500 : null,
     currency: 'GBP',

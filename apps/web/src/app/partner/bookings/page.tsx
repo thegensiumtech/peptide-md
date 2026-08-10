@@ -52,13 +52,13 @@ export default async function PartnerBookingsPage() {
         <StatTile
           label="Your rate"
           value={formatMoney(volume.ratePerAppointment, volume.currency)}
-          detail="Per appointment, agreed with Peptide MD"
+          detail="Per appointment, agreed with Peptides MD"
         />
         <StatTile
           label="Running total"
           value={formatMoney(volume.runningTotal, volume.currency)}
           detail="Invoiced at the end of the month"
-          tone="amber"
+          tone="accent"
           href="/partner/invoices"
         />
       </div>

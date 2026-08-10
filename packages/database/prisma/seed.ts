@@ -320,7 +320,7 @@ async function main() {
         startsAt,
         endsAt: plusMinutes(startsAt, CONSULT_MINUTES),
         patientTimezone: seed.tz,
-        // Partner bookings are paid on the partner's own site, so Peptide MD
+        // Partner bookings are paid on the partner's own site, so Peptides MD
         // holds no payment against them — only the billable count.
         amountPaid: !partnerId && seed.payment === PaymentStatus.PAID ? 9500 : null,
         cancelledAt: seed.status === BookingStatus.CANCELLED ? at(seed.date, '07:30') : null,

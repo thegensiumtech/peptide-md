@@ -11,7 +11,7 @@ async function main() {
 
   const app = createApp();
   const server = app.listen(config.API_PORT, () => {
-    logger.info(`Peptide MD API listening on http://localhost:${config.API_PORT}`);
+    logger.info(`Peptides MD API listening on http://localhost:${config.API_PORT}`);
   });
 
   /**

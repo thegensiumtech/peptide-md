@@ -23,7 +23,7 @@ export const platformSettings: PlatformSettings = {
     defaultRateLimitPerMinute: 60,
   },
   notifications: {
-    fromName: 'Peptide MD',
+    fromName: 'Peptides MD',
     fromEmail: 'appointments@peptidemd.com',
     reminderLeadHours: 24,
     notifyDoctorOnBooking: true,

@@ -8,7 +8,7 @@ import { bookings } from './bookings';
  *
  * The July counts are the worked example from the scope call: New You sent
  * sixty appointments and Five Peptides sent forty five. The twenty five direct
- * bookings Peptide MD took payment for sit outside partner billing entirely.
+ * bookings Peptides MD took payment for sit outside partner billing entirely.
  */
 interface InvoiceSeed {
   id: string;

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Educational content. Deliberately plain and non-promotional — Peptide MD
+ * Educational content. Deliberately plain and non-promotional — Peptides MD
  * sells a consultation, not a compound, and this page has to read that way.
  */
 export default function AboutPeptidesPage() {
@@ -54,7 +54,7 @@ export default function AboutPeptidesPage() {
                   ))}
                 </div>
                 {section.callout ? (
-                  <p className="mt-6 rounded border border-amber/25 bg-amber-tint px-5 py-4 text-sm leading-relaxed text-ink">
+                  <p className="mt-6 rounded border border-accent/25 bg-accent-tint px-5 py-4 text-sm leading-relaxed text-ink">
                     {section.callout}
                   </p>
                 ) : null}
@@ -85,7 +85,7 @@ export default function AboutPeptidesPage() {
         <div className="rounded-lg border border-danger/20 bg-danger-tint px-6 py-8 sm:px-10">
           <p className="eyebrow text-danger">Important</p>
           <p className="mt-4 max-w-3xl text-lead leading-relaxed text-ink">
-            Nothing on this page is medical advice, and none of it is specific to you. Peptide MD
+            Nothing on this page is medical advice, and none of it is specific to you. Peptides MD
             does not supply, prescribe or dispense any compound.
           </p>
           <Link

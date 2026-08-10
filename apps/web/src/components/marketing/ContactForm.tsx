@@ -61,7 +61,7 @@ export function ContactForm() {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/"
-            className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-amber"
+            className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
           >
             Back to the homepage
           </Link>
@@ -70,7 +70,7 @@ export function ContactForm() {
           </span>
           <Link
             href="/faq"
-            className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-amber"
+            className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
           >
             Read the FAQ
           </Link>
@@ -117,7 +117,7 @@ export function ContactForm() {
       <Field label="" error={errors.consent}>
         <Checkbox
           name="consent"
-          label="I agree that Peptide MD may use my details to reply to this enquiry."
+          label="I agree that Peptides MD may use my details to reply to this enquiry."
           description="We do not add you to a mailing list."
         />
       </Field>

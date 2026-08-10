@@ -26,7 +26,7 @@ export function PartnerNav() {
                 className={cn(
                   'block whitespace-nowrap border-b-2 py-3 text-sm transition-colors duration-150',
                   active
-                    ? 'border-amber text-ink'
+                    ? 'border-accent text-ink'
                     : 'border-transparent text-muted hover:text-ink'
                 )}
               >

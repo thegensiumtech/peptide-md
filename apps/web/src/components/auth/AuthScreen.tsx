@@ -27,7 +27,7 @@ export function AuthScreen({
       <SkipLink />
       <header className="border-b border-line">
         <div className="shell flex h-16 items-center">
-          <Link href="/" aria-label="Peptide MD — home">
+          <Link href="/" aria-label="Peptides MD — home">
             <Wordmark />
           </Link>
         </div>
@@ -77,7 +77,7 @@ export function DemoAccounts({
         {accounts.map((account) => (
           <li key={account.email} className="py-3.5">
             <p className="text-sm font-medium text-ink">{account.name}</p>
-            <p className="mt-0.5 font-mono text-micro text-amber">{account.email}</p>
+            <p className="mt-0.5 font-mono text-micro text-accent">{account.email}</p>
             <p className="mt-1 text-micro leading-relaxed text-muted">{account.hint}</p>
           </li>
         ))}

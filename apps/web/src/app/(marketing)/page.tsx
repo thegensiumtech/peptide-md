@@ -33,7 +33,7 @@ export default async function HomePage() {
             <p className="eyebrow">Private consultation · UK registered</p>
             <h1 className="mt-6 font-display text-hero font-medium tracking-[-0.02em] text-ink">
               Ask a doctor who has{' '}
-              <em className="not-italic text-amber">nothing to sell you.</em>
+              <em className="not-italic text-accent">nothing to sell you.</em>
             </h1>
             <p className="mt-7 max-w-xl text-lead text-ink-soft">
               Everyone in this market is selling a compound. {doctor.name} is selling twenty
@@ -47,7 +47,7 @@ export default async function HomePage() {
               </ButtonLink>
               <Link
                 href="/the-doctor"
-                className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-amber"
+                className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
               >
                 Meet {doctor.name.split(' ').slice(-1)[0]}
               </Link>
@@ -108,7 +108,7 @@ export default async function HomePage() {
               questioned, and symptoms nobody connected to what was being injected.
             </p>
             <p className="text-ink">
-              Peptide MD is one thing only — a consultation with a doctor who knows this area and
+              Peptides MD is one thing only — a consultation with a doctor who knows this area and
               has no financial interest in what you decide.
             </p>
           </div>
@@ -128,7 +128,7 @@ export default async function HomePage() {
             {STEPS.map((step, index) => (
               <li key={step.title} className="bg-surface p-6">
                 <div className="flex items-center gap-2">
-                  <span aria-hidden className="h-2 w-2 rounded-full border border-amber bg-amber" />
+                  <span aria-hidden className="h-2 w-2 rounded-full border border-accent bg-accent" />
                   {index < STEPS.length - 1 ? (
                     <span aria-hidden className="h-px w-6 bg-line" />
                   ) : null}
@@ -142,7 +142,7 @@ export default async function HomePage() {
           <div className="mt-10">
             <Link
               href="/how-it-works"
-              className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-amber"
+              className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
             >
               Read the full process
             </Link>
@@ -175,7 +175,7 @@ export default async function HomePage() {
             <p className="eyebrow">What it is not</p>
             <ul className="mt-6 space-y-5 text-base leading-relaxed text-ink-soft">
               <li>
-                <span className="text-ink">Not a supplier.</span> Peptide MD does not sell,
+                <span className="text-ink">Not a supplier.</span> Peptides MD does not sell,
                 prescribe or dispense any compound.
               </li>
               <li>
@@ -226,7 +226,7 @@ export default async function HomePage() {
             </dl>
             <Link
               href="/the-doctor"
-              className="link-cta mt-8 inline-block text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-amber"
+              className="link-cta mt-8 inline-block text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
             >
               Read his full background
             </Link>

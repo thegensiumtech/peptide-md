@@ -120,7 +120,7 @@ function EmailStep({
   return (
     <GateCard onSubmit={submit}>
       {expired ? (
-        <Notice tone="amber" className="mb-6">
+        <Notice tone="accent" className="mb-6">
           Your session timed out. Confirm your email again to carry on.
         </Notice>
       ) : null}
@@ -266,8 +266,8 @@ function CodeStep({
           non-production build and wired to an email provider that delivers
           nothing, so in a deployed environment this cannot render. */}
       {shownCode ? (
-        <div className="mt-6 rounded border border-dashed border-amber/50 bg-amber-tint px-4 py-3">
-          <p className="font-mono text-eyebrow uppercase tracking-[0.14em] text-amber">
+        <div className="mt-6 rounded border border-dashed border-accent/50 bg-accent-tint px-4 py-3">
+          <p className="font-mono text-eyebrow uppercase tracking-[0.14em] text-accent">
             Development · email not delivered
           </p>
           <p className="mt-2 font-mono text-h3 tracking-[0.3em] text-ink">

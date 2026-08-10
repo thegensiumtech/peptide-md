@@ -87,7 +87,7 @@ export function AdminNav({ user, onNavigate }: { user: SessionUser; onNavigate?:
                       aria-hidden
                       className={cn(
                         'h-1.5 w-1.5 rounded-full transition-colors',
-                        active ? 'bg-amber' : 'bg-line'
+                        active ? 'bg-accent' : 'bg-line'
                       )}
                     />
                     {item.label}

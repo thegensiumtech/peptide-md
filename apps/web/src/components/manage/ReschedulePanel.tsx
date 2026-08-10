@@ -198,7 +198,7 @@ export function ReschedulePanel({
                       className={cn(
                         'shrink-0 rounded border px-4 py-3 text-left transition-colors duration-150',
                         isActive
-                          ? 'border-amber bg-amber-tint'
+                          ? 'border-accent bg-accent-tint'
                           : 'border-line bg-surface hover:border-ink/25'
                       )}
                     >
@@ -233,8 +233,8 @@ export function ReschedulePanel({
                       className={cn(
                         'rounded border py-3 font-mono text-sm transition-all duration-150',
                         isSelected
-                          ? 'border-amber bg-amber text-white shadow-raise'
-                          : 'border-line bg-surface text-ink hover:border-amber hover:bg-amber-tint'
+                          ? 'border-accent bg-accent text-white shadow-raise'
+                          : 'border-line bg-surface text-ink hover:border-accent hover:bg-accent-tint'
                       )}
                     >
                       {formatTime(slot.startsAt, timezone)}
@@ -253,7 +253,7 @@ export function ReschedulePanel({
                       <DateLine iso={selectedSlot.startsAt} timezone={timezone} />
                     </span>{' '}
                     at{' '}
-                    <span className="font-mono text-amber">
+                    <span className="font-mono text-accent">
                       {formatTime(selectedSlot.startsAt, timezone)}
                     </span>
                     .

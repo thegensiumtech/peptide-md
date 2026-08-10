@@ -119,7 +119,7 @@ export function AvailabilityEditor({ availability }: { availability: Availabilit
                           {/* The late windows are what make the Australian
                               side of the business work — worth naming. */}
                           {Number(slot.startTime.split(':')[0]) >= 20 ? (
-                            <span className="rounded border border-amber/25 bg-amber-tint px-2 py-0.5 font-mono text-eyebrow uppercase tracking-[0.12em] text-amber">
+                            <span className="rounded border border-accent/25 bg-accent-tint px-2 py-0.5 font-mono text-eyebrow uppercase tracking-[0.12em] text-accent">
                               Australia friendly
                             </span>
                           ) : null}

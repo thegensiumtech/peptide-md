@@ -8,9 +8,9 @@ const base =
   'inline-flex items-center justify-center gap-2 rounded font-medium transition-all duration-150 ease-out disabled:pointer-events-none disabled:opacity-40';
 
 const variants: Record<Variant, string> = {
-  // Amber is the one active thing on a screen — it belongs to the action that
+  // The brand teal is the one active thing on a screen — it belongs to the action that
   // moves the patient forward, and nothing else.
-  primary: 'bg-amber text-white hover:bg-amber/90 active:translate-y-px shadow-raise',
+  primary: 'bg-accent text-white hover:bg-accent/90 active:translate-y-px shadow-raise',
   secondary: 'border border-line bg-surface text-ink hover:border-ink/30 hover:bg-paper-deep',
   ghost: 'text-ink-soft hover:bg-paper-deep hover:text-ink',
   danger: 'border border-danger/25 bg-danger-tint text-danger hover:border-danger/50',

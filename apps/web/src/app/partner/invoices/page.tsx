@@ -60,7 +60,7 @@ export default async function PartnerInvoicesPage() {
               </div>
               <div>
                 <dt className="eyebrow">Running total</dt>
-                <dd className="mt-1.5 font-mono text-h3 text-amber">
+                <dd className="mt-1.5 font-mono text-h3 text-accent">
                   {formatMoney(volume.runningTotal, volume.currency)}
                 </dd>
               </div>

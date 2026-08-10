@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { cn } from '@/lib/cn';
 
 const control =
-  'w-full rounded border border-line bg-surface px-3 py-2 text-sm text-ink placeholder:text-muted/70 transition-colors duration-150 hover:border-ink/25 focus:border-amber focus:outline-none focus:ring-2 focus:ring-amber/25 disabled:bg-paper-deep disabled:text-muted';
+  'w-full rounded border border-line bg-surface px-3 py-2 text-sm text-ink placeholder:text-muted/70 transition-colors duration-150 hover:border-ink/25 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 disabled:bg-paper-deep disabled:text-muted';
 
 export function Field({
   label,
@@ -25,7 +25,7 @@ export function Field({
     <div className={cn('grid gap-1.5', className)}>
       <label htmlFor={htmlFor} className="text-micro font-medium text-ink-soft">
         {label}
-        {required ? <span className="ml-1 text-amber">*</span> : null}
+        {required ? <span className="ml-1 text-accent">*</span> : null}
       </label>
       {children}
       {/* An error replaces the hint rather than stacking with it. */}
@@ -78,7 +78,7 @@ export function Checkbox({
     <label className={cn('flex cursor-pointer items-start gap-3', className)}>
       <input
         type="checkbox"
-        className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-amber"
+        className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[rgb(var(--accent))]"
         {...rest}
       />
       <span className="grid gap-0.5">

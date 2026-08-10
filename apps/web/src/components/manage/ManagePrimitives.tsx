@@ -31,7 +31,7 @@ export function DateStamp({
     <div
       className={cn(
         'grid w-16 shrink-0 place-items-center rounded border px-2 py-2.5 text-center',
-        muted ? 'border-line bg-paper-deep' : 'border-amber/30 bg-amber-tint',
+        muted ? 'border-line bg-paper-deep' : 'border-accent/30 bg-accent-tint',
         className
       )}
     >
@@ -71,7 +71,7 @@ export function TimeRange({
         className={cn(
           'font-mono',
           size === 'lg' ? 'text-h2' : 'text-h3',
-          muted ? 'text-ink-soft' : 'text-amber'
+          muted ? 'text-ink-soft' : 'text-accent'
         )}
       >
         {formatTime(startsAt, timezone)} – {formatTime(endsAt, timezone)}
@@ -92,19 +92,19 @@ export function DateLine({ iso, timezone }: { iso: string; timezone: string }) {
   );
 }
 
-type NoticeTone = 'danger' | 'signal' | 'amber' | 'neutral';
+type NoticeTone = 'danger' | 'signal' | 'accent' | 'neutral';
 
 const NOTICE_TONES: Record<NoticeTone, string> = {
   danger: 'border-danger/25 bg-danger-tint',
   signal: 'border-signal/25 bg-signal-tint',
-  amber: 'border-amber/25 bg-amber-tint',
+  accent: 'border-accent/25 bg-accent-tint',
   neutral: 'border-line bg-paper-deep',
 };
 
 const NOTICE_TITLES: Record<NoticeTone, string> = {
   danger: 'text-danger',
   signal: 'text-signal',
-  amber: 'text-amber',
+  accent: 'text-accent',
   neutral: 'text-ink',
 };
 

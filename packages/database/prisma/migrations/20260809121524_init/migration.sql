@@ -309,7 +309,7 @@ CREATE TABLE "platform_settings" (
     "defaultPartnerRate" INTEGER NOT NULL DEFAULT 4000,
     "slotHoldMinutes" INTEGER NOT NULL DEFAULT 10,
     "defaultRateLimitPerMin" INTEGER NOT NULL DEFAULT 60,
-    "emailFromName" TEXT NOT NULL DEFAULT 'Peptide MD',
+    "emailFromName" TEXT NOT NULL DEFAULT 'Peptides MD',
     "emailFromAddress" TEXT NOT NULL DEFAULT 'appointments@peptidemd.com',
     "reminderLeadHours" INTEGER NOT NULL DEFAULT 24,
     "notifyDoctorOnBooking" BOOLEAN NOT NULL DEFAULT true,

@@ -31,7 +31,7 @@ export default function ContactPage() {
                   <dd className="mt-1">
                     <a
                       href="mailto:hello@peptidemd.com"
-                      className="font-mono text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-amber"
+                      className="font-mono text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
                     >
                       hello@peptidemd.com
                     </a>

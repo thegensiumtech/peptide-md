@@ -7,12 +7,12 @@ import { AuthScreen, DemoAccounts } from '@/components/auth/AuthScreen';
 import { LoginForm } from '@/components/auth/LoginForm';
 
 export const metadata: Metadata = {
-  title: 'Sign in — Peptide MD team',
+  title: 'Sign in — Peptides MD team',
   robots: { index: false, follow: false },
 };
 
 /**
- * One door for the Peptide MD team. Administrators and the doctor sign in
+ * One door for the Peptides MD team. Administrators and the doctor sign in
  * here and are separated by role afterwards — the doctor lands on the same
  * dashboard route but sees his own diary rather than the commercial view.
  */
@@ -28,9 +28,9 @@ export default async function AdminLoginPage({
 
   return (
     <AuthScreen
-      eyebrow="Peptide MD team"
+      eyebrow="Peptides MD team"
       title="Sign in."
-      lede="For Peptide MD administrators and the doctor. Your role decides what you see once you are in."
+      lede="For Peptides MD administrators and the doctor. Your role decides what you see once you are in."
       crossLink={{ href: '/partner/login', label: 'Are you a partner? Sign in to the partner portal →' }}
       aside={<DemoAccounts accounts={staffAccounts} />}
     >

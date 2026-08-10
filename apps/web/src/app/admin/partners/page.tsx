@@ -104,7 +104,7 @@ export default async function PartnersPage() {
                       </span>
                     </Td>
                     <Td align="right">
-                      <span className="font-mono text-sm text-amber">
+                      <span className="font-mono text-sm text-accent">
                         {formatMoney(volume?.runningTotal ?? 0, partner.currency)}
                       </span>
                     </Td>

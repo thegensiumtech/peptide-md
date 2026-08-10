@@ -19,8 +19,14 @@ import { PrismaClient } from '@prisma/client';
 
 config({ path: resolve(import.meta.dirname, '../.env.local') });
 
-const WEB = 'http://localhost:3000';
-const API = 'http://localhost:4000';
+// Point at a deployed environment with BASE_URL; defaults to local.
+//   BASE_URL=https://100-29-81-212.sslip.io node scripts/e2e.mjs
+const WEB = process.env.BASE_URL ?? 'http://localhost:3000';
+const API = process.env.API_URL ?? (process.env.BASE_URL ? `${process.env.BASE_URL}` : 'http://localhost:4000');
+
+// The staging database sits inside a private VPC, so the direct-database
+// assertions only run locally. Everything the browser can observe still runs.
+const REMOTE = Boolean(process.env.BASE_URL);
 const SHOTS = resolve(import.meta.dirname, '../.e2e-shots');
 mkdirSync(SHOTS, { recursive: true });
 
@@ -94,7 +100,7 @@ async function shot(page, name) {
         `  pkill -f next-server && pnpm --filter @peptide/web start\n`
     );
     await browser.close();
-    await prisma.$disconnect();
+    if (!REMOTE) await prisma.$disconnect();
     process.exit(1);
   }
 }
@@ -251,7 +257,7 @@ let bookingReference = null;
 
 // --- Persisted correctly? --------------------------------------------------
 
-if (bookingReference) {
+if (bookingReference && !REMOTE) {
   const booking = await prisma.booking.findUnique({
     where: { reference: bookingReference },
     include: { intakeResponses: true, payments: true, emails: true, patient: true },
@@ -612,7 +618,7 @@ for (const width of WIDTHS) {
 await browser.close();
 
 // Leave the database as it was found.
-if (bookingReference) {
+if (bookingReference && !REMOTE) {
   const booking = await prisma.booking.findUnique({ where: { reference: bookingReference } });
   if (booking) {
     await prisma.booking.delete({ where: { id: booking.id } }).catch(() => {});

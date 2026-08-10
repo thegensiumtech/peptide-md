@@ -68,7 +68,7 @@ export function BookingShell({
     <>
       <header className="border-b border-line bg-paper">
         <div className="shell flex h-16 items-center justify-between gap-4">
-          <Link href="/" aria-label="Peptide MD — home">
+          <Link href="/" aria-label="Peptides MD — home">
             <Wordmark />
           </Link>
           <Link

@@ -84,7 +84,7 @@ export default async function AdminDashboardPage() {
             label="Billable to partners"
             value={formatMoney(summary.billableThisMonth, summary.currency)}
             detail="Raised as invoices at month end"
-            tone="amber"
+            tone="accent"
             href="/admin/invoices"
           />
         </div>
@@ -212,7 +212,7 @@ export default async function AdminDashboardPage() {
                           {formatMoney(volume.ratePerAppointment, volume.currency)}
                         </p>
                       </div>
-                      <p className="shrink-0 font-mono text-sm text-amber">
+                      <p className="shrink-0 font-mono text-sm text-accent">
                         {formatMoney(volume.runningTotal, volume.currency)}
                       </p>
                     </li>

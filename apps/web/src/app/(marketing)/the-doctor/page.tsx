@@ -70,7 +70,7 @@ export default async function DoctorPage() {
               </ul>
             </div>
 
-            <blockquote className="mt-12 border-l-2 border-amber pl-6">
+            <blockquote className="mt-12 border-l-2 border-accent pl-6">
               <p className="font-display text-h3 leading-snug text-ink">
                 “Half of what I do is telling people that the thing they have been sold will not
                 fix the thing they actually have.”

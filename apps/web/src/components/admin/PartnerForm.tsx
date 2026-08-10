@@ -177,7 +177,7 @@ export function PartnerForm({
                   className={cn(
                     'rounded-lg border p-4 text-left transition-colors duration-150',
                     integration === option.value
-                      ? 'border-amber bg-amber-tint'
+                      ? 'border-accent bg-accent-tint'
                       : 'border-line bg-surface hover:border-ink/25'
                   )}
                 >
@@ -194,14 +194,14 @@ export function PartnerForm({
         <Card>
           <CardHeader
             title="Branding"
-            description="How the booking flow looks inside their site. The patient never sees Peptide MD."
+            description="How the booking flow looks inside their site. The patient never sees Peptides MD."
           />
           <CardBody className="grid gap-5">
             <Field
               label="Display name"
               htmlFor="display-name"
               required
-              hint="What their patients see. Never 'Peptide MD'."
+              hint="What their patients see. Never 'Peptides MD'."
             >
               <Input
                 id="display-name"
@@ -350,7 +350,7 @@ export function PartnerForm({
                 {rotated ? (
                   <p
                     role="status"
-                    className="rounded border border-amber/25 bg-amber-tint px-4 py-3 text-micro leading-relaxed text-ink"
+                    className="rounded border border-accent/25 bg-accent-tint px-4 py-3 text-micro leading-relaxed text-ink"
                   >
                     New secret issued. Copy it now — it cannot be shown again. The old secret stops
                     working in 24 hours.

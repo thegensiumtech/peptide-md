@@ -32,7 +32,7 @@ export function LegalDocument({
       <PageIntro eyebrow={eyebrow} title={title} lede={lede} />
 
       <section className="shell mt-12">
-        <p className="rounded border border-amber/30 bg-amber-tint px-5 py-4 text-micro leading-relaxed text-ink">
+        <p className="rounded border border-accent/30 bg-accent-tint px-5 py-4 text-micro leading-relaxed text-ink">
           <span className="font-semibold">Draft — awaiting legal review.</span> This wording is a
           working draft prepared to complete the page. It must be reviewed and approved by Peptide
           MD’s legal advisor before launch.

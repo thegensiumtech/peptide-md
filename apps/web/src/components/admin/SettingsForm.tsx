@@ -196,7 +196,7 @@ export function SettingsForm({ settings }: { settings: PlatformSettings }) {
               </div>
               <div>
                 <dt className="eyebrow">Partner pays per appointment</dt>
-                <dd className="mt-1.5 font-mono text-h3 text-amber">
+                <dd className="mt-1.5 font-mono text-h3 text-accent">
                   {formatMoney(partnerRate * 100, currency)}
                 </dd>
               </div>

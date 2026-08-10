@@ -19,7 +19,7 @@ export function StatTile({
   value: string;
   detail?: string;
   href?: string;
-  tone?: 'neutral' | 'amber' | 'signal';
+  tone?: 'neutral' | 'accent' | 'signal';
   className?: string;
 }) {
   const body = (
@@ -28,7 +28,7 @@ export function StatTile({
       <p
         className={cn(
           'mt-3 font-mono text-[clamp(1.75rem,1.4rem+1.2vw,2.25rem)] leading-none',
-          tone === 'amber' && 'text-amber',
+          tone === 'accent' && 'text-accent',
           tone === 'signal' && 'text-signal',
           tone === 'neutral' && 'text-ink'
         )}

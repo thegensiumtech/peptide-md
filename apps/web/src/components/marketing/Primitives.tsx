@@ -118,7 +118,7 @@ export function RequisitionCard({
           <dd
             className={cn(
               'text-right text-sm',
-              row.emphasis ? 'font-semibold text-amber' : 'text-ink'
+              row.emphasis ? 'font-semibold text-accent' : 'text-ink'
             )}
           >
             {row.value}

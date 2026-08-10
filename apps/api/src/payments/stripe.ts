@@ -5,7 +5,7 @@ export const stripe = new Stripe(config.STRIPE_SECRET_KEY, {
   // Pinned deliberately: an account-level API version change should never
   // silently alter webhook payload shapes under a running deployment.
   apiVersion: '2025-02-24.acacia',
-  appInfo: { name: 'Peptide MD', version: '1.0.0' },
+  appInfo: { name: 'Peptides MD', version: '1.0.0' },
   // Stripe's own retry, so a transient network blip does not lose a checkout.
   maxNetworkRetries: 2,
 });

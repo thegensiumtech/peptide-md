@@ -22,7 +22,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur">
       <div className="shell flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="shrink-0" aria-label="Peptide MD — home">
+        <Link href="/" className="shrink-0" aria-label="Peptides MD — home">
           <Wordmark />
         </Link>
 
@@ -44,7 +44,7 @@ export function SiteHeader() {
                 {active ? (
                   <span
                     aria-hidden
-                    className="absolute -bottom-0.5 left-1/2 h-px w-4 -translate-x-1/2 bg-amber"
+                    className="absolute -bottom-0.5 left-1/2 h-px w-4 -translate-x-1/2 bg-accent"
                   />
                 ) : null}
               </Link>

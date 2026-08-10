@@ -1,11 +1,12 @@
+import Image from 'next/image';
 import { cn } from '@/lib/cn';
 
 /**
- * Placeholder wordmark. Ross's real logo replaces this — it is deliberately
- * type-only so there is nothing to unpick when the brand assets arrive.
+ * The Peptides MD mark.
  *
- * The two linked residues stand in for the peptide bond that runs through the
- * rest of the identity.
+ * The supplied artwork is a JPEG on white, so on the dark CTA band it is
+ * inverted to a type-only treatment rather than showing a white slab. Replace
+ * both with an SVG when one is available.
  */
 export function Wordmark({
   className,
@@ -14,26 +15,31 @@ export function Wordmark({
   className?: string;
   tone?: 'ink' | 'paper';
 }) {
+  if (tone === 'paper') {
+    return (
+      <span className={cn('inline-flex min-h-11 items-center gap-2', className)}>
+        <span aria-hidden className="flex items-center">
+          <span className="h-2 w-2 rounded-full bg-brand-bright" />
+          <span className="h-px w-1.5 bg-paper/60" />
+          <span className="h-2 w-2 rounded-full bg-paper" />
+        </span>
+        <span className="font-display text-lg font-semibold tracking-tight text-paper">
+          Peptides MD
+        </span>
+      </span>
+    );
+  }
+
   return (
-    <span className={cn('inline-flex min-h-11 items-center gap-2', className)}>
-      <span aria-hidden className="flex items-center">
-        <span
-          className={cn(
-            'h-2 w-2 rounded-full border',
-            tone === 'ink' ? 'border-ink bg-ink' : 'border-paper bg-paper'
-          )}
-        />
-        <span className={cn('h-px w-1.5', tone === 'ink' ? 'bg-ink' : 'bg-paper')} />
-        <span className="h-2 w-2 rounded-full border border-amber bg-amber" />
-      </span>
-      <span
-        className={cn(
-          'font-display text-lg font-semibold tracking-tight',
-          tone === 'ink' ? 'text-ink' : 'text-paper'
-        )}
-      >
-        Peptide MD
-      </span>
+    <span className={cn('inline-flex min-h-11 items-center', className)}>
+      <Image
+        src="/brand/peptides-md.png"
+        alt="Peptides MD — medical consultations"
+        width={600}
+        height={375}
+        priority
+        className="h-9 w-auto mix-blend-multiply"
+      />
     </span>
   );
 }

@@ -311,7 +311,7 @@ export function SlotPicker() {
                   className={cn(
                     'shrink-0 rounded border px-4 py-3 text-left transition-colors duration-150',
                     isActive
-                      ? 'border-amber bg-amber-tint'
+                      ? 'border-accent bg-accent-tint'
                       : 'border-line bg-surface hover:border-ink/25'
                   )}
                 >
@@ -346,8 +346,8 @@ export function SlotPicker() {
                   className={cn(
                     'rounded border py-3 font-mono text-sm transition-all duration-150',
                     isSelected
-                      ? 'border-amber bg-amber text-white shadow-raise'
-                      : 'border-line bg-surface text-ink hover:border-amber hover:bg-amber-tint'
+                      ? 'border-accent bg-accent text-white shadow-raise'
+                      : 'border-line bg-surface text-ink hover:border-accent hover:bg-accent-tint'
                   )}
                 >
                   {formatTime(slot.startsAt, timezone)}
@@ -372,7 +372,7 @@ export function SlotPicker() {
               <p className="mt-1 text-base text-ink-soft">
                 {formatDate(selectedSlot.startsAt, timezone)}
               </p>
-              <p className="mt-4 font-mono text-h3 text-amber">
+              <p className="mt-4 font-mono text-h3 text-accent">
                 {formatTime(selectedSlot.startsAt, timezone)} –{' '}
                 {formatTime(selectedSlot.endsAt, timezone)}
               </p>

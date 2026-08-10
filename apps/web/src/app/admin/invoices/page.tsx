@@ -112,7 +112,7 @@ export default async function InvoicesPage({
                       </span>
                     </Td>
                     <Td align="right">
-                      <span className="font-mono text-sm text-amber">
+                      <span className="font-mono text-sm text-accent">
                         {formatMoney(invoice.totalAmount, invoice.currency)}
                       </span>
                     </Td>

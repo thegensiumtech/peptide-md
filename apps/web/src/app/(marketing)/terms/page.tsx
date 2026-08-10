@@ -4,14 +4,14 @@ import { LegalDocument, type LegalSection } from '@/components/marketing/LegalDo
 export const metadata: Metadata = {
   title: 'Terms of service',
   description:
-    'The terms on which Peptide MD provides consultations — booking, payment, cancellation, refunds, and the limits of the service.',
+    'The terms on which Peptides MD provides consultations — booking, payment, cancellation, refunds, and the limits of the service.',
 };
 
 const sections: LegalSection[] = [
   {
     heading: 'These terms',
     paragraphs: [
-      'These terms apply when you book a consultation with Peptide MD. By booking, you accept them.',
+      'These terms apply when you book a consultation with Peptides MD. By booking, you accept them.',
       'If you booked through a partner company’s website, that company’s terms also apply to the payment you made to them. These terms govern the consultation itself.',
     ],
   },

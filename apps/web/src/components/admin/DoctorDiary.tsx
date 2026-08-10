@@ -232,7 +232,7 @@ export function DoctorDiary({ doctorId, timezone }: { doctorId: string; timezone
                       'rounded border py-2 text-center font-mono text-micro transition-all duration-150',
                       busy && 'opacity-50',
                       isBooked && 'border-signal/30 bg-signal-tint text-signal',
-                      isHeld && 'border-amber/30 bg-amber-tint text-amber',
+                      isHeld && 'border-accent/30 bg-accent-tint text-accent',
                       isBlocked && 'border-line bg-paper-deep text-muted line-through',
                       slot.state === 'free' &&
                         'border-line bg-surface text-ink hover:border-danger/40 hover:bg-danger-tint'

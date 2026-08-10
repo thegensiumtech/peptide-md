@@ -1,11 +1,11 @@
 import type { BookingChannel, BookingStatus, InvoiceStatus, PaymentStatus } from '@peptide/shared';
 import { cn } from '@/lib/cn';
 
-type Tone = 'neutral' | 'amber' | 'signal' | 'danger';
+type Tone = 'neutral' | 'accent' | 'signal' | 'danger';
 
 const tones: Record<Tone, string> = {
   neutral: 'border-line bg-paper-deep text-muted',
-  amber: 'border-amber/25 bg-amber-tint text-amber',
+  accent: 'border-accent/25 bg-accent-tint text-accent',
   signal: 'border-signal/25 bg-signal-tint text-signal',
   danger: 'border-danger/25 bg-danger-tint text-danger',
 };
@@ -33,7 +33,7 @@ export function Badge({
 }
 
 const BOOKING_STATUS_META: Record<BookingStatus, { label: string; tone: Tone }> = {
-  pending_payment: { label: 'Awaiting payment', tone: 'amber' },
+  pending_payment: { label: 'Awaiting payment', tone: 'accent' },
   confirmed: { label: 'Confirmed', tone: 'signal' },
   cancelled: { label: 'Cancelled', tone: 'danger' },
   completed: { label: 'Completed', tone: 'neutral' },
@@ -46,7 +46,7 @@ export function BookingStatusBadge({ status }: { status: BookingStatus }) {
 }
 
 const PAYMENT_STATUS_META: Record<PaymentStatus, { label: string; tone: Tone }> = {
-  unpaid: { label: 'Unpaid', tone: 'amber' },
+  unpaid: { label: 'Unpaid', tone: 'accent' },
   paid: { label: 'Paid', tone: 'signal' },
   refunded: { label: 'Refunded', tone: 'neutral' },
   failed: { label: 'Failed', tone: 'danger' },
@@ -58,7 +58,7 @@ export function PaymentStatusBadge({ status }: { status: PaymentStatus }) {
 }
 
 const INVOICE_STATUS_META: Record<InvoiceStatus, { label: string; tone: Tone }> = {
-  draft: { label: 'Draft', tone: 'amber' },
+  draft: { label: 'Draft', tone: 'accent' },
   sent: { label: 'Sent', tone: 'neutral' },
   paid: { label: 'Paid', tone: 'signal' },
   overdue: { label: 'Overdue', tone: 'danger' },
@@ -81,5 +81,5 @@ export function ChannelBadge({
   partnerName?: string | null;
 }) {
   if (channel === 'direct') return <Badge tone="neutral">Direct</Badge>;
-  return <Badge tone="amber">{partnerName ?? 'Partner'}</Badge>;
+  return <Badge tone="accent">{partnerName ?? 'Partner'}</Badge>;
 }

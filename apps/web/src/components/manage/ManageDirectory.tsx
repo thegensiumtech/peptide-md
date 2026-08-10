@@ -195,7 +195,7 @@ function BookingRow({
             <DateLine iso={booking.startsAt} timezone={booking.timezone} />
           </p>
           {relative ? (
-            <span className="font-mono text-eyebrow uppercase tracking-[0.14em] text-amber">
+            <span className="font-mono text-eyebrow uppercase tracking-[0.14em] text-accent">
               {relative}
             </span>
           ) : null}
@@ -219,7 +219,7 @@ function BookingRow({
         <BookingStatusBadge status={booking.status} />
         <span
           aria-hidden
-          className="font-mono text-sm text-muted transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-amber"
+          className="font-mono text-sm text-muted transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-accent"
         >
           →
         </span>

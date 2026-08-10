@@ -16,7 +16,7 @@ import { CancelPanel } from './CancelPanel';
 type OpenPanel = 'none' | 'reschedule' | 'cancel';
 
 interface Flash {
-  tone: 'signal' | 'amber';
+  tone: 'signal' | 'accent';
   title: string;
   body: string;
 }
@@ -209,7 +209,7 @@ export function ManageBookingScreen({ reference }: { reference: string }) {
               <DataRow label="Joining link">
                 <a
                   href={booking.joiningUrl}
-                  className="break-all text-ink underline decoration-line underline-offset-4 hover:decoration-amber"
+                  className="break-all text-ink underline decoration-line underline-offset-4 hover:decoration-accent"
                 >
                   {booking.joiningUrl}
                 </a>

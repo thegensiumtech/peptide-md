@@ -88,7 +88,7 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
                       <Td>
                         <Link
                           href={`/admin/bookings/${booking.id}`}
-                          className="font-mono text-micro text-ink underline decoration-line underline-offset-4 hover:decoration-amber"
+                          className="font-mono text-micro text-ink underline decoration-line underline-offset-4 hover:decoration-accent"
                         >
                           {booking.reference}
                         </Link>
@@ -110,7 +110,7 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
                     <Td className="border-0" />
                     <Td className="border-0 text-right font-medium text-ink">Total</Td>
                     <Td align="right" className="border-0">
-                      <span className="font-mono text-base font-semibold text-amber">
+                      <span className="font-mono text-base font-semibold text-accent">
                         {formatMoney(invoice.totalAmount, invoice.currency)}
                       </span>
                     </Td>
@@ -132,7 +132,7 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
                 <DataRow label="Partner">
                   <Link
                     href={`/admin/partners/${invoice.partnerId}`}
-                    className="underline decoration-line underline-offset-4 hover:decoration-amber"
+                    className="underline decoration-line underline-offset-4 hover:decoration-accent"
                   >
                     {invoice.partnerName}
                   </Link>
@@ -145,7 +145,7 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
                   {formatMoney(invoice.ratePerAppointment, invoice.currency)} each
                 </DataRow>
                 <DataRow label="Total" mono>
-                  <span className="font-semibold text-amber">
+                  <span className="font-semibold text-accent">
                     {formatMoney(invoice.totalAmount, invoice.currency)}
                   </span>
                 </DataRow>

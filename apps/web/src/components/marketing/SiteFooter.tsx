@@ -40,7 +40,7 @@ export function SiteFooter() {
                   href="/admin/login"
                   className="flex min-h-8 items-center text-micro text-muted transition-colors hover:text-ink"
                 >
-                  Peptide MD team
+                  Peptides MD team
                 </Link>
               </li>
               <li>
@@ -57,10 +57,10 @@ export function SiteFooter() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
-            © {new Date().getFullYear()} Peptide MD
+            © {new Date().getFullYear()} Peptides MD
           </p>
           <p className="max-w-lg text-micro leading-relaxed text-muted">
-            Consultations are private medical advice. Peptide MD does not supply, prescribe or
+            Consultations are private medical advice. Peptides MD does not supply, prescribe or
             dispense any compound.
           </p>
         </div>

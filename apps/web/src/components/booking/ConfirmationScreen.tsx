@@ -53,7 +53,7 @@ export function ConfirmationScreen({
               <p className="mt-4 font-display text-h3 font-medium text-ink">
                 {formatWeekday(slot.startsAt, timezone)}, {formatDate(slot.startsAt, timezone)}
               </p>
-              <p className="mt-3 font-mono text-h2 text-amber">
+              <p className="mt-3 font-mono text-h2 text-accent">
                 {formatTime(slot.startsAt, timezone)} – {formatTime(slot.endsAt, timezone)}
               </p>
               <p className="mt-2 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
@@ -127,7 +127,7 @@ export function ConfirmationScreen({
         </ButtonLink>
         <Link
           href="/contact"
-          className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-amber"
+          className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
         >
           Contact us
         </Link>

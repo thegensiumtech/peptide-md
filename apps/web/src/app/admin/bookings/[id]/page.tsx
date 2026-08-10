@@ -142,7 +142,7 @@ export default async function BookingDetailPage({
                 <DataRow label="Email" mono>
                   <a
                     href={`mailto:${booking.patientEmail}`}
-                    className="underline decoration-line underline-offset-4 hover:decoration-amber"
+                    className="underline decoration-line underline-offset-4 hover:decoration-accent"
                   >
                     {booking.patientEmail}
                   </a>
@@ -174,7 +174,7 @@ export default async function BookingDetailPage({
                       <DataRow label="Partner record">
                         <Link
                           href={`/admin/partners/${partner.id}`}
-                          className="underline decoration-line underline-offset-4 hover:decoration-amber"
+                          className="underline decoration-line underline-offset-4 hover:decoration-accent"
                         >
                           {partner.name}
                         </Link>

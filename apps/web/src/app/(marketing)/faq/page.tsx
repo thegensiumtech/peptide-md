@@ -27,7 +27,7 @@ export default async function FaqPage() {
         },
         {
           q: 'Can he prescribe me something?',
-          a: 'No. This is a consultation, not a prescribing or dispensing service. Peptide MD does not supply any compound. If your situation needs a prescription, he will tell you what to ask your GP or specialist for, and why.',
+          a: 'No. This is a consultation, not a prescribing or dispensing service. Peptides MD does not supply any compound. If your situation needs a prescription, he will tell you what to ask your GP or specialist for, and why.',
         },
         {
           q: 'Is it worth booking if I have not started anything yet?',
@@ -65,11 +65,11 @@ export default async function FaqPage() {
       items: [
         {
           q: 'Who sees what I write on the intake form?',
-          a: 'The doctor, and the Peptide MD team who administer bookings. It is not shared with anyone else and it is not used for marketing.',
+          a: 'The doctor, and the Peptides MD team who administer bookings. It is not shared with anyone else and it is not used for marketing.',
         },
         {
           q: 'I booked through another company’s website. Who has my data?',
-          a: 'The company you booked with holds your booking and payment details, and Peptide MD holds what is needed to run the appointment and the doctor’s clinical record of it. Both are covered by their own privacy policies.',
+          a: 'The company you booked with holds your booking and payment details, and Peptides MD holds what is needed to run the appointment and the doctor’s clinical record of it. Both are covered by their own privacy policies.',
         },
       ],
     },
@@ -111,11 +111,11 @@ export default async function FaqPage() {
                   {group.items.map((item) => (
                     // <details> gives keyboard operability and works without JS.
                     <details key={item.q} className="group border-b border-line">
-                      <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 text-base font-medium text-ink transition-colors hover:text-amber [&::-webkit-details-marker]:hidden">
+                      <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 text-base font-medium text-ink transition-colors hover:text-accent [&::-webkit-details-marker]:hidden">
                         {item.q}
                         <span
                           aria-hidden
-                          className="relative mt-2 h-2.5 w-2.5 shrink-0 rounded-full border border-line transition-colors group-open:border-amber group-open:bg-amber"
+                          className="relative mt-2 h-2.5 w-2.5 shrink-0 rounded-full border border-line transition-colors group-open:border-accent group-open:bg-accent"
                         />
                       </summary>
                       <p className="max-w-prose pb-5 text-base leading-relaxed text-muted">

@@ -61,11 +61,11 @@ function Residue({ state }: { state: 'complete' | 'current' | 'upcoming' }) {
       className={cn(
         'relative grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full border transition-colors duration-280 ease-out',
         state === 'complete' && 'border-signal bg-signal',
-        state === 'current' && 'border-amber bg-surface ring-4 ring-amber/15',
+        state === 'current' && 'border-accent bg-surface ring-4 ring-accent/15',
         state === 'upcoming' && 'border-line bg-surface'
       )}
     >
-      {state === 'current' ? <span className="h-1.5 w-1.5 rounded-full bg-amber" /> : null}
+      {state === 'current' ? <span className="h-1.5 w-1.5 rounded-full bg-accent" /> : null}
       <span className="sr-only">
         {state === 'complete' ? 'Completed' : state === 'current' ? 'Current step' : 'Not started'}
       </span>

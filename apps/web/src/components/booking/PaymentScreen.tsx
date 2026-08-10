@@ -15,7 +15,7 @@ import { useBooking } from './BookingContext';
  * Payment.
  *
  * Card details are never entered here — the patient is handed to Stripe
- * Checkout, so no card data touches Peptide MD at any point. All this screen
+ * Checkout, so no card data touches Peptides MD at any point. All this screen
  * collects is the address the confirmation goes to.
  *
  * Nothing is held in the diary yet. A patient who abandons Stripe leaves a
@@ -84,14 +84,14 @@ export function PaymentScreen({
           Pay for your consultation.
         </h1>
         <p className="mt-6 max-w-xl text-lead leading-relaxed text-ink-soft">
-          Payment is handled by Stripe. Your card details go straight to them — Peptide MD never
+          Payment is handled by Stripe. Your card details go straight to them — Peptides MD never
           sees or stores them.
         </p>
 
         {cancelled ? (
           <div
             role="status"
-            className="mt-8 max-w-md rounded-lg border border-amber/30 bg-amber-tint px-5 py-4"
+            className="mt-8 max-w-md rounded-lg border border-accent/30 bg-accent-tint px-5 py-4"
           >
             <p className="text-sm font-semibold text-ink">You came back without paying.</p>
             <p className="mt-1.5 text-micro leading-relaxed text-ink">

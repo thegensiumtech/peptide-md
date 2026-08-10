@@ -11,7 +11,7 @@ const sections: LegalSection[] = [
   {
     heading: 'This is not emergency care',
     paragraphs: [
-      'Peptide MD does not provide urgent or emergency medical care. If you are seriously unwell, having a reaction to something you have taken, or worried about immediate symptoms, contact NHS 111, your GP, or the emergency services on 999.',
+      'Peptides MD does not provide urgent or emergency medical care. If you are seriously unwell, having a reaction to something you have taken, or worried about immediate symptoms, contact NHS 111, your GP, or the emergency services on 999.',
       'Do not wait for a booked consultation if your symptoms are urgent.',
     ],
   },
@@ -26,7 +26,7 @@ const sections: LegalSection[] = [
     heading: 'What it is not',
     paragraphs: ['To remove any doubt:'],
     list: [
-      'It is not a prescription service. No compound is prescribed, supplied or dispensed by Peptide MD.',
+      'It is not a prescription service. No compound is prescribed, supplied or dispensed by Peptides MD.',
       'It is not an endorsement of any product, supplier or protocol.',
       'It is not a substitute for your GP, specialist, or any treatment you are already receiving.',
       'It is not a physical examination, and no investigations are carried out.',
@@ -36,7 +36,7 @@ const sections: LegalSection[] = [
     heading: 'The regulatory position',
     paragraphs: [
       'Most peptide compounds sold online are not licensed medicines in the United Kingdom. Many are marketed as research chemicals and are not authorised for human use.',
-      'Peptide MD takes no position on the legality of anything you have obtained elsewhere, and cannot verify the identity, purity or safety of any compound you have bought from a third party.',
+      'Peptides MD takes no position on the legality of anything you have obtained elsewhere, and cannot verify the identity, purity or safety of any compound you have bought from a third party.',
     ],
   },
   {

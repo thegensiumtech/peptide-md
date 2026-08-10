@@ -7,31 +7,37 @@
  *
  * Ground is a cool clinical off-white, not cream. Ink carries a green
  * undertone so it reads clinical rather than printed-black. Amber is the
- * amber-glass vial peptides ship in: it marks the one active thing on a
+ * accent-glass vial peptides ship in: it marks the one active thing on a
  * screen and is never used decoratively.
  */
 :root {
-  --paper: 246 247 245; /* #F6F7F5 */
-  --paper-deep: 238 240 237; /* #EEF0ED */
-  --surface: 255 255 255; /* #FFFFFF */
-  --ink: 18 33 31; /* #12211F */
-  --ink-soft: 44 62 58; /* #2C3E3A */
-  --muted: 107 122 118; /* #6B7A76 */
-  --line: 221 226 222; /* #DDE2DE */
-  --amber: 184 117 3; /* #B87503 */
-  --amber-tint: 251 243 228; /* #FBF3E4 */
-  --signal: 31 111 92; /* #1F6F5C */
-  --signal-tint: 232 241 238; /* #E8F1EE */
-  --danger: 155 44 30; /* #9B2C1E */
-  --danger-tint: 247 233 230; /* #F7E9E6 */
+  /* Taken from the Peptides MD mark: deep navy stem, teal bowl, slate
+     strapline. Every colour in the product derives from these. */
+  --paper: 245 248 250; /* #F5F8FA */
+  --paper-deep: 234 240 244; /* #EAF0F4 */
+  --surface: 255 255 255;
+  --ink: 12 45 76; /* #0C2D4C — logo navy */
+  --ink-soft: 41 74 102; /* #294A66 */
+  --muted: 105 125 146; /* #697D92 — logo strapline */
+  --line: 216 227 234; /* #D8E3EA */
 
-  /* Chart series. Categorical identity, assigned in fixed order and never
-     cycled. These are separate from the status colours above: --signal is
-     tuned for small status pills and falls below the chroma floor for a chart
-     fill, where it would read as grey. Validated for CVD separation
-     (ΔE 8.5 protan), chroma, lightness band and contrast on white. */
-  --chart-direct: 11 125 92; /* #0B7D5C */
-  --chart-partner: 184 117 3; /* #B87503 */
+  /* The one active thing on a screen. Mid teal from the mark: it carries
+     enough contrast on white to sit under button text, which the bright
+     logo teal does not. */
+  --accent: 21 116 144; /* #157490 */
+  --accent-tint: 227 241 245; /* #E3F1F5 */
+  /* The bright teal reads well only on dark ground — used on the CTA band. */
+  --brand-bright: 51 187 193; /* #33BBC1 */
+
+  --signal: 14 124 90; /* #0E7C5A */
+  --signal-tint: 226 242 237;
+  --danger: 155 44 30;
+  --danger-tint: 247 233 230;
+
+  /* Chart series: validated for CVD separation, chroma, lightness and
+     contrast against white. */
+  --chart-direct: 14 124 90; /* #0E7C5A */
+  --chart-partner: 28 111 176; /* #1C6FB0 */
 
   --duration-fast: 150ms;
   --duration-normal: 280ms;
@@ -64,11 +70,11 @@
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-amber ring-offset-2 ring-offset-paper;
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-paper;
   }
 
   ::selection {
-    @apply bg-amber-tint text-ink;
+    @apply bg-accent-tint text-ink;
   }
 }
 

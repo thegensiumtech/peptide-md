@@ -35,7 +35,7 @@ const schema = z.object({
   AWS_ACCESS_KEY_ID: z.string().default(''),
   AWS_SECRET_ACCESS_KEY: z.string().default(''),
   SES_FROM_EMAIL: z.string().default('appointments@peptidemd.com'),
-  SES_FROM_NAME: z.string().default('Peptide MD'),
+  SES_FROM_NAME: z.string().default('Peptides MD'),
 });
 
 const parsed = schema.safeParse(process.env);

@@ -60,7 +60,7 @@ export default async function HowItWorksPage() {
                 </span>
                 <span
                   aria-hidden
-                  className="h-2.5 w-2.5 rounded-full border border-amber bg-amber"
+                  className="h-2.5 w-2.5 rounded-full border border-accent bg-accent"
                 />
               </div>
               <h2 className="font-display text-h2 font-medium tracking-tight text-ink">

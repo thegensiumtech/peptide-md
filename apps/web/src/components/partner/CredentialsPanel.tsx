@@ -63,7 +63,7 @@ export function CredentialsPanel({ partner }: { partner: Partner }) {
               {newSecret ? (
                 <>
                   <div className="mt-1 flex items-start gap-2">
-                    <p className="min-w-0 flex-1 break-all rounded border border-amber/30 bg-amber-tint px-4 py-3 font-mono text-sm text-ink">
+                    <p className="min-w-0 flex-1 break-all rounded border border-accent/30 bg-accent-tint px-4 py-3 font-mono text-sm text-ink">
                       {newSecret}
                     </p>
                     <Button variant="secondary" size="sm" onClick={() => copy('secret', newSecret)}>
@@ -128,7 +128,7 @@ export function CredentialsPanel({ partner }: { partner: Partner }) {
             <ul className="divide-y divide-line">
               {ENDPOINTS.map((endpoint) => (
                 <li key={endpoint.path} className="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-3">
-                  <span className="w-16 shrink-0 font-mono text-eyebrow uppercase tracking-[0.12em] text-amber">
+                  <span className="w-16 shrink-0 font-mono text-eyebrow uppercase tracking-[0.12em] text-accent">
                     {endpoint.method}
                   </span>
                   <span className="font-mono text-sm text-ink">{endpoint.path}</span>
@@ -193,7 +193,7 @@ export function CredentialsPanel({ partner }: { partner: Partner }) {
               We support your developers directly through onboarding. Email{' '}
               <a
                 href="mailto:developers@peptidemd.com"
-                className="text-ink underline decoration-line underline-offset-4 hover:decoration-amber"
+                className="text-ink underline decoration-line underline-offset-4 hover:decoration-accent"
               >
                 developers@peptidemd.com
               </a>{' '}
