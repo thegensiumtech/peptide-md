@@ -1,0 +1,14 @@
+import { SiteHeader } from '@/components/marketing/SiteHeader';
+import { SiteFooter } from '@/components/marketing/SiteFooter';
+import { SkipLink } from '@/components/ui/SkipLink';
+
+export default function MarketingLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <SkipLink />
+      <SiteHeader />
+      <main id="main">{children}</main>
+      <SiteFooter />
+    </>
+  );
+}

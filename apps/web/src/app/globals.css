@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Clinical Amber — the single source of truth for colour.
+ *
+ * Ground is a cool clinical off-white, not cream. Ink carries a green
+ * undertone so it reads clinical rather than printed-black. Amber is the
+ * amber-glass vial peptides ship in: it marks the one active thing on a
+ * screen and is never used decoratively.
+ */
+:root {
+  --paper: 246 247 245; /* #F6F7F5 */
+  --paper-deep: 238 240 237; /* #EEF0ED */
+  --surface: 255 255 255; /* #FFFFFF */
+  --ink: 18 33 31; /* #12211F */
+  --ink-soft: 44 62 58; /* #2C3E3A */
+  --muted: 107 122 118; /* #6B7A76 */
+  --line: 221 226 222; /* #DDE2DE */
+  --amber: 184 117 3; /* #B87503 */
+  --amber-tint: 251 243 228; /* #FBF3E4 */
+  --signal: 31 111 92; /* #1F6F5C */
+  --signal-tint: 232 241 238; /* #E8F1EE */
+  --danger: 155 44 30; /* #9B2C1E */
+  --danger-tint: 247 233 230; /* #F7E9E6 */
+
+  /* Chart series. Categorical identity, assigned in fixed order and never
+     cycled. These are separate from the status colours above: --signal is
+     tuned for small status pills and falls below the chroma floor for a chart
+     fill, where it would read as grey. Validated for CVD separation
+     (ΔE 8.5 protan), chroma, lightness band and contrast on white. */
+  --chart-direct: 11 125 92; /* #0B7D5C */
+  --chart-partner: 184 117 3; /* #B87503 */
+
+  --duration-fast: 150ms;
+  --duration-normal: 280ms;
+}
+
+@layer base {
+  * {
+    @apply border-line;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-paper font-sans text-base text-ink antialiased;
+    font-feature-settings: 'kern', 'liga';
+  }
+
+  /* Tabular figures everywhere numbers are compared: prices, counts, totals. */
+  .font-mono,
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-balance;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-amber ring-offset-2 ring-offset-paper;
+  }
+
+  ::selection {
+    @apply bg-amber-tint text-ink;
+  }
+}
+
+@layer components {
+  /* Small uppercase label used to name a region or a data field. */
+  .eyebrow {
+    @apply font-mono text-eyebrow uppercase tracking-[0.16em] text-muted;
+  }
+
+  .shell {
+    @apply mx-auto w-full max-w-shell px-5 sm:px-8;
+  }
+
+  /**
+   * A standalone text link — one that sits on its own as a call to action
+   * rather than inside a sentence. These are tap targets, so they carry a
+   * real hit area instead of just the height of their text. Links genuinely
+   * inline in prose are exempt under WCAG 2.2 SC 2.5.8 and keep their
+   * natural height.
+   */
+  .link-cta {
+    @apply inline-flex min-h-11 items-center gap-1;
+  }
+
+  /**
+   * Loading placeholder.
+   *
+   * The sweep animates background-position only — nothing reflows, nothing
+   * repaints outside the element, so it stays on the compositor. The global
+   * reduced-motion rule below stops it entirely rather than leaving a
+   * distracting pulse for anyone who asked for stillness.
+   */
+  .skeleton {
+    background-image: linear-gradient(
+      90deg,
+      rgb(var(--paper-deep)) 0%,
+      rgb(var(--line) / 0.55) 50%,
+      rgb(var(--paper-deep)) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-sweep 1.4s ease-in-out infinite;
+  }
+
+  /* Hairline rule used to separate structure, never for decoration. */
+  .rule {
+    @apply h-px w-full bg-line;
+  }
+}
+
+@keyframes skeleton-sweep {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* A short, quiet entrance for content that has just arrived. */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

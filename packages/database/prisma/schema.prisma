@@ -1,0 +1,651 @@
+// Peptide MD — database schema
+//
+// Covers Milestone 1 deliverable 4: bookings, patients, intake responses,
+// doctors, partners, rates and invoices. The partner, rate and invoice tables
+// are created now even though the features they serve land in Milestone 2 —
+// every booking is attributed from day one, so the attribution has somewhere
+// to go and no backfill is needed later.
+//
+// Money is stored in minor units (pence) as Int everywhere. Times are stored
+// as timestamptz in UTC; the patient's own zone is kept alongside so it can be
+// rendered back to them correctly.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// People and access
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  ADMIN
+  DOCTOR
+  PARTNER
+}
+
+/// Staff and partner logins. Admin and doctor sign in at /admin/login and are
+/// separated by role; partner staff sign in at /partner/login and are pinned
+/// to one partner, which scopes every query they can make.
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         UserRole
+  isActive     Boolean  @default(true)
+
+  /// Set only for PARTNER users. The tenant boundary.
+  partnerId String?
+  partner   Partner? @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  /// Set only for DOCTOR users, linking the login to the clinical record.
+  doctorId String?
+  doctor   Doctor? @relation(fields: [doctorId], references: [id], onDelete: SetNull)
+
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  refreshTokens RefreshToken[]
+  auditEvents   AuditEvent[]
+
+  @@index([partnerId])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  /// SHA-256 of the token. The raw value is never stored.
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ---------------------------------------------------------------------------
+// Doctor and availability
+// ---------------------------------------------------------------------------
+
+/// The platform launches with one doctor but is built for many — the second
+/// and the tenth are added from the admin panel, not by a developer.
+model Doctor {
+  id          String  @id @default(cuid())
+  name        String
+  credentials String
+  gmcNumber   String  @unique
+  photoUrl    String?
+  headline    String
+  bio         String
+  specialisms String[]
+  languages   String[]
+  timezone    String  @default("Europe/London")
+  isActive    Boolean @default(true)
+
+  /// Identifier in the scheduling core, when one is in use.
+  externalCalendarId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users               User[]
+  availabilityWindows AvailabilityWindow[]
+  availabilityOverrides AvailabilityOverride[]
+  bookings            Booking[]
+
+  @@map("doctors")
+}
+
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+/// The standing weekly pattern, in the doctor's own timezone.
+model AvailabilityWindow {
+  id       String  @id @default(cuid())
+  doctorId String
+  doctor   Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  day      Weekday
+  /// 'HH:mm', doctor-local.
+  startTime String
+  endTime   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([doctorId, day])
+  @@map("availability_windows")
+}
+
+enum OverrideKind {
+  BLOCKED
+  EXTRA
+}
+
+/// A one-off change on a specific date, layered over the weekly pattern.
+/// A BLOCKED row with null times blocks the whole day.
+model AvailabilityOverride {
+  id       String       @id @default(cuid())
+  doctorId String
+  doctor   Doctor       @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  /// Calendar date in the doctor's timezone.
+  date      DateTime    @db.Date
+  kind      OverrideKind
+  startTime String?
+  endTime   String?
+  note      String       @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([doctorId, date])
+  @@map("availability_overrides")
+}
+
+// ---------------------------------------------------------------------------
+// Partners (Milestone 2 features, attributed from Milestone 1)
+// ---------------------------------------------------------------------------
+
+enum PartnerStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum PartnerIntegration {
+  EMBED
+  API
+}
+
+model Partner {
+  id     String        @id @default(cuid())
+  name   String
+  slug   String        @unique
+  status PartnerStatus @default(ACTIVE)
+  integration PartnerIntegration @default(EMBED)
+
+  /// Current rate in minor units. Historic rates live on each invoice, so
+  /// changing this never restates an invoice already raised.
+  ratePerAppointment Int
+  currency           String @default("GBP")
+
+  contactName  String
+  contactEmail String
+  billingEmail String
+
+  /// Branding for the embedded widget — the patient sees the partner, never us.
+  brandPrimaryColor String @default("#0B3C49")
+  brandAccentColor  String @default("#E4572E")
+  brandFontFamily   String @default("Inter")
+  brandLogoUrl      String?
+  brandDisplayName  String
+
+  rateLimitPerMinute Int @default(60)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users       User[]
+  credentials PartnerCredential[]
+  bookings    Booking[]
+  invoices    Invoice[]
+
+  @@map("partners")
+}
+
+/// API credentials. The secret is stored hashed; the raw value is shown once,
+/// at issue or rotation, and never again.
+model PartnerCredential {
+  id         String  @id @default(cuid())
+  partnerId  String
+  partner    Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  clientId   String  @unique
+  secretHash String
+  /// Last four characters, so the UI can show which secret is which.
+  secretLastFour String
+  /// Sandbox credentials book against a test diary, never the real one.
+  isSandbox  Boolean @default(false)
+
+  lastUsedAt DateTime?
+  /// Set when rotated. The old credential keeps working until this passes.
+  expiresAt  DateTime?
+  revokedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([partnerId])
+  @@map("partner_credentials")
+}
+
+// ---------------------------------------------------------------------------
+// Patients and bookings
+// ---------------------------------------------------------------------------
+
+/// Patients have no login — the scope excludes patient accounts. This record
+/// exists so repeat bookings from the same person can be recognised and so the
+/// doctor has continuity.
+model Patient {
+  id        String  @id @default(cuid())
+  email     String  @unique
+  name      String
+  phone     String
+  /// IANA zone captured at booking, e.g. 'Australia/Sydney'.
+  timezone  String  @default("Europe/London")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@map("patients")
+}
+
+enum BookingChannel {
+  DIRECT
+  PARTNER
+}
+
+enum BookingStatus {
+  /// Created, payment not yet confirmed. Holds no slot of its own.
+  PENDING_PAYMENT
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+  FAILED
+}
+
+model Booking {
+  id        String @id @default(cuid())
+  /// Human-quotable, e.g. PMD-4821.
+  reference String @unique
+
+  doctorId String
+  doctor   Doctor @relation(fields: [doctorId], references: [id])
+
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  channel BookingChannel
+  /// Null on direct bookings. This tag is what the invoicing rests on.
+  partnerId String?
+  partner   Partner? @relation(fields: [partnerId], references: [id])
+
+  status        BookingStatus @default(PENDING_PAYMENT)
+  paymentStatus PaymentStatus @default(UNPAID)
+
+  startsAt DateTime
+  endsAt   DateTime
+  /// The zone the patient booked in, for rendering their times back to them.
+  patientTimezone String
+
+  /// Booking id in the scheduling core, once mirrored.
+  externalBookingId String? @unique
+
+  /// Minor units. Null on partner bookings — the partner took the payment.
+  amountPaid Int?
+  currency   String @default("GBP")
+
+  /// Where the consultation happens. Emailed on confirmation and reminder.
+  joiningUrl String?
+
+  cancelledAt        DateTime?
+  cancellationReason String?
+  cancelledBy        String?
+
+  remindedAt  DateTime?
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  intakeResponses IntakeResponse[]
+  slotHolds       SlotHold[]
+  payments        Payment[]
+  emails          EmailLog[]
+  invoiceLines    InvoiceLine[]
+
+  /// The diary is queried by doctor and time constantly — this is the index
+  /// that keeps availability lookups cheap as volume grows.
+  @@index([doctorId, startsAt])
+  @@index([partnerId, startsAt])
+  @@index([status, startsAt])
+  @@index([channel, startsAt])
+  @@map("bookings")
+}
+
+/// One answer to one intake question. Kept as rows rather than a JSON blob so
+/// the question set can change without rewriting historic answers.
+model IntakeResponse {
+  id        String  @id @default(cuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  question String
+  answer   String
+  /// Display order as the patient saw it.
+  position Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([bookingId])
+  @@map("intake_responses")
+}
+
+/// Explicit, separately recorded consent — clinical record and terms are two
+/// distinct agreements and are captured as such.
+model ConsentRecord {
+  id        String   @id @default(cuid())
+  bookingId String
+  kind      String
+  granted   Boolean
+  /// The exact wording agreed to, so consent stays provable if wording changes.
+  wording   String
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([bookingId])
+  @@map("consent_records")
+}
+
+// ---------------------------------------------------------------------------
+// Slot holds — the shared-calendar guarantee
+// ---------------------------------------------------------------------------
+
+/// A slot held for one patient while they finish booking.
+///
+/// Redis holds the fast path, but the unique constraint here is the real
+/// guarantee: when two people on different channels reach for the same time,
+/// exactly one insert wins and the other is told immediately. Expired holds
+/// are swept and the time returns to the calendar.
+model SlotHold {
+  id       String @id @default(cuid())
+  doctorId String
+  startsAt DateTime
+  endsAt   DateTime
+
+  /// Which channel is holding it, for diagnosing contention.
+  channel   BookingChannel
+  partnerId String?
+
+  /// Opaque token given to the holder; only they can convert or release it.
+  holdToken String   @unique
+  bookingId String?
+  booking   Booking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  expiresAt  DateTime
+  releasedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  /// One live hold per doctor per instant. This is the lock.
+  @@unique([doctorId, startsAt])
+  @@index([expiresAt])
+  @@map("slot_holds")
+}
+
+// ---------------------------------------------------------------------------
+// Patient self-service access
+// ---------------------------------------------------------------------------
+
+/// A single-use code emailed to a patient so they can open their own
+/// appointments.
+///
+/// Patients have no account, and an email address is not a secret — anyone who
+/// knows one could otherwise read when that person is seeing a doctor. Proving
+/// control of the inbox is what closes that, and it is the same proof the
+/// confirmation email already relies on.
+///
+/// The code is stored hashed. A database leak yields no working codes, and the
+/// raw six digits exist only in the email itself.
+model ManageAccessCode {
+  id       String @id @default(cuid())
+  /// Lower-cased address the code was issued to. Not a foreign key: a code is
+  /// issued before it is known whether the address has any bookings, so that a
+  /// request reveals nothing either way.
+  email    String
+  codeHash String
+
+  /// Wrong guesses so far. The code dies at ATTEMPT_LIMIT rather than lasting
+  /// its full life, so six digits cannot be walked through.
+  attempts Int @default(0)
+
+  expiresAt  DateTime
+  consumedAt DateTime?
+
+  requestIp String?
+  createdAt DateTime @default(now())
+
+  /// Verification looks up the newest live code for an address.
+  @@index([email, expiresAt])
+  @@index([expiresAt])
+  @@map("manage_access_codes")
+}
+
+// ---------------------------------------------------------------------------
+// Payments
+// ---------------------------------------------------------------------------
+
+enum PaymentEventType {
+  CHECKOUT_CREATED
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  EXPIRED
+}
+
+/// Stripe activity against a booking. The webhook is the only thing that moves
+/// a booking to CONFIRMED — the browser never decides a payment succeeded.
+model Payment {
+  id        String  @id @default(cuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  stripeSessionId       String? @unique
+  stripePaymentIntentId String? @unique
+  stripeRefundId        String?
+
+  amount   Int
+  currency String @default("GBP")
+  type     PaymentEventType
+  /// Stripe's own message when a payment fails, for the admin to read.
+  failureReason String?
+
+  createdAt DateTime @default(now())
+
+  @@index([bookingId])
+  @@map("payments")
+}
+
+/// Every webhook Stripe sends, recorded before it is acted on.
+///
+/// Stripe retries, so the same event can arrive more than once. The unique
+/// event id makes handling idempotent, and keeping the payload means a failed
+/// handler can be replayed rather than the booking being lost.
+model WebhookEvent {
+  id          String   @id @default(cuid())
+  source      String
+  externalId  String
+  type        String
+  payload     Json
+  processedAt DateTime?
+  error       String?
+  attempts    Int      @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@unique([source, externalId])
+  @@index([processedAt])
+  @@map("webhook_events")
+}
+
+// ---------------------------------------------------------------------------
+// Invoicing (Milestone 2)
+// ---------------------------------------------------------------------------
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  VOID
+}
+
+model Invoice {
+  id        String  @id @default(cuid())
+  number    String  @unique
+  partnerId String
+  partner   Partner @relation(fields: [partnerId], references: [id])
+
+  /// Billing period, 'YYYY-MM'.
+  period String
+
+  appointmentCount Int
+  /// Captured at generation, so a later rate change never restates history.
+  ratePerAppointment Int
+  totalAmount        Int
+  currency           String @default("GBP")
+
+  status InvoiceStatus @default(DRAFT)
+  pdfUrl String?
+
+  issuedAt DateTime?
+  dueAt    DateTime?
+  paidAt   DateTime?
+  sentAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lines InvoiceLine[]
+
+  @@unique([partnerId, period])
+  @@index([status])
+  @@map("invoices")
+}
+
+/// One counted appointment on an invoice — the evidence behind the total.
+model InvoiceLine {
+  id        String  @id @default(cuid())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+
+  /// Rate applied to this line, copied at generation.
+  amount Int
+
+  createdAt DateTime @default(now())
+
+  /// A booking is billed once and only once.
+  @@unique([invoiceId, bookingId])
+  @@index([bookingId])
+  @@map("invoice_lines")
+}
+
+// ---------------------------------------------------------------------------
+// Platform settings, email, audit
+// ---------------------------------------------------------------------------
+
+/// Single-row settings table. The admin edits these; the site reads them.
+model PlatformSettings {
+  id String @id @default("singleton")
+
+  consultationPrice     Int    @default(9500)
+  consultationCurrency  String @default("GBP")
+  consultationDuration  Int    @default(20)
+  consultationSummary   String @default("")
+  consultationInclusions String[]
+  deliveryNote          String @default("")
+
+  defaultPartnerRate     Int @default(4000)
+  slotHoldMinutes        Int @default(10)
+  defaultRateLimitPerMin Int @default(60)
+
+  emailFromName      String  @default("Peptide MD")
+  emailFromAddress   String  @default("appointments@peptidemd.com")
+  reminderLeadHours  Int     @default(24)
+  notifyDoctorOnBooking      Boolean @default(true)
+  notifyDoctorOnCancellation Boolean @default(true)
+
+  updatedAt DateTime @updatedAt
+
+  @@map("platform_settings")
+}
+
+enum EmailType {
+  PATIENT_CONFIRMATION
+  DOCTOR_NOTIFICATION
+  APPOINTMENT_REMINDER
+  CANCELLATION
+  RESCHEDULE
+  REFUND_CONFIRMATION
+  PARTNER_INVOICE
+  /// The six-digit code that opens the self-service screens.
+  MANAGE_ACCESS_CODE
+}
+
+/// Every email the platform sends. Answers "did the patient get their
+/// confirmation?" without guessing, and stops reminders double-sending.
+model EmailLog {
+  id        String  @id @default(cuid())
+  bookingId String?
+  booking   Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  type      EmailType
+  recipient String
+  subject   String
+  providerMessageId String?
+  sentAt    DateTime?
+  failedAt  DateTime?
+  error     String?
+
+  createdAt DateTime @default(now())
+
+  @@index([bookingId, type])
+  @@map("email_logs")
+}
+
+/// Who changed what. Prices, partner rates and cancellations are commercially
+/// meaningful, so they are recorded rather than merely applied.
+model AuditEvent {
+  id     String  @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  action     String
+  entityType String
+  entityId   String
+  before     Json?
+  after      Json?
+  ipAddress  String?
+
+  createdAt DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@map("audit_events")
+}
