@@ -36,6 +36,9 @@ const schema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string().default(''),
   SES_FROM_EMAIL: z.string().default('appointments@peptidemd.com'),
   SES_FROM_NAME: z.string().default('Peptides MD'),
+  // Replies need somewhere real to land; the sending address is a domain
+  // identity with no mailbox behind it.
+  SES_REPLY_TO: z.string().default(''),
 });
 
 const parsed = schema.safeParse(process.env);

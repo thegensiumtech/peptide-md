@@ -39,17 +39,75 @@ class ConsoleEmailProvider implements EmailProvider {
 class SesEmailProvider implements EmailProvider {
   readonly name = 'ses';
 
-  async send(_email: OutgoingEmail): Promise<{ messageId: string }> {
-    throw new Error(
-      'SES provider not yet wired: add AWS credentials and verify the sender domain, then implement send() with @aws-sdk/client-sesv2.'
+  /**
+   * Sent as raw MIME rather than the simple API, because every confirmation
+   * carries a calendar invite and the simple API cannot attach one.
+   *
+   * The invite is marked `method=REQUEST` so mail clients offer to add it to
+   * the recipient's calendar instead of treating it as a file download.
+   */
+  async send(email: OutgoingEmail): Promise<{ messageId: string }> {
+    const { SESv2Client, SendEmailCommand } = await import('@aws-sdk/client-sesv2');
+    const client = new SESv2Client({ region: config.AWS_REGION });
+
+    const boundary = `pmd_${Date.now().toString(36)}`;
+    const from = `${config.SES_FROM_NAME} <${config.SES_FROM_EMAIL}>`;
+    const encode = (value: string) =>
+      `=?UTF-8?B?${Buffer.from(value, 'utf8').toString('base64')}?=`;
+
+    const parts = [
+      `From: ${from}`,
+      `To: ${email.to}`,
+      ...(config.SES_REPLY_TO ? [`Reply-To: ${config.SES_REPLY_TO}`] : []),
+      `Subject: ${encode(email.subject)}`,
+      'MIME-Version: 1.0',
+      `Content-Type: multipart/mixed; boundary="${boundary}"`,
+      '',
+      `--${boundary}`,
+      `Content-Type: multipart/alternative; boundary="alt_${boundary}"`,
+      '',
+      `--alt_${boundary}`,
+      'Content-Type: text/plain; charset=UTF-8',
+      'Content-Transfer-Encoding: base64',
+      '',
+      Buffer.from(email.text, 'utf8').toString('base64'),
+      '',
+      `--alt_${boundary}`,
+      'Content-Type: text/html; charset=UTF-8',
+      'Content-Transfer-Encoding: base64',
+      '',
+      Buffer.from(email.html, 'utf8').toString('base64'),
+      '',
+      `--alt_${boundary}--`,
+      '',
+    ];
+
+    if (email.icsContent) {
+      parts.push(
+        `--${boundary}`,
+        `Content-Type: text/calendar; charset=UTF-8; method=REQUEST; name="${email.icsFilename ?? 'appointment.ics'}"`,
+        'Content-Transfer-Encoding: base64',
+        `Content-Disposition: attachment; filename="${email.icsFilename ?? 'appointment.ics'}"`,
+        '',
+        Buffer.from(email.icsContent, 'utf8').toString('base64'),
+        ''
+      );
+    }
+
+    parts.push(`--${boundary}--`, '');
+
+    const result = await client.send(
+      new SendEmailCommand({
+        Content: { Raw: { Data: Buffer.from(parts.join('\r\n'), 'utf8') } },
+      })
     );
+
+    return { messageId: result.MessageId ?? `ses_${Date.now()}` };
   }
 }
 
 const provider: EmailProvider =
-  config.EMAIL_PROVIDER === 'ses' && config.AWS_ACCESS_KEY_ID
-    ? new SesEmailProvider()
-    : new ConsoleEmailProvider();
+  config.EMAIL_PROVIDER === 'ses' ? new SesEmailProvider() : new ConsoleEmailProvider();
 
 /**
  * Send and record. Every send is logged against the booking so "did the

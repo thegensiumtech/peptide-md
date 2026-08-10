@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.1106.0",
     "@peptide/database": "workspace:*",
     "@peptide/shared": "workspace:*",
     "bcryptjs": "^3.0.3",
