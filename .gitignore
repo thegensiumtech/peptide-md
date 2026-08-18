@@ -30,3 +30,6 @@ playwright-report/
 
 # Commercial documents — local only, never commit
 proposal/
+
+# Local run logs
+.dev-logs/
