@@ -8,13 +8,15 @@ export const metadata: Metadata = {
     'A free guide to peptide therapy written by a doctor with no products to sell — what the evidence says, what you are actually buying, and the questions to ask before you start.',
 };
 
-const CONTENTS = [
-  ['Why this guide exists', 'Who writes peptide advice, and why that matters.'],
+const CONTENTS: [string, string][] = [
+  ['Why this guide exists', 'Who writes peptide advice, and why that shapes what it says.'],
   ['What a peptide actually is', 'Why “do peptides work” is the wrong question.'],
-  ['The three tiers of evidence', 'Licensed, researched, or anecdote. Knowing which tells you most.'],
-  ['What you are actually buying', 'Why a vial bought online is not a medicine.'],
-  ['Where the real risks are', 'Not usually the ones people expect.'],
-  ['Questions to ask before starting', 'If you cannot answer these, you are not ready.'],
+  ['The three tiers of evidence', 'Licensed, researched, or anecdote — and how to tell.'],
+  ['What you are actually buying', 'Why a vial bought online is not a medicine, and how to read a COA.'],
+  ['How they are taken', 'Injection, nasal, topical, oral — and why the route changes the dose.'],
+  ['Where the real risks are', 'Interactions, masking, technique. Rarely what people expect.'],
+  ['30 compounds, assessed', 'Metabolic · repair · growth hormone · cognitive · sleep · immune.'],
+  ['Questions before you start', 'If you cannot answer these, you are not ready.'],
   ['The boring answer that usually wins', 'What a doctor checks first.'],
 ];
 
@@ -24,7 +26,7 @@ export default function GuidePage() {
       <section className="shell pt-14 sm:pt-20">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-16">
           <div>
-            <p className="eyebrow">Free guide</p>
+            <p className="eyebrow">Free guide · 18 pages</p>
             <h1 className="mt-5 font-display text-h1 font-medium tracking-[-0.02em] text-ink">
               What a doctor would actually tell you about peptides.
             </h1>
@@ -53,7 +55,7 @@ export default function GuidePage() {
             <div className="rounded-lg border border-line bg-surface p-6 sm:p-8">
               <h2 className="font-display text-h3 font-medium text-ink">Send it to me</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                Free, and yours to keep. We will email you a copy.
+                Eighteen pages, thirty compounds. Free, and yours to keep.
               </p>
               <div className="mt-6">
                 <GuideForm source="guide-page" />
