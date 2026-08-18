@@ -24,8 +24,12 @@ const request = z.object({
   email: z.string().email('Enter a valid email address.'),
   marketingConsent: z.boolean().default(false),
   source: z.string().max(60).default('website'),
-  /** Honeypot: a real person leaves this empty. */
-  website: z.string().max(0).optional(),
+  /**
+   * Honeypot. Accepts anything on purpose — validating it to empty would
+   * return a 400 and tell a bot precisely which field caught it. It is read
+   * and discarded below instead.
+   */
+  website: z.string().optional(),
 });
 
 const CONSENT_WORDING =
