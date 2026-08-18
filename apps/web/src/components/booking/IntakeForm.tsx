@@ -113,6 +113,7 @@ export function IntakeForm() {
     update({
       intakeComplete: true,
       patientName: read('name'),
+      patientEmail: read('email'),
       bookingReference: result.data.reference,
       doctorName: result.data.doctorName,
       slot: { startsAt: result.data.startsAt, endsAt: result.data.endsAt },

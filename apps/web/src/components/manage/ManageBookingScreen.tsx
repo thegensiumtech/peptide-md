@@ -183,6 +183,23 @@ export function ManageBookingScreen({ reference }: { reference: string }) {
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-14">
         <div className="min-w-0">
+          {/* A patient needs to see which address their confirmation went
+              to — a typo here is the usual reason an email "never arrived". */}
+          <h2 className="eyebrow">Your details</h2>
+          <dl className="mt-3">
+            <DataRow label="Name">{booking.patientName}</DataRow>
+            <DataRow label="Email" mono>
+              {booking.patientEmail}
+            </DataRow>
+            <DataRow label="Phone" mono>
+              {booking.patientPhone || '—'}
+            </DataRow>
+          </dl>
+          <p className="mt-3 text-micro leading-relaxed text-muted">
+            Your confirmation and reminder go to this address. If it is wrong, reply to the
+            confirmation email or contact us and we will correct it.
+          </p>
+
           <h2 className="eyebrow">The appointment</h2>
           <dl className="mt-4">
             <DataRow label="Doctor">{booking.doctorName}</DataRow>

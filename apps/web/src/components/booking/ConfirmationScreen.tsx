@@ -17,7 +17,7 @@ export function ConfirmationScreen({
   deliveryNote: string;
 }) {
   const { state } = useBooking();
-  const { slot, timezone, bookingReference, patientName } = state;
+  const { slot, timezone, bookingReference, patientName, patientEmail } = state;
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -64,6 +64,13 @@ export function ConfirmationScreen({
         </div>
 
         <div className="bg-surface p-6">
+          {patientEmail ? (
+            <p className="mb-5 rounded border border-line bg-surface px-4 py-3 text-micro leading-relaxed text-muted">
+              Confirmation and calendar invite sent to{' '}
+              <span className="font-mono text-ink">{patientEmail}</span>. Check the spelling — if it
+              is wrong, contact us and we will resend it.
+            </p>
+          ) : null}
           <p className="eyebrow">Reference</p>
           <p className="mt-4 font-mono text-h2 text-ink">{bookingReference ?? 'PMD-4882'}</p>
           <p className="mt-3 text-micro leading-relaxed text-muted">

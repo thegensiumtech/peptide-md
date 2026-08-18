@@ -26,6 +26,8 @@ export interface BookingState {
   intakeComplete: boolean;
   bookingReference: string | null;
   patientName: string | null;
+  /** Shown on confirmation so a typo is visible before the email is missed. */
+  patientEmail: string | null;
   doctorName: string | null;
 }
 
@@ -40,6 +42,7 @@ const EMPTY: BookingState = {
   intakeComplete: false,
   bookingReference: null,
   patientName: null,
+  patientEmail: null,
   doctorName: null,
 };
 
