@@ -7,6 +7,7 @@ import {
   cancellationNotice,
   doctorNotification,
   patientConfirmation,
+  refundConfirmation,
   rescheduleNotice,
   type BookingEmailContext,
 } from '../../email/templates';
@@ -212,41 +213,17 @@ export async function cancelBooking(options: {
   reason: string;
   cancelledBy: string;
   refund: boolean;
-}): Promise<{ refunded: boolean }> {
+}): Promise<{ refundRequested: boolean }> {
   const booking = await loadBooking(options.bookingId);
   if (!booking) throw new Error('Booking not found');
-  if (booking.status === 'CANCELLED') return { refunded: false };
+  if (booking.status === 'CANCELLED') return { refundRequested: false };
 
   const settings = await getSettings();
-  let refunded = false;
 
-  if (options.refund && booking.paymentStatus === 'PAID') {
-    const payment = await prisma.payment.findFirst({
-      where: { bookingId: booking.id, type: 'SUCCEEDED' },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    if (payment?.stripePaymentIntentId) {
-      try {
-        const refund = await refundPayment(payment.stripePaymentIntentId);
-        refunded = true;
-        await prisma.payment.create({
-          data: {
-            bookingId: booking.id,
-            stripeRefundId: refund.id,
-            stripePaymentIntentId: payment.stripePaymentIntentId,
-            amount: payment.amount,
-            currency: payment.currency,
-            type: 'REFUNDED',
-          },
-        });
-      } catch (error) {
-        // The appointment is still cancelled and the slot released; the refund
-        // is retried from the admin panel.
-        logger.error({ err: error, bookingId: booking.id }, 'Refund failed');
-      }
-    }
-  }
+  // A refund is requested here, never processed. The appointment is released
+  // immediately because the patient should not wait on an approval for that,
+  // but the money is a separate decision an admin makes afterwards.
+  const refundRequested = options.refund && booking.paymentStatus === 'PAID';
 
   // Release the slot first — a cancellation must return the time to the
   // calendar even if the notification emails fail afterwards.
@@ -259,7 +236,10 @@ export async function cancelBooking(options: {
     where: { id: booking.id },
     data: {
       status: 'CANCELLED',
-      paymentStatus: refunded ? 'REFUNDED' : booking.paymentStatus,
+      refundStatus: refundRequested ? 'PENDING' : booking.refundStatus,
+      refundAmount: refundRequested ? booking.amountPaid : null,
+      refundRequestedAt: refundRequested ? new Date() : null,
+      refundRequestedBy: refundRequested ? options.cancelledBy : null,
       cancelledAt: new Date(),
       cancellationReason: options.reason,
       cancelledBy: options.cancelledBy,
@@ -272,7 +252,7 @@ export async function cancelBooking(options: {
   await bustAvailability(updated.doctorId);
 
   const context = emailContext(updated, settings.emailFromName, settings.emailFromAddress);
-  await sendEmail('CANCELLATION', cancellationNotice(context, options.reason, refunded), booking.id);
+  await sendEmail('CANCELLATION', cancellationNotice(context, options.reason, false, refundRequested), booking.id);
 
   if (settings.notifyDoctorOnCancellation) {
     const doctorUser = await prisma.user.findFirst({
@@ -282,13 +262,13 @@ export async function cancelBooking(options: {
     if (doctorUser) {
       await sendEmail(
         'CANCELLATION',
-        { ...cancellationNotice(context, options.reason, refunded), to: doctorUser.email },
+        { ...cancellationNotice(context, options.reason, false, refundRequested), to: doctorUser.email },
         booking.id
       );
     }
   }
 
-  return { refunded };
+  return { refundRequested };
 }
 
 export async function rescheduleBooking(
@@ -384,4 +364,92 @@ export async function releaseExpiredHolds(): Promise<number> {
 
   logger.info({ count: expired.length }, 'Expired slot holds released');
   return expired.length;
+}
+
+/**
+ * Approve a pending refund and send the money back.
+ *
+ * The only place in the platform that moves money out. It refuses anything not
+ * actually pending, so a double-click or a replayed request cannot refund
+ * twice.
+ */
+export async function approveRefund(bookingId: string, decidedBy: string): Promise<void> {
+  const booking = await loadBooking(bookingId);
+  if (!booking) throw new Error('Booking not found');
+  if (booking.refundStatus !== 'PENDING') {
+    throw new Error('That refund is not awaiting approval.');
+  }
+
+  const payment = await prisma.payment.findFirst({
+    where: { bookingId, type: 'SUCCEEDED' },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  if (!payment?.stripePaymentIntentId) {
+    await prisma.booking.update({
+      where: { id: bookingId },
+      data: { refundStatus: 'FAILED', refundDecidedAt: new Date(), refundDecidedBy: decidedBy },
+    });
+    throw new Error('No Stripe payment is recorded against this booking.');
+  }
+
+  try {
+    const refund = await refundPayment(payment.stripePaymentIntentId);
+    await prisma.payment.create({
+      data: {
+        bookingId,
+        stripeRefundId: refund.id,
+        amount: booking.refundAmount ?? payment.amount,
+        currency: payment.currency,
+        type: 'REFUNDED',
+      },
+    });
+    await prisma.booking.update({
+      where: { id: bookingId },
+      data: {
+        refundStatus: 'APPROVED',
+        paymentStatus: 'REFUNDED',
+        refundDecidedAt: new Date(),
+        refundDecidedBy: decidedBy,
+      },
+    });
+
+    const settings = await getSettings();
+    const context = emailContext(booking, settings.emailFromName, settings.emailFromAddress);
+    await sendEmail('REFUND_CONFIRMATION', refundConfirmation(context, booking.refundAmount ?? payment.amount), bookingId);
+    logger.info({ bookingId }, 'Refund approved and sent');
+  } catch (error) {
+    // Left FAILED rather than PENDING, so it shows as needing attention
+    // instead of quietly sitting in the queue as though untouched.
+    await prisma.booking.update({
+      where: { id: bookingId },
+      data: { refundStatus: 'FAILED', refundDecidedAt: new Date(), refundDecidedBy: decidedBy },
+    });
+    logger.error({ err: error, bookingId }, 'Refund failed at Stripe');
+    throw error;
+  }
+}
+
+/** Refuse a refund, with a reason kept on the record. */
+export async function declineRefund(
+  bookingId: string,
+  decidedBy: string,
+  reason: string
+): Promise<void> {
+  const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+  if (!booking) throw new Error('Booking not found');
+  if (booking.refundStatus !== 'PENDING' && booking.refundStatus !== 'FAILED') {
+    throw new Error('That refund is not awaiting a decision.');
+  }
+
+  await prisma.booking.update({
+    where: { id: bookingId },
+    data: {
+      refundStatus: 'DECLINED',
+      refundDecidedAt: new Date(),
+      refundDecidedBy: decidedBy,
+      refundDeclineReason: reason,
+    },
+  });
+  logger.info({ bookingId, reason }, 'Refund declined');
 }

@@ -433,7 +433,7 @@ manageBookingRouter.post(
       );
     }
 
-    const { refunded } = await cancelBooking({
+    const { refundRequested } = await cancelBooking({
       bookingId: booking.id,
       reason: input.reason?.trim() || 'Cancelled by the patient.',
       cancelledBy: `patient:${booking.patient.email}`,
@@ -441,14 +441,15 @@ manageBookingRouter.post(
     });
 
     const cancelled = await requireOwnedBooking(input.reference, email);
-    logger.info({ reference: booking.reference, refunded }, 'Patient cancelled their appointment');
+    logger.info({ reference: booking.reference, refundRequested }, 'Patient cancelled their appointment');
 
     return ok(res, {
       booking: detail(cancelled, settings.consultationDuration, new Date()),
       // What actually happened, and what was owed. They differ when a refund is
       // due but Stripe declined it — the patient is told a person will finish it
       // rather than being told their money is already on its way.
-      refunded,
+      // The money has not moved yet — an admin still has to approve it.
+      refundRequested,
       refundDue: verdict.refundOnCancel,
     });
   })

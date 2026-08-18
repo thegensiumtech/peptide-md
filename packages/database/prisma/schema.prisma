@@ -270,6 +270,25 @@ enum BookingStatus {
   NO_SHOW
 }
 
+/// A refund is a separate decision from a cancellation.
+///
+/// Cancelling releases the appointment immediately — the patient should never
+/// wait on an approval for that. Whether the money goes back is a commercial
+/// judgement the admin makes afterwards, so it has its own state and never
+/// happens automatically.
+enum RefundStatus {
+  /// No refund is in play — unpaid, or nobody asked.
+  NONE
+  /// Requested and waiting for the admin.
+  PENDING
+  /// Approved and sent to Stripe successfully.
+  APPROVED
+  /// Refused, with a reason on the record.
+  DECLINED
+  /// Approved, but Stripe rejected it. Needs a retry.
+  FAILED
+}
+
 enum PaymentStatus {
   UNPAID
   PAID
@@ -314,6 +333,17 @@ model Booking {
   cancelledAt        DateTime?
   cancellationReason String?
   cancelledBy        String?
+
+  refundStatus        RefundStatus @default(NONE)
+  /// Minor units. Captured when requested, so a later price change cannot
+  /// alter what the patient is owed.
+  refundAmount        Int?
+  refundRequestedAt   DateTime?
+  /// User id for an admin request, or 'patient' when raised from /manage.
+  refundRequestedBy   String?
+  refundDecidedAt     DateTime?
+  refundDecidedBy     String?
+  refundDeclineReason String?
 
   remindedAt  DateTime?
   completedAt DateTime?

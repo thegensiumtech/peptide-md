@@ -3,7 +3,13 @@ import { z } from 'zod';
 import { prisma, type Prisma } from '@peptide/database';
 import { conflict, forbidden, handle, notFound, ok } from '../../http/errors';
 import { requireAuth, requireRole } from '../../http/middleware/auth';
-import { cancelBooking, getSettings, rescheduleBooking } from '../bookings/service';
+import {
+  approveRefund,
+  cancelBooking,
+  declineRefund,
+  getSettings,
+  rescheduleBooking,
+} from '../bookings/service';
 import { cacheDelete } from '../../lib/redis';
 
 export const adminRouter = Router();
@@ -40,6 +46,9 @@ function serialiseBooking(booking: Prisma.BookingGetPayload<{
     createdAt: booking.createdAt.toISOString(),
     cancelledAt: booking.cancelledAt?.toISOString() ?? null,
     cancellationReason: booking.cancellationReason,
+    refundStatus: booking.refundStatus.toLowerCase(),
+    refundAmount: hideCommercial ? null : booking.refundAmount,
+    refundDeclineReason: booking.refundDeclineReason,
   };
 }
 
@@ -145,6 +154,86 @@ adminRouter.post(
       new Date(start.getTime() + settings.consultationDuration * 60_000)
     );
     return ok(res, { rescheduled: true });
+  })
+);
+
+/**
+ * Refund decisions.
+ *
+ * Separate from cancelling on purpose: releasing the appointment is
+ * operational and happens at once, while sending money back is commercial and
+ * needs a person to agree to it. Only an administrator may decide — the doctor
+ * role never sees money.
+ */
+adminRouter.get(
+  '/refunds',
+  requireRole('ADMIN'),
+  handle(async (_req, res) => {
+    const rows = await prisma.booking.findMany({
+      where: { refundStatus: { in: ['PENDING', 'FAILED'] } },
+      include: { patient: true, partner: true },
+      orderBy: { refundRequestedAt: 'asc' },
+    });
+
+    return ok(
+      res,
+      rows.map((b) => ({
+        id: b.id,
+        reference: b.reference,
+        patientName: b.patient.name,
+        patientEmail: b.patient.email,
+        startsAt: b.startsAt.toISOString(),
+        cancelledAt: b.cancelledAt?.toISOString() ?? null,
+        cancellationReason: b.cancellationReason,
+        refundStatus: b.refundStatus.toLowerCase(),
+        refundAmount: b.refundAmount,
+        currency: b.currency,
+        requestedAt: b.refundRequestedAt?.toISOString() ?? null,
+        requestedBy: b.refundRequestedBy,
+      }))
+    );
+  })
+);
+
+adminRouter.post(
+  '/bookings/:id/refund/approve',
+  requireRole('ADMIN'),
+  handle(async (req, res) => {
+    await approveRefund(req.params.id!, req.user!.sub);
+    await prisma.auditEvent.create({
+      data: {
+        userId: req.user!.sub,
+        action: 'refund.approve',
+        entityType: 'Booking',
+        entityId: req.params.id!,
+        ipAddress: req.ip ?? null,
+      },
+    });
+    return ok(res, { approved: true });
+  })
+);
+
+const declineInput = z.object({
+  reason: z.string().min(1, 'Give a reason — it stays on the record.'),
+});
+
+adminRouter.post(
+  '/bookings/:id/refund/decline',
+  requireRole('ADMIN'),
+  handle(async (req, res) => {
+    const { reason } = declineInput.parse(req.body);
+    await declineRefund(req.params.id!, req.user!.sub, reason);
+    await prisma.auditEvent.create({
+      data: {
+        userId: req.user!.sub,
+        action: 'refund.decline',
+        entityType: 'Booking',
+        entityId: req.params.id!,
+        after: { reason },
+        ipAddress: req.ip ?? null,
+      },
+    });
+    return ok(res, { declined: true });
   })
 );
 

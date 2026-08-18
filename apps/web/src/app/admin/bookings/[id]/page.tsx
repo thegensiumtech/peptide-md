@@ -201,9 +201,14 @@ export default async function BookingDetailPage({
           ) : null}
 
           <BookingActions
+            bookingId={booking.id}
             reference={booking.reference}
             status={booking.status}
             canManage={!isDoctor}
+            refundStatus={booking.refundStatus}
+            refundAmount={booking.refundAmount}
+            refundDeclineReason={booking.refundDeclineReason}
+            currency={booking.currency}
           />
         </div>
       </div>

@@ -197,14 +197,15 @@ export function appointmentReminder(context: BookingEmailContext): OutgoingEmail
 export function cancellationNotice(
   context: BookingEmailContext,
   reason: string,
-  refunded: boolean
+  refunded: boolean,
+  refundRequested = false
 ): OutgoingEmail {
   const when = formatIn(context.startsAt, context.patientTimezone);
 
   return {
     to: context.patientEmail,
     subject: `Your consultation on ${when} has been cancelled`,
-    text: `Your consultation with ${context.doctorName} on ${when} has been cancelled.\n\n${reason}\n\n${refunded ? 'You have been refunded in full. It usually reaches your account in five to ten working days.' : ''}\nReference: ${context.reference}`,
+    text: `Your consultation with ${context.doctorName} on ${when} has been cancelled.\n\n${reason}\n\n${refunded ? 'You have been refunded in full. It usually reaches your account in five to ten working days.' : refundRequested ? 'A refund has been raised for review. We will email you once it is approved.' : ''}\nReference: ${context.reference}`,
     html: shell(
       'Your consultation has been cancelled.',
       [
@@ -278,6 +279,36 @@ export function accessCodeNotice(input: {
       'Your access code',
       body,
       `Sent by ${input.fromName} because someone asked to see appointments booked with this address. We will never ask you for this code by phone or email.`
+    ),
+  };
+}
+
+/** Sent only once a refund has actually left Stripe. */
+export function refundConfirmation(
+  context: BookingEmailContext,
+  amountMinorUnits: number
+): OutgoingEmail {
+  const amount = new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP',
+    minimumFractionDigits: amountMinorUnits % 100 === 0 ? 0 : 2,
+  }).format(amountMinorUnits / 100);
+
+  return {
+    to: context.patientEmail,
+    subject: `Your refund of ${amount} is on its way`,
+    text: `Your refund of ${amount} has been approved and sent back to the card you paid with.\n\nIt usually appears within five to ten working days.\n\nReference: ${context.reference}`,
+    html: shell(
+      'Your refund is on its way.',
+      [
+        p(`We have sent ${amount} back to the card you paid with.`),
+        detailBlock([
+          ['Amount', amount],
+          ['Reference', context.reference],
+        ]),
+        p('It usually appears within five to ten working days, depending on your bank.'),
+      ].join(''),
+      'If it has not arrived after ten working days, reply to this email.'
     ),
   };
 }
