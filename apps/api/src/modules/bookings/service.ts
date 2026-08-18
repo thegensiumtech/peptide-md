@@ -1,6 +1,7 @@
 import { prisma, type Booking, type Doctor, type Patient } from '@peptide/database';
 import { config } from '../../config';
 import { logger } from '../../logger';
+import { badRequest, conflict } from '../../http/errors';
 import { sendEmail, alreadySent } from '../../email';
 import {
   appointmentReminder,
@@ -376,8 +377,13 @@ export async function releaseExpiredHolds(): Promise<number> {
 export async function approveRefund(bookingId: string, decidedBy: string): Promise<void> {
   const booking = await loadBooking(bookingId);
   if (!booking) throw new Error('Booking not found');
-  if (booking.refundStatus !== 'PENDING') {
-    throw new Error('That refund is not awaiting approval.');
+  if (booking.refundStatus !== 'PENDING' && booking.refundStatus !== 'FAILED') {
+    throw conflict(
+      booking.refundStatus === 'APPROVED'
+        ? 'That refund has already been sent.'
+        : 'That refund is not awaiting approval.',
+      'REFUND_NOT_PENDING'
+    );
   }
 
   const payment = await prisma.payment.findFirst({
@@ -390,7 +396,10 @@ export async function approveRefund(bookingId: string, decidedBy: string): Promi
       where: { id: bookingId },
       data: { refundStatus: 'FAILED', refundDecidedAt: new Date(), refundDecidedBy: decidedBy },
     });
-    throw new Error('No Stripe payment is recorded against this booking.');
+    throw badRequest(
+      'No Stripe payment is recorded against this booking, so there is nothing to refund. Refund the patient directly in Stripe if they paid another way.',
+      'NO_PAYMENT_TO_REFUND'
+    );
   }
 
   try {
@@ -439,7 +448,7 @@ export async function declineRefund(
   const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
   if (!booking) throw new Error('Booking not found');
   if (booking.refundStatus !== 'PENDING' && booking.refundStatus !== 'FAILED') {
-    throw new Error('That refund is not awaiting a decision.');
+    throw conflict('That refund is not awaiting a decision.', 'REFUND_NOT_PENDING');
   }
 
   await prisma.booking.update({
