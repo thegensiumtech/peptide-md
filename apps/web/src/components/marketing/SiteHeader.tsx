@@ -11,6 +11,7 @@ const NAV = [
   { href: '/how-it-works', label: 'How it works' },
   { href: '/about-peptides', label: 'About peptides' },
   { href: '/the-doctor', label: 'The doctor' },
+  { href: '/guide', label: 'Free guide' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Contact' },
 ];

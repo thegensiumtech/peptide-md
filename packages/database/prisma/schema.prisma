@@ -636,6 +636,8 @@ enum EmailType {
   PARTNER_INVOICE
   /// The six-digit code that opens the self-service screens.
   MANAGE_ACCESS_CODE
+  /// The lead-magnet guide, sent in exchange for a name and email.
+  GUIDE_DELIVERY
 }
 
 /// Every email the platform sends. Answers "did the patient get their
@@ -678,4 +680,37 @@ model AuditEvent {
   @@index([entityType, entityId])
   @@index([userId])
   @@map("audit_events")
+}
+
+/// Lead magnet: the peptide guide, given in exchange for a name and email.
+///
+/// Kept separate from Patient. Someone who downloads a guide has not booked
+/// anything and is not a patient — conflating the two would put marketing
+/// contacts inside the clinical record.
+model GuideRequest {
+  id    String @id @default(cuid())
+  name  String
+  email String
+
+  /// Which guide, so a second one later does not need a new table.
+  guideSlug String @default("peptide-guide")
+  /// Where they came from, for measuring which placement works.
+  source    String @default("website")
+
+  /// Single-use-ish token in the download link, so the file is not a public URL.
+  downloadToken String  @unique
+  downloadCount Int     @default(0)
+  lastDownloadAt DateTime?
+
+  /// Explicit and separate from the download itself.
+  marketingConsent Boolean @default(false)
+  consentWording   String
+
+  emailSentAt DateTime?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("guide_requests")
 }

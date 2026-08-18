@@ -1,3 +1,4 @@
+import { GuideForm } from '@/components/guide/GuideForm';
 import Link from 'next/link';
 import { getAvailableDays } from '@/lib/data/client';
 import { getConsultation } from '@/lib/api/public';
@@ -235,7 +236,27 @@ export default async function HomePage() {
       </section>
 
       <div className="mt-section">
-        <CtaBand />
+        <section className="shell mt-section">
+        <div className="rounded-lg border border-line bg-surface px-6 py-10 sm:px-10 sm:py-12">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-16">
+            <div>
+              <p className="eyebrow">Free guide</p>
+              <h2 className="mt-4 font-display text-h2 font-medium tracking-tight text-ink">
+                What a doctor would actually tell you about peptides.
+              </h2>
+              <p className="mt-4 max-w-lg text-lead leading-relaxed text-muted">
+                Almost everything written about peptides is written by someone selling them. This is
+                not — including the parts that say you probably should not take anything.
+              </p>
+            </div>
+            <div>
+              <GuideForm source="homepage" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
       </div>
     </>
   );

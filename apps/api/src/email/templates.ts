@@ -312,3 +312,22 @@ export function refundConfirmation(
     ),
   };
 }
+
+/** Delivers the lead-magnet guide. */
+export function guideDelivery(name: string, to: string, downloadUrl: string): OutgoingEmail {
+  const first = name.split(' ')[0] ?? name;
+  return {
+    to,
+    subject: 'Your peptide guide',
+    text: `Hi ${first},\n\nHere is the guide: ${downloadUrl}\n\nIt is written by a doctor who has no products to sell — including the parts that say you probably should not take anything.\n\nIf you want that conversation properly, a consultation is twenty minutes and ninety-five pounds.\n\nPeptides MD`,
+    html: shell(
+      `Here is your guide, ${first}.`,
+      [
+        p('It is written by a doctor with no products, no suppliers and no affiliate income — including the parts that say you probably should not take anything at all.'),
+        button(downloadUrl, 'Download the guide'),
+        p('If you would rather ask about your own situation, a consultation is twenty minutes with a GMC-registered doctor.'),
+      ].join(''),
+      'General information, not medical advice. Peptides MD does not supply, prescribe or dispense any compound.'
+    ),
+  };
+}
