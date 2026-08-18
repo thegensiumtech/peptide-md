@@ -237,6 +237,52 @@ adminRouter.post(
   })
 );
 
+/**
+ * Guide downloads.
+ *
+ * Marketing contacts, kept deliberately apart from patients — someone who
+ * downloaded a guide has not booked anything. Admin only: the doctor role has
+ * no business in the marketing list.
+ */
+adminRouter.get(
+  '/leads',
+  requireRole('ADMIN'),
+  handle(async (req, res) => {
+    const { page, limit } = z
+      .object({ page: z.coerce.number().min(1).default(1), limit: z.coerce.number().min(1).max(200).default(50) })
+      .parse(req.query);
+
+    const [rows, total, consented] = await Promise.all([
+      prisma.guideRequest.findMany({
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.guideRequest.count(),
+      prisma.guideRequest.count({ where: { marketingConsent: true } }),
+    ]);
+
+    return ok(
+      res,
+      {
+        total,
+        consented,
+        leads: rows.map((r) => ({
+          id: r.id,
+          name: r.name,
+          email: r.email,
+          source: r.source,
+          marketingConsent: r.marketingConsent,
+          downloadCount: r.downloadCount,
+          emailSent: Boolean(r.emailSentAt),
+          createdAt: r.createdAt.toISOString(),
+        })),
+      },
+      { total, page, limit }
+    );
+  })
+);
+
 // --- Dashboard ---------------------------------------------------------------
 
 adminRouter.get(
