@@ -83,7 +83,7 @@ export function PortraitFrame({
           </div>
         )}
       </div>
-      <figcaption className="absolute bottom-4 left-4 right-4 rounded border border-line bg-surface/95 px-4 py-3 backdrop-blur">
+      <figcaption className="absolute bottom-4 left-4 right-4 rounded border border-line bg-surface px-4 py-3">
         <p className="font-display text-base font-semibold text-ink">{name}</p>
         <p className="mt-0.5 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
           {credentials} · GMC {gmcNumber}

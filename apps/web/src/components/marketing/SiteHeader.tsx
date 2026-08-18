@@ -20,7 +20,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line bg-paper">
       <div className="shell flex h-16 items-center justify-between gap-6">
         <Link href="/" className="shrink-0" aria-label="Peptides MD — home">
           <Wordmark />

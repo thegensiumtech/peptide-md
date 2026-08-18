@@ -33,12 +33,12 @@ export function Wordmark({
   return (
     <span className={cn('inline-flex min-h-11 items-center', className)}>
       <Image
-        src="/brand/peptides-md.png"
+        src="/brand/peptides-md-lockup.png"
         alt="Peptides MD — medical consultations"
-        width={600}
-        height={375}
+        width={480}
+        height={240}
         priority
-        className="h-9 w-auto mix-blend-multiply"
+        className="h-11 w-auto mix-blend-multiply sm:h-12"
       />
     </span>
   );
