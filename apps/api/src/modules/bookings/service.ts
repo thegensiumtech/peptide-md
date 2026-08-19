@@ -1,7 +1,7 @@
 import { prisma, type Booking, type Doctor, type Patient } from '@peptide/database';
 import { config } from '../../config';
 import { logger } from '../../logger';
-import { badRequest, conflict } from '../../http/errors';
+import { badRequest, conflict, notFound } from '../../http/errors';
 import { sendEmail, alreadySent } from '../../email';
 import {
   appointmentReminder,
@@ -365,6 +365,44 @@ export async function releaseExpiredHolds(): Promise<number> {
 
   logger.info({ count: expired.length }, 'Expired slot holds released');
   return expired.length;
+}
+
+/**
+ * Raise a refund on a booking that was cancelled without one.
+ *
+ * An administrator may cancel first and decide about the money afterwards —
+ * the patient rings back, or the circumstances turn out differently. Without
+ * this there is no way to start a refund after the fact, which is a dead end.
+ */
+export async function requestRefund(bookingId: string, requestedBy: string): Promise<void> {
+  const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+  if (!booking) throw notFound('Booking not found.');
+
+  if (booking.paymentStatus !== 'PAID') {
+    throw badRequest(
+      'There is nothing to refund — this booking was never paid for.',
+      'NOTHING_TO_REFUND'
+    );
+  }
+  if (booking.refundStatus === 'PENDING') {
+    throw conflict('A refund is already waiting for approval.', 'REFUND_ALREADY_PENDING');
+  }
+  if (booking.refundStatus === 'APPROVED') {
+    throw conflict('That booking has already been refunded.', 'ALREADY_REFUNDED');
+  }
+
+  await prisma.booking.update({
+    where: { id: bookingId },
+    data: {
+      refundStatus: 'PENDING',
+      refundAmount: booking.amountPaid,
+      refundRequestedAt: new Date(),
+      refundRequestedBy: requestedBy,
+      // A previous refusal should not linger next to a fresh request.
+      refundDeclineReason: null,
+    },
+  });
+  logger.info({ bookingId }, 'Refund raised for approval');
 }
 
 /**

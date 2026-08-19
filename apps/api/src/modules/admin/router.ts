@@ -8,6 +8,7 @@ import {
   cancelBooking,
   declineRefund,
   getSettings,
+  requestRefund,
   rescheduleBooking,
 } from '../bookings/service';
 import { cacheDelete } from '../../lib/redis';
@@ -192,6 +193,15 @@ adminRouter.get(
         requestedBy: b.refundRequestedBy,
       }))
     );
+  })
+);
+
+adminRouter.post(
+  '/bookings/:id/refund/request',
+  requireRole('ADMIN'),
+  handle(async (req, res) => {
+    await requestRefund(req.params.id!, req.user!.sub);
+    return ok(res, { requested: true });
   })
 );
 

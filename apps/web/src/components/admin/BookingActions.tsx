@@ -30,6 +30,7 @@ export function BookingActions({
   refundStatus = 'none',
   refundAmount,
   refundDeclineReason,
+  paymentStatus,
   currency = 'GBP',
 }: {
   bookingId: string;
@@ -39,6 +40,7 @@ export function BookingActions({
   refundStatus?: RefundState;
   refundAmount?: number | null;
   refundDeclineReason?: string | null;
+  paymentStatus?: string;
   currency?: string;
 }) {
   const router = useRouter();
@@ -188,9 +190,36 @@ export function BookingActions({
         ) : null}
 
         {isClosed ? (
-          <p className="text-micro leading-relaxed text-muted">
-            This booking is closed. The appointment cannot be changed.
-          </p>
+          <>
+            <p className="text-micro leading-relaxed text-muted">
+              This booking is closed. The appointment cannot be changed.
+            </p>
+            {/* Cancelling and refunding are separate decisions, so a refund
+                can still be raised after the fact — a patient rings back, or
+                the circumstances turn out differently. */}
+            {refundStatus === 'none' && paymentStatus === 'paid' ? (
+              <div className="mt-4 rounded-lg border border-line bg-paper-deep p-4">
+                <p className="text-sm font-semibold text-ink">No refund was raised</p>
+                <p className="mt-1.5 text-micro leading-relaxed text-muted">
+                  This booking was paid for but cancelled without a refund. You can still raise one
+                  — it will come back here for approval before any money moves.
+                </p>
+                <Button
+                  size="sm"
+                  className="mt-4"
+                  disabled={busy}
+                  onClick={async () => {
+                    if (await call(`/bookings/${bookingId}/refund/request`)) {
+                      setDone('Refund raised. Approve it below when you are ready.');
+                      router.refresh();
+                    }
+                  }}
+                >
+                  {busy ? 'Raising…' : 'Raise a refund'}
+                </Button>
+              </div>
+            ) : null}
+          </>
         ) : pending === 'cancel' ? (
           <form
             className="grid gap-4"
