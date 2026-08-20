@@ -47,7 +47,7 @@ export default async function ConsultationDetailsPage() {
             <div className="mt-5 space-y-4 text-base leading-relaxed text-muted">
               <p>
                 <span className="text-ink">Payment comes before you pick a time.</span> That is
-                deliberate — it means every time you are then shown is genuinely available, and no
+                deliberate, it means every time you are then shown is genuinely available, and no
                 slot is ever held by an unpaid booking.
               </p>
               <p>

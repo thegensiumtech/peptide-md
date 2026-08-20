@@ -28,7 +28,7 @@ coverage/
 test-results/
 playwright-report/
 
-# Commercial documents — local only, never commit
+# Commercial documents, local only, never commit
 proposal/
 
 # Local run logs

@@ -47,7 +47,7 @@ export function Td({
   align = 'left',
 }: {
   className?: string;
-  /** Optional — spacer cells in a footer row legitimately have no content. */
+  /** Optional, spacer cells in a footer row legitimately have no content. */
   children?: React.ReactNode;
   align?: 'left' | 'right';
 }) {

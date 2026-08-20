@@ -4,7 +4,7 @@ import { SkipLink } from '@/components/ui/SkipLink';
 
 /**
  * Shared frame for both login screens. The two areas look deliberately alike
- * but are never the same door — each names who it is for and links across to
+ * but are never the same door, each names who it is for and links across to
  * the other, so a partner never gets stuck at the admin login.
  */
 export function AuthScreen({
@@ -27,7 +27,7 @@ export function AuthScreen({
       <SkipLink />
       <header className="border-b border-line">
         <div className="shell flex h-16 items-center">
-          <Link href="/" aria-label="Peptides MD — home">
+          <Link href="/" aria-label="Peptides MD, home">
             <Wordmark />
           </Link>
         </div>

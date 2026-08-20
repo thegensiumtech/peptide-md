@@ -247,7 +247,7 @@ await prisma.booking.deleteMany({ where: { patient: { email: { startsWith: 'veri
 await prisma.patient.deleteMany({ where: { email: { startsWith: 'verify+' } } });
 await prisma.$disconnect();
 
-for (const r of results) console.log(`${r.ok ? 'PASS ' : 'FAIL '} ${r.name}${r.detail ? ` — ${r.detail}` : ''}`);
+for (const r of results) console.log(`${r.ok ? 'PASS ' : 'FAIL '} ${r.name}${r.detail ? `, ${r.detail}` : ''}`);
 const failed = results.filter((r) => !r.ok).length;
 console.log(`\n${results.length - failed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

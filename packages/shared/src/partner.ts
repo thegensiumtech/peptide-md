@@ -1,5 +1,5 @@
 /**
- * White-label partner domain — accounts, per-appointment rates, branding for
+ * White-label partner domain, accounts, per-appointment rates, branding for
  * the embedded widget, API credentials, and monthly invoices.
  */
 
@@ -16,7 +16,7 @@ export interface PartnerBranding {
   accentColor: string;
   fontFamily: string;
   logoUrl: string | null;
-  /** Name shown to the partner's patients — never 'Peptides MD'. */
+  /** Name shown to the partner's patients, never 'Peptides MD'. */
   displayName: string;
 }
 
@@ -69,7 +69,7 @@ export interface Invoice {
   issuedAt: string | null;
   dueAt: string | null;
   paidAt: string | null;
-  /** Booking ids counted into this invoice — the evidence behind the total. */
+  /** Booking ids counted into this invoice, the evidence behind the total. */
   bookingIds: string[];
 }
 

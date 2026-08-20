@@ -2,7 +2,7 @@
  * Seed the development database.
  *
  * Mirrors the fixtures the screens were built against, so the app looks the
- * same after the switch from static data to the live API. Idempotent — safe to
+ * same after the switch from static data to the live API. Idempotent, safe to
  * re-run.
  *
  *   pnpm --filter @peptide/database db:seed
@@ -52,7 +52,7 @@ async function main() {
       consultationPrice: 9500,
       consultationDuration: CONSULT_MINUTES,
       consultationSummary:
-        'A private video consultation with Dr Hartley about peptide therapy — what you are taking, what you are trying to achieve, and whether it is the right route for you.',
+        'A private video consultation with Dr Hartley about peptide therapy, what you are taking, what you are trying to achieve, and whether it is the right route for you.',
       consultationInclusions: [
         'Twenty minutes of the doctor’s time, one to one',
         'Review of anything you are currently taking',
@@ -78,7 +78,7 @@ async function main() {
       headline: 'A doctor who will tell you when the answer is no.',
       bio: [
         'James Hartley has practised for eighteen years, the last six of them working almost entirely with patients who are using, or thinking about using, peptide therapies.',
-        'He came to it the way most people do — patients arriving with a protocol they had found online, a box of vials, and nobody willing to talk to them about it. Most had been sold something. Almost none had been examined.',
+        'He came to it the way most people do, patients arriving with a protocol they had found online, a box of vials, and nobody willing to talk to them about it. Most had been sold something. Almost none had been examined.',
         'The consultation is twenty minutes and it is deliberately plain. He will ask what you are taking, what you are trying to fix, and what your history is. Then he will tell you what he thinks, including when he thinks the honest answer is that you should not be taking anything at all.',
         'He has no products to sell and no affiliation with any supplier. That is the point of the service.',
       ].join('\n\n'),
@@ -135,7 +135,7 @@ async function main() {
         kind: OverrideKind.BLOCKED,
         startTime: '09:00',
         endTime: '12:00',
-        note: 'Clinic commitment — morning only',
+        note: 'Clinic commitment, morning only',
       },
     ],
   });
@@ -284,7 +284,7 @@ async function main() {
     { ref: 'PMD-4847', date: '2026-08-08', time: '22:40', name: 'Mei Tanaka', email: 'mei.tanaka@gmail.com', phone: '+61 455 019 663', tz: 'Australia/Sydney', partnerSlug: 'new-you-peptides', status: BookingStatus.COMPLETED, payment: PaymentStatus.PAID, concern: 'Injury recovery timeline.', compounds: 'None', history: 'Stress fracture, healing.' },
     { ref: 'PMD-4848', date: '2026-08-07', time: '12:00', name: 'Jonah Pryce', email: 'j.pryce@gmail.com', phone: '+44 7700 900210', tz: 'Europe/London', partnerSlug: null, status: BookingStatus.CANCELLED, payment: PaymentStatus.REFUNDED, concern: 'Cancelled before the appointment.', compounds: 'None', history: 'None.' },
     { ref: 'PMD-4849', date: '2026-08-08', time: '15:20', name: 'Elena Marchetti', email: 'e.marchetti@gmail.com', phone: '+44 7700 900654', tz: 'Europe/London', partnerSlug: 'five-peptides', status: BookingStatus.CANCELLED, payment: PaymentStatus.UNPAID, concern: 'Partner-side cancellation.', compounds: 'None', history: 'None.' },
-    { ref: 'PMD-4850', date: '2026-08-08', time: '13:40', name: 'Rory Hendricks', email: 'r.hendricks@gmail.com', phone: '+44 7700 900123', tz: 'Europe/London', partnerSlug: null, status: BookingStatus.PENDING_PAYMENT, payment: PaymentStatus.FAILED, concern: 'Card declined at checkout — no slot was ever consumed.', compounds: 'None', history: 'None.' },
+    { ref: 'PMD-4850', date: '2026-08-08', time: '13:40', name: 'Rory Hendricks', email: 'r.hendricks@gmail.com', phone: '+44 7700 900123', tz: 'Europe/London', partnerSlug: null, status: BookingStatus.PENDING_PAYMENT, payment: PaymentStatus.FAILED, concern: 'Card declined at checkout, no slot was ever consumed.', compounds: 'None', history: 'None.' },
     { ref: 'PMD-4851', date: '2026-08-06', time: '16:40', name: 'Sofia Almeida', email: 's.almeida@gmail.com', phone: '+44 7700 900468', tz: 'Europe/London', partnerSlug: 'new-you-peptides', status: BookingStatus.NO_SHOW, payment: PaymentStatus.PAID, concern: 'Did not attend.', compounds: 'None', history: 'None.' },
   ];
 
@@ -321,7 +321,7 @@ async function main() {
         endsAt: plusMinutes(startsAt, CONSULT_MINUTES),
         patientTimezone: seed.tz,
         // Partner bookings are paid on the partner's own site, so Peptides MD
-        // holds no payment against them — only the billable count.
+        // holds no payment against them, only the billable count.
         amountPaid: !partnerId && seed.payment === PaymentStatus.PAID ? 9500 : null,
         cancelledAt: seed.status === BookingStatus.CANCELLED ? at(seed.date, '07:30') : null,
         cancellationReason:
@@ -338,7 +338,7 @@ async function main() {
           { bookingId: booking.id, question: INTAKE_QUESTIONS[0]!, answer: seed.concern, position: 0 },
           { bookingId: booking.id, question: INTAKE_QUESTIONS[1]!, answer: seed.compounds, position: 1 },
           { bookingId: booking.id, question: INTAKE_QUESTIONS[2]!, answer: seed.history, position: 2 },
-          { bookingId: booking.id, question: INTAKE_QUESTIONS[3]!, answer: 'Yes — results available', position: 3 },
+          { bookingId: booking.id, question: INTAKE_QUESTIONS[3]!, answer: 'Yes, results available', position: 3 },
           { bookingId: booking.id, question: INTAKE_QUESTIONS[4]!, answer: 'Agreed', position: 4 },
         ],
       });

@@ -6,7 +6,7 @@ export interface SequenceStep {
 }
 
 /**
- * The sequence rail — the platform's signature element.
+ * The sequence rail, the platform's signature element.
  *
  * A peptide is a chain of residues joined by peptide bonds, and the booking
  * flow is genuinely a sequence too: pay, choose a time, tell the doctor what

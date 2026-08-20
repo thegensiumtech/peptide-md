@@ -30,8 +30,8 @@ export function SectionHeading({
  * Portrait frame.
  *
  * Ross's photograph of the doctor drops straight in here. Until then the frame
- * renders as a clinical ID card — initials, credential line, registration
- * number — so the layout reads as deliberate rather than as a missing image.
+ * renders as a clinical ID card, initials, credential line, registration
+ * number, so the layout reads as deliberate rather than as a missing image.
  */
 export function PortraitFrame({
   name,
@@ -94,7 +94,7 @@ export function PortraitFrame({
 }
 
 /**
- * The requisition slip — a mono data block modelled on a lab request form.
+ * The requisition slip, a mono data block modelled on a lab request form.
  * It carries the facts a patient actually decides on: what it is, how long,
  * what it costs, and when the next one is.
  */
@@ -132,7 +132,7 @@ export function RequisitionCard({
 /** Closing call to action, repeated at the foot of every marketing page. */
 export function CtaBand({
   title = 'Talk to the doctor before you take anything else.',
-  body = 'Twenty minutes, £95, and an honest answer — including when the answer is that you should not be taking anything at all.',
+  body = 'Twenty minutes, £95, and an honest answer, including when the answer is that you should not be taking anything at all.',
   className,
 }: {
   title?: string;

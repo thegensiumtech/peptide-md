@@ -35,7 +35,7 @@ cleanup() {
 trap cleanup INT TERM
 
 say ""
-say "${BOLD}Peptides MD — local${OFF}"
+say "${BOLD}Peptides MD, local${OFF}"
 say ""
 
 # --- Prerequisites ----------------------------------------------------------
@@ -47,7 +47,7 @@ command -v pnpm >/dev/null || die "pnpm not found. Install with: npm i -g pnpm@1
 if pg_isready -q 2>/dev/null; then
   ok "postgres"
 else
-  warn "postgres not running — starting it"
+  warn "postgres not running, starting it"
   brew services start postgresql@16 >/dev/null 2>&1 || brew services start postgresql >/dev/null 2>&1
   for _ in $(seq 1 20); do pg_isready -q 2>/dev/null && break; sleep 1; done
   pg_isready -q 2>/dev/null && ok "postgres" || die "could not start postgres"
@@ -56,16 +56,16 @@ fi
 if redis-cli ping 2>/dev/null | grep -q PONG; then
   ok "redis"
 else
-  warn "redis not running — starting it"
+  warn "redis not running, starting it"
   brew services start redis >/dev/null 2>&1
   for _ in $(seq 1 15); do redis-cli ping 2>/dev/null | grep -q PONG && break; sleep 1; done
-  redis-cli ping 2>/dev/null | grep -q PONG && ok "redis" || warn "redis unavailable — the app still works, just slower"
+  redis-cli ping 2>/dev/null | grep -q PONG && ok "redis" || warn "redis unavailable, the app still works, just slower"
 fi
 
 # Free the ports, or two copies fight over them.
 for port in 3000 4000; do
   if lsof -nP -iTCP:$port -sTCP:LISTEN >/dev/null 2>&1; then
-    warn "port $port was busy — freeing it"
+    warn "port $port was busy, freeing it"
     kill -9 $(lsof -t -nP -iTCP:$port -sTCP:LISTEN) 2>/dev/null
     sleep 1
   fi
@@ -82,13 +82,13 @@ psql -lqt 2>/dev/null | cut -d'|' -f1 | grep -qw "$DB_NAME" || { createdb "$DB_N
 # The Prisma CLI reads .env from its own package, not our root .env.local,
 # so the URL is passed explicitly rather than left to be discovered.
 DATABASE_URL="$DB_URL" pnpm --filter @peptide/database exec prisma migrate deploy >"$LOGS/migrate.log" 2>&1 \
-  && ok "migrations up to date" || warn "migrations failed — see $LOGS/migrate.log"
+  && ok "migrations up to date" || warn "migrations failed, see $LOGS/migrate.log"
 DATABASE_URL="$DB_URL" pnpm --filter @peptide/database exec prisma generate >/dev/null 2>&1
 
 COUNT=$(psql -d "$DB_NAME" -tAc "SELECT count(*) FROM bookings;" 2>/dev/null || echo 0)
 if [ "${COUNT:-0}" -eq 0 ]; then
-  warn "no data — seeding"
-  pnpm --filter @peptide/database db:seed >"$LOGS/seed.log" 2>&1 && ok "seeded" || warn "seed failed — see $LOGS/seed.log"
+  warn "no data, seeding"
+  pnpm --filter @peptide/database db:seed >"$LOGS/seed.log" 2>&1 && ok "seeded" || warn "seed failed, see $LOGS/seed.log"
 else
   ok "$COUNT bookings already in the database"
 fi
@@ -117,10 +117,10 @@ if command -v stripe >/dev/null 2>&1; then
     fi
     ok "webhooks forwarding, secret written to .env.local"
   else
-    warn "listener did not report a secret — payments still work, webhooks will not"
+    warn "listener did not report a secret, payments still work, webhooks will not"
   fi
 else
-  warn "stripe CLI not installed — payments work, webhooks do not"
+  warn "stripe CLI not installed, payments work, webhooks do not"
   say "    ${DIM}brew install stripe/stripe-cli/stripe${OFF}"
 fi
 
@@ -131,15 +131,15 @@ say "${BOLD}Starting${OFF}"
 pnpm --filter @peptide/api dev >"$LOGS/api.log" 2>&1 &
 PIDS+=($!)
 for _ in $(seq 1 40); do curl -sf -o /dev/null http://localhost:4000/api/health && break; sleep 1; done
-curl -sf -o /dev/null http://localhost:4000/api/health && ok "api    http://localhost:4000" || die "api failed — tail $LOGS/api.log"
+curl -sf -o /dev/null http://localhost:4000/api/health && ok "api    http://localhost:4000" || die "api failed, tail $LOGS/api.log"
 
 pnpm --filter @peptide/web dev >"$LOGS/web.log" 2>&1 &
 PIDS+=($!)
 for _ in $(seq 1 60); do curl -sf -o /dev/null http://localhost:3000 && break; sleep 1; done
-curl -sf -o /dev/null http://localhost:3000 && ok "web    http://localhost:3000" || die "web failed — tail $LOGS/web.log"
+curl -sf -o /dev/null http://localhost:3000 && ok "web    http://localhost:3000" || die "web failed, tail $LOGS/web.log"
 
 say ""
-say "${BOLD}Ready${OFF} — http://localhost:3000"
+say "${BOLD}Ready${OFF}, http://localhost:3000"
 say ""
 say "  Admin    ross@peptidemd.com     ${DIM}peptide-dev-2026${OFF}"
 say "  Doctor   james@peptidemd.com    ${DIM}peptide-dev-2026${OFF}"

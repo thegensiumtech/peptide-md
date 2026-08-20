@@ -52,7 +52,7 @@ export function ContactForm() {
       >
         <p className="eyebrow text-signal">Message sent</p>
         <h2 className="mt-4 font-display text-h2 font-medium text-ink">
-          Thanks — we have it.
+          Thanks, we have it.
         </h2>
         <p className="mt-4 max-w-md text-lead leading-relaxed text-ink-soft">
           We answer within one working day. If your question turns out to be one the doctor should
@@ -109,7 +109,7 @@ export function ContactForm() {
         htmlFor="message"
         required
         error={errors.message}
-        hint="Do not include clinical detail you would rather only the doctor saw — save that for the intake form."
+        hint="Do not include clinical detail you would rather only the doctor saw, save that for the intake form."
       >
         <Textarea id="message" name="message" rows={7} aria-invalid={Boolean(errors.message)} />
       </Field>

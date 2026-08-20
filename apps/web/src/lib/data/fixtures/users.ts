@@ -7,7 +7,7 @@ import type { SessionUser } from '@peptide/shared';
  * once signed in. Partner staff sign in at /partner/login and are pinned to
  * one partnerId, which is what scopes every query they can make.
  *
- * Passwords are not checked in this static build — any password is accepted
+ * Passwords are not checked in this static build, any password is accepted
  * for a known email. Real authentication is JWT with bcrypt in the API.
  */
 export interface DemoAccount extends SessionUser {
@@ -22,7 +22,7 @@ export const demoAccounts: DemoAccount[] = [
     email: 'ross@peptidemd.com',
     role: 'admin',
     partnerId: null,
-    hint: 'Full access — bookings, doctor, partners, rates and invoices',
+    hint: 'Full access, bookings, doctor, partners, rates and invoices',
   },
   {
     id: 'usr_doctor',
@@ -38,7 +38,7 @@ export const demoAccounts: DemoAccount[] = [
     email: 'dana@newyoupeptides.com.au',
     role: 'partner',
     partnerId: 'ptr_newyou',
-    hint: 'New You Peptides — their own bookings, totals and invoices',
+    hint: 'New You Peptides, their own bookings, totals and invoices',
   },
   {
     id: 'usr_fivepep',
@@ -46,7 +46,7 @@ export const demoAccounts: DemoAccount[] = [
     email: 'marcus@fivepeptides.co.uk',
     role: 'partner',
     partnerId: 'ptr_fivepeptides',
-    hint: 'Five Peptides — their own bookings, totals and invoices',
+    hint: 'Five Peptides, their own bookings, totals and invoices',
   },
 ];
 

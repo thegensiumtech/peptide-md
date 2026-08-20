@@ -23,7 +23,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper">
       <div className="shell flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="shrink-0" aria-label="Peptides MD — home">
+        <Link href="/" className="shrink-0" aria-label="Peptides MD, home">
           <Wordmark />
         </Link>
 
@@ -54,7 +54,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
-          {/* A utility link, not a section of the site — it sits with the
+          {/* A utility link, not a section of the site, it sits with the
               action rather than in the navigation it would otherwise crowd. */}
           <Link
             href="/manage"

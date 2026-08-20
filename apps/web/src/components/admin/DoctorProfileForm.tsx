@@ -17,7 +17,7 @@ export function DoctorProfileForm({ profile }: { profile: DoctorProfile }) {
   function addSpecialism() {
     const value = draft.trim();
     if (!value || specialisms.includes(value)) return;
-    // New array rather than push — the list is state, not a mutable buffer.
+    // New array rather than push, the list is state, not a mutable buffer.
     setSpecialisms([...specialisms, value]);
     setDraft('');
   }

@@ -237,7 +237,7 @@ export class InternalSchedulingProvider implements SchedulingProvider {
     const rangeEnd = slots[slots.length - 1]!.endsAt;
 
     // Anything already taken: confirmed appointments, and live holds from any
-    // channel. A pending-payment booking holds nothing — that is the point of
+    // channel. A pending-payment booking holds nothing, that is the point of
     // taking payment first.
     const [booked, holds] = await Promise.all([
       prisma.booking.findMany({

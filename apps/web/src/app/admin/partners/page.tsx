@@ -118,7 +118,7 @@ export default async function PartnersPage() {
 
       <p className="mt-4 max-w-2xl text-micro leading-relaxed text-muted">
         Adding a partner is a data task, not a development one. Create the record, issue their
-        credentials, set their rate and configure their branding — nothing is rebuilt or redeployed.
+        credentials, set their rate and configure their branding, nothing is rebuilt or redeployed.
       </p>
     </AdminShell>
   );

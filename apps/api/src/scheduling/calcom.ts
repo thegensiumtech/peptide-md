@@ -17,7 +17,7 @@ import type {
  * Awaiting the Cal.com account, so the request shapes below are written to the
  * v2 API but not yet exercised against it. Every method falls back to the
  * internal provider on failure, which means switching this on cannot take the
- * diary down — a Cal.com outage degrades to local scheduling rather than
+ * diary down, a Cal.com outage degrades to local scheduling rather than
  * refusing bookings.
  *
  * To activate: set CALCOM_CLIENT_ID / CALCOM_CLIENT_SECRET and
@@ -63,7 +63,7 @@ export class CalComSchedulingProvider implements SchedulingProvider {
           endsAt: new Date(new Date(time).getTime() + query.durationMinutes * 60_000),
         }));
     } catch (error) {
-      logger.error({ err: error }, 'Cal.com availability failed — using internal provider');
+      logger.error({ err: error }, 'Cal.com availability failed, using internal provider');
       return this.fallback.getAvailability(query);
     }
   }
@@ -91,7 +91,7 @@ export class CalComSchedulingProvider implements SchedulingProvider {
       await this.fallback.confirm(request);
       return { externalBookingId: body.data.uid, joiningUrl: body.data.meetingUrl ?? null };
     } catch (error) {
-      logger.error({ err: error }, 'Cal.com confirm failed — booking held locally');
+      logger.error({ err: error }, 'Cal.com confirm failed, booking held locally');
       return this.fallback.confirm(request);
     }
   }
@@ -117,7 +117,7 @@ export class CalComSchedulingProvider implements SchedulingProvider {
       );
       return { externalBookingId: body.data.uid, joiningUrl: body.data.meetingUrl ?? null };
     } catch (error) {
-      logger.error({ err: error }, 'Cal.com reschedule failed — rescheduled locally');
+      logger.error({ err: error }, 'Cal.com reschedule failed, rescheduled locally');
       return this.fallback.reschedule(externalBookingId, slot);
     }
   }

@@ -39,7 +39,7 @@ export function Field({
 }
 
 /**
- * Ref-forwarding because some inputs need focus moved to them — the access-code
+ * Ref-forwarding because some inputs need focus moved to them, the access-code
  * field is focused on arrival and again after a wrong code. React 18 still
  * requires forwardRef for that.
  */

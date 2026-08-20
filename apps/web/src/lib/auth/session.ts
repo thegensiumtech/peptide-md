@@ -19,7 +19,7 @@ interface MeResponse {
 /**
  * The signed-in staff user, resolved by asking the API to verify the token.
  *
- * The middleware only checks that a cookie exists — it runs on the edge and
+ * The middleware only checks that a cookie exists, it runs on the edge and
  * cannot verify a signature. This is where the token is actually validated, so
  * a forged or expired cookie gets a signed-out user rather than access.
  *
@@ -57,7 +57,7 @@ export async function requireSession(
 }
 
 /**
- * Require a permission. The API enforces the same rules independently — this
+ * Require a permission. The API enforces the same rules independently, this
  * exists so a role lands on an explanatory screen instead of a bare 403 body.
  */
 export function requirePermission(session: SessionUser, permission: Permission): void {

@@ -19,11 +19,11 @@ const sections: LegalSection[] = [
     heading: 'What we collect',
     paragraphs: ['We collect the minimum needed to run your appointment and the doctor’s record of it.'],
     list: [
-      'Identity and contact details — your name, email address and phone number.',
-      'Appointment details — the time booked, the channel it came through, and its status.',
-      'Health information you give us — your answers to the intake questions and anything discussed in the consultation.',
-      'Payment confirmation — whether payment succeeded, and the reference. We never see or store your card details; Stripe handles those.',
-      'Technical data — basic analytics about how the website is used.',
+      'Identity and contact details, your name, email address and phone number.',
+      'Appointment details, the time booked, the channel it came through, and its status.',
+      'Health information you give us, your answers to the intake questions and anything discussed in the consultation.',
+      'Payment confirmation, whether payment succeeded, and the reference. We never see or store your card details; Stripe handles those.',
+      'Technical data, basic analytics about how the website is used.',
     ],
   },
   {
@@ -37,7 +37,7 @@ const sections: LegalSection[] = [
     heading: 'Who we share it with',
     paragraphs: [
       'We share your information only with the organisations needed to deliver the service: our scheduling provider, our payment provider, our email provider, and our hosting and infrastructure providers. Each is bound by contract and processes data only on our instructions.',
-      'We do not sell your data, and we do not share your health information with partner companies. A partner sees that an appointment took place and its status — never what was discussed or what you wrote on the intake form.',
+      'We do not sell your data, and we do not share your health information with partner companies. A partner sees that an appointment took place and its status, never what was discussed or what you wrote on the intake form.',
     ],
   },
   {

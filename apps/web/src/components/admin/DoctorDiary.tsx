@@ -39,7 +39,7 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
  * and what he needs to take out because something came up.
  *
  * Blocking is one tap by design. The whole in-house approach depends on him
- * actually marking time as busy — if it took a dialog he would not bother, and
+ * actually marking time as busy, if it took a dialog he would not bother, and
  * a patient would book over his afternoon.
  */
 export function DoctorDiary({ doctorId, timezone }: { doctorId: string; timezone: string }) {
@@ -214,7 +214,7 @@ export function DoctorDiary({ doctorId, timezone }: { doctorId: string; timezone
                     const busy = pending === slot.startsAt;
 
                     const label = isBooked
-                      ? `Booked — ${slot.booking?.patientName}`
+                      ? `Booked, ${slot.booking?.patientName}`
                       : isHeld
                         ? 'Being booked right now'
                         : isBlocked
@@ -257,7 +257,7 @@ export function DoctorDiary({ doctorId, timezone }: { doctorId: string; timezone
                         disabled={isHeld || busy}
                         aria-pressed={isBlocked}
                         title={label}
-                        aria-label={`${formatTime(slot.startsAt, timezone)} — ${label}`}
+                        aria-label={`${formatTime(slot.startsAt, timezone)}, ${label}`}
                         className={classes}
                       >
                         {content}
@@ -272,7 +272,7 @@ export function DoctorDiary({ doctorId, timezone }: { doctorId: string; timezone
 
         <p className="mt-6 max-w-2xl text-micro leading-relaxed text-muted">
           Blocking a slot removes it from this website and from every partner site at the same
-          moment. A slot with a patient already booked cannot be blocked — cancel the appointment
+          moment. A slot with a patient already booked cannot be blocked, cancel the appointment
           first, so the patient is told.
         </p>
       </CardBody>

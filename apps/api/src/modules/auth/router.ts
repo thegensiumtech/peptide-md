@@ -22,7 +22,7 @@ export const authRouter = Router();
  * the whole team shares one office IP cannot lock itself out by signing in
  * normally. And the key is the email plus the IP rather than the IP alone, so
  * one person fat-fingering their password does not lock out a colleague behind
- * the same NAT — while an attacker spraying many addresses still gets throttled
+ * the same NAT, while an attacker spraying many addresses still gets throttled
  * per address.
  */
 const loginLimiter = rateLimit({

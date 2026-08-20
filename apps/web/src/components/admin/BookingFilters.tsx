@@ -18,7 +18,7 @@ const STATUS_LABELS: Record<string, string> = {
  * Filters live in the URL, not in component state.
  *
  * That is what makes a filtered list shareable, survivable across a refresh,
- * and — the reason it matters most here — restorable when the admin comes back
+ * and, the reason it matters most here, restorable when the admin comes back
  * from a booking detail screen.
  */
 export function BookingFilters({

@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn';
  * Loading placeholders.
  *
  * Shaped like the content they stand in for, so the page does not jump when
- * the real thing arrives — a spinner in the middle of a screen tells you
+ * the real thing arrives, a spinner in the middle of a screen tells you
  * nothing about what is coming.
  *
  * The shimmer is a background-position sweep: it moves nothing in the layout,

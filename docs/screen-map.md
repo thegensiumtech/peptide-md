@@ -9,7 +9,7 @@ Anchor date for all static data: **9 August 2026** (`src/lib/clock.ts`).
 
 ## 1. Route map
 
-### Public site — `(marketing)` group
+### Public site, `(marketing)` group
 
 | # | Screen | Route | Notes |
 |---|---|---|---|
@@ -23,17 +23,17 @@ Anchor date for all static data: **9 August 2026** (`src/lib/clock.ts`).
 | 8 | Terms of Service | `/terms` | Legal |
 | 9 | Medical Disclaimer | `/medical-disclaimer` | Legal |
 
-### Booking flow — `(booking)` group
+### Booking flow, `(booking)` group
 
 | # | Screen | Route | Rail position |
 |---|---|---|---|
-| 10 | Consultation details | `/book` | 1 — Consult |
-| 11 | Payment (Stripe) | `/book/payment` | 2 — Pay |
-| 12 | Slot selection | `/book/slot` | 3 — Time |
-| 13 | Intake form | `/book/intake` | 4 — Intake |
-| 14 | Confirmation | `/book/confirmed` | 5 — Done |
+| 10 | Consultation details | `/book` | 1. Consult |
+| 11 | Payment (Stripe) | `/book/payment` | 2. Pay |
+| 12 | Slot selection | `/book/slot` | 3. Time |
+| 13 | Intake form | `/book/intake` | 4. Intake |
+| 14 | Confirmation | `/book/confirmed` | 5. Done |
 
-### Admin — `admin` group, roles `admin` + `doctor`
+### Admin, `admin` group, roles `admin` + `doctor`
 
 | # | Screen | Route | admin | doctor |
 |---|---|---|---|---|
@@ -43,7 +43,7 @@ Anchor date for all static data: **9 August 2026** (`src/lib/clock.ts`).
 | 18 | Booking detail | `/admin/bookings/[id]` | ✅ | ✅ clinical only |
 | 19 | Doctor profile | `/admin/doctor-profile` | ✅ | ✅ |
 | 20 | Settings | `/admin/settings` | ✅ | ⛔ 403 |
-| — | **Doctor availability** | `/admin/availability` | ✅ | ✅ |
+|, | **Doctor availability** | `/admin/availability` | ✅ | ✅ |
 | 21 | Partner list | `/admin/partners` | ✅ | ⛔ 403 |
 | 22 | Add / edit partner | `/admin/partners/new`, `/admin/partners/[id]` | ✅ | ⛔ 403 |
 | 23 | Invoice list | `/admin/invoices` | ✅ | ⛔ 403 |
@@ -55,7 +55,7 @@ Anchor date for all static data: **9 August 2026** (`src/lib/clock.ts`).
 > journey. It is built here so the role is complete; in production it can either
 > stay or defer to the scheduling core's UI.
 
-### Partner portal — `partner` group, role `partner`
+### Partner portal, `partner` group, role `partner`
 
 | # | Screen | Route | Notes |
 |---|---|---|---|
@@ -74,7 +74,7 @@ and API credentials with rotation.
 
 ## 2. How the journeys connect
 
-### Patient — direct booking
+### Patient, direct booking
 
 ```
 /  ──┬─► /how-it-works ──┐
@@ -99,7 +99,7 @@ The flow changes direction at payment, and the UI has to be honest about that.
 | `/book` | Previous marketing page | Nothing has been committed |
 | `/book/payment` | `/book` | Nothing has been charged |
 | `/book/slot` | **No back to payment** | Money has been taken. Rail shows Pay complete and inert. Escape hatch is "Need help?" → `/contact` |
-| `/book/intake` | "Change time" → `/book/slot` | Explicit affordance, not browser back — re-picking releases the held slot |
+| `/book/intake` | "Change time" → `/book/slot` | Explicit affordance, not browser back, re-picking releases the held slot |
 | `/book/confirmed` | Terminal | Forward only |
 
 Steps are guarded by booking state held in `BookingContext` (sessionStorage). Deep-linking
@@ -155,7 +155,7 @@ returns. A partner has no route into `/admin/*`.
 | Doctor on an admin-only route | 403 screen explaining the limit, with a link back to `/admin` |
 
 Permissions are declared once in `@peptide/shared/auth.ts` (`ROLE_PERMISSIONS`) and
-enforced in middleware, in the shell navigation, and on the screen itself — so a
+enforced in middleware, in the shell navigation, and on the screen itself, so a
 hidden nav item is never the only thing standing between a role and a screen.
 
 ---

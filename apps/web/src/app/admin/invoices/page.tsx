@@ -62,7 +62,7 @@ export default async function InvoicesPage({
         </div>
       ) : null}
 
-      {/* Drafts first — they are the ones needing a decision. */}
+      {/* Drafts first, they are the ones needing a decision. */}
       <section>
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <h2 className="font-display text-h3 font-medium text-ink">This month, running</h2>
@@ -184,7 +184,7 @@ export default async function InvoicesPage({
                     </Td>
                     <Td>
                       <span className="font-mono text-micro text-muted">
-                        {invoice.dueAt ? formatDate(invoice.dueAt, VIEW_TZ) : '—'}
+                        {invoice.dueAt ? formatDate(invoice.dueAt, VIEW_TZ) : ', '}
                       </span>
                     </Td>
                   </Tr>

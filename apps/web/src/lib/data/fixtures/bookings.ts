@@ -30,7 +30,7 @@ function intake(seed: Seed) {
     { question: 'What would you like to discuss with the doctor?', answer: seed.concern },
     { question: 'Are you currently using any peptides or compounds?', answer: seed.compounds },
     { question: 'Relevant medical history or current medication', answer: seed.history },
-    { question: 'Have you had blood work in the last 12 months?', answer: 'Yes — results available' },
+    { question: 'Have you had blood work in the last 12 months?', answer: 'Yes, results available' },
     {
       question: 'I understand this is a private consultation and not a prescription service',
       answer: 'Agreed',
@@ -178,7 +178,7 @@ const seeds: Seed[] = [
     ref: 'PMD-4850', date: '2026-08-08', time: '13:40', name: 'Rory Hendricks',
     email: 'r.hendricks@gmail.com', phone: '+44 7700 900123', tz: 'Europe/London',
     channel: 'direct', partnerId: null, status: 'pending_payment', payment: 'failed',
-    concern: 'Card declined at checkout — no slot was ever consumed.',
+    concern: 'Card declined at checkout, no slot was ever consumed.',
     compounds: 'None', history: 'None.',
   },
   {
@@ -190,7 +190,7 @@ const seeds: Seed[] = [
 ];
 
 const CANCELLATION_REASONS: Record<string, string> = {
-  'PMD-4848': 'Patient cancelled — 26 hours notice. Refunded in full.',
+  'PMD-4848': 'Patient cancelled, 26 hours notice. Refunded in full.',
   'PMD-4849': 'Cancelled by New You Peptides on the patient’s request.',
 };
 
@@ -212,7 +212,7 @@ export const bookings: Booking[] = seeds.map((seed, index) => {
     patientPhone: seed.phone,
     intake: intake(seed),
     // Partner bookings are paid for on the partner's own site, so Peptides MD
-    // holds no payment against them — only the billable appointment count.
+    // holds no payment against them, only the billable appointment count.
     amountPaid: seed.channel === 'direct' && seed.payment === 'paid' ? 9500 : null,
     currency: 'GBP',
     createdAt: at(seed.date, '08:00'),

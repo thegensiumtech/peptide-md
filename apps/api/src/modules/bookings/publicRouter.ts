@@ -54,7 +54,7 @@ const availabilityQuery = z.object({
 });
 
 /**
- * Free slots. Cached briefly — availability is read on every page view of the
+ * Free slots. Cached briefly, availability is read on every page view of the
  * slot screen but only changes when someone books, holds or the doctor edits
  * their pattern, all of which bust the key.
  */
@@ -105,7 +105,7 @@ const startCheckout = z.object({
 
 /**
  * Step one of the money path: create the booking in PENDING_PAYMENT and hand
- * back a Stripe Checkout URL. No slot is held yet — payment comes first, so a
+ * back a Stripe Checkout URL. No slot is held yet, payment comes first, so a
  * failed or abandoned checkout can never leave a time in limbo.
  */
 publicBookingRouter.post(
@@ -177,8 +177,8 @@ const verifyPayment = z.object({
 /**
  * Confirm payment on return from Checkout.
  *
- * The webhook remains the primary path and the only one that can be relied on
- * — the patient may close the tab before ever coming back. This is the second
+ * The webhook remains the primary path and the only one that can be relied on,
+ * the patient may close the tab before ever coming back. This is the second
  * path, for when they do return before the webhook has landed.
  *
  * It is not trusting the browser: the browser supplies a session id and the
@@ -193,7 +193,7 @@ publicBookingRouter.post(
     const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
     if (!booking) throw notFound('That booking could not be found.');
 
-    // Already settled by the webhook — nothing to do.
+    // Already settled by the webhook, nothing to do.
     if (booking.paymentStatus === 'PAID') {
       return ok(res, { paymentStatus: 'paid', alreadyConfirmed: true });
     }
@@ -244,8 +244,7 @@ const holdRequest = z.object({
 });
 
 /**
- * Step two: hold the chosen time. Only reachable once payment is confirmed —
- * the booking must already be PAID, which only the webhook can set.
+ * Step two: hold the chosen time. Only reachable once payment is confirmed, * the booking must already be PAID, which only the webhook can set.
  */
 publicBookingRouter.post(
   '/hold',

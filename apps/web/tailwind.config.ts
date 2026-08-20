@@ -5,7 +5,7 @@ import type { Config } from 'tailwindcss';
  *
  * Colours are declared once as space-separated RGB channels in globals.css so
  * Tailwind's opacity modifiers keep working (`text-ink/60`). Nothing in the app
- * hardcodes a hex value — swapping in Peptide MD's real palette is a one-file
+ * hardcodes a hex value, swapping in Peptide MD's real palette is a one-file
  * change in globals.css.
  */
 const token = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;

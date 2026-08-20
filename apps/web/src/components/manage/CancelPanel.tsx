@@ -77,7 +77,7 @@ export function CancelPanel({
         ) : (
           <Notice tone="accent" title="This cancellation is not automatically refunded.">
             It is inside the {booking.policy.freeCancellationNoticeHours}-hour notice period, so a
-            refund is not issued automatically. Cancel anyway if you cannot attend — then contact us,
+            refund is not issued automatically. Cancel anyway if you cannot attend, then contact us,
             and we will look at it.
           </Notice>
         )}

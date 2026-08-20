@@ -7,7 +7,7 @@ import { PageIntro } from '@/components/marketing/PageIntro';
 export const metadata: Metadata = {
   title: 'Meet the doctor',
   description:
-    'Dr James Hartley, MBBS MRCGP — eighteen years in practice, the last six working with patients using peptide therapies. GMC registered.',
+    'Dr James Hartley, MBBS MRCGP, eighteen years in practice, the last six working with patients using peptide therapies. GMC registered.',
 };
 
 export default async function DoctorPage() {

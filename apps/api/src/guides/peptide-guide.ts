@@ -1,8 +1,8 @@
 /**
- * "The honest peptide guide" — the lead magnet.
+ * "The honest peptide guide", the lead magnet.
  *
  * Written from scratch for Peptides MD. It covers the compounds people
- * actually ask about, because a guide that avoids them is not useful — but it
+ * actually ask about, because a guide that avoids them is not useful, but it
  * deliberately publishes no dosing protocols. A GMC-registered doctor's brand
  * printing dose instructions for unlicensed compounds would contradict its own
  * medical disclaimer, and "here is how much to inject" is the one thing a
@@ -41,7 +41,7 @@ export interface GuideSection {
 
 export const GUIDE_TITLE = 'The honest peptide guide';
 export const GUIDE_SUBTITLE =
-  'What the evidence actually shows, what you are really buying, and the questions worth asking — from a doctor with nothing to sell you.';
+  'What the evidence actually shows, what you are really buying, and the questions worth asking, from a doctor with nothing to sell you.';
 
 export const TIER_LABEL: Record<Tier, string> = {
   licensed: 'Licensed medicine',
@@ -55,7 +55,7 @@ export const OPENING: GuideSection[] = [
     body: [
       'Almost everything written about peptides is written by someone selling them. That is not a conspiracy, it is economics: the guides are marketing, the forums are seeded by suppliers, and the influencers have affiliate links.',
       'This one is written for a clinic that sells twenty minutes of a physician’s time and nothing else. No products, no supplier relationships, no affiliate income. That is the only reason it can afford to tell you when the honest answer is to do nothing.',
-      'You will notice one thing missing: doses. Every other guide prints protocols. We do not, and the reason matters — a dose that is right for a 34-year-old man with no other medication may be actively dangerous for someone on a GLP-1, an SSRI, or with undiagnosed thyroid disease. A printed protocol cannot know which you are.',
+      'You will notice one thing missing: doses. Every other guide prints protocols. We do not, and the reason matters, a dose that is right for a 34-year-old man with no other medication may be actively dangerous for someone on a GLP-1, an SSRI, or with undiagnosed thyroid disease. A printed protocol cannot know which you are.',
     ],
     callout: {
       title: 'What you get instead',
@@ -65,7 +65,7 @@ export const OPENING: GuideSection[] = [
   {
     heading: 'What a peptide actually is',
     body: [
-      'A peptide is a short chain of amino acids — the same building blocks as protein, just fewer of them. Your body makes thousands. Insulin is a peptide. So is oxytocin.',
+      'A peptide is a short chain of amino acids, the same building blocks as protein, just fewer of them. Your body makes thousands. Insulin is a peptide. So is oxytocin.',
       'That matters because "peptide" is not a class of drug the way "antibiotic" is. It describes a molecule’s size, not what it does. A peptide can be a licensed medicine, an unlicensed research chemical, or something that does nothing measurable at all.',
       'So "do peptides work?" is roughly as useful a question as "do chemicals work?". The only question worth asking is which specific compound, for what outcome, on what evidence, in people like you.',
     ],
@@ -75,7 +75,7 @@ export const OPENING: GuideSection[] = [
     standfirst: 'Every compound in this guide sits in one of these. Knowing which tells you most of what you need.',
     body: [
       'A licensed medicine has been through clinical trials in humans, has an established dose, a known side-effect profile, and a regulator who can withdraw it. If something goes wrong, there is a system.',
-      'The middle tier has genuine human research behind it, but is not licensed for the use being marketed — the trials may be small, short, or in a population that does not resemble you.',
+      'The middle tier has genuine human research behind it, but is not licensed for the use being marketed, the trials may be small, short, or in a population that does not resemble you.',
       'The experimental tier is where most of the market lives: animal studies, cell studies, or anecdote. Sold as "research chemicals" precisely because that label sidesteps the rules that apply to medicines.',
       'None of this means experimental compounds do nothing. It means nobody has established what they do, at what dose, in whom, or what happens after two years of use.',
     ],
@@ -85,11 +85,11 @@ export const OPENING: GuideSection[] = [
     body: [
       'A vial bought online is not a medicine. It has not been through a pharmacy, carries no marketing authorisation, and nobody independent has verified its contents.',
       'Independent testing of grey-market peptides repeatedly finds three problems: the compound is not what the label says, the quantity is wrong, or the vial carries contaminants from manufacture. Any one of them makes a carefully calculated dose meaningless.',
-      'This is the part people underestimate. You can research a compound properly, conclude the evidence supports it, work out a sensible dose — and then inject something else entirely, because nobody in that supply chain is accountable to anyone.',
+      'This is the part people underestimate. You can research a compound properly, conclude the evidence supports it, work out a sensible dose, and then inject something else entirely, because nobody in that supply chain is accountable to anyone.',
     ],
     callout: {
       title: 'Reading a certificate of analysis',
-      body: 'Ask for one from an independent laboratory, batch-matched to the vial you are being sold, dated, and naming the testing method. A COA for a different batch, or one produced by the seller, tells you nothing. Most suppliers cannot produce a real one — and that answer is itself useful.',
+      body: 'Ask for one from an independent laboratory, batch-matched to the vial you are being sold, dated, and naming the testing method. A COA for a different batch, or one produced by the seller, tells you nothing. Most suppliers cannot produce a real one, and that answer is itself useful.',
     },
   },
   {
@@ -100,10 +100,10 @@ export const OPENING: GuideSection[] = [
       'Injecting brings its own risks that have nothing to do with the compound: technique, sterility, storage temperature, and correct reconstitution. These are boring right up to the point they cause an abscess.',
     ],
     list: [
-      'Subcutaneous injection — most common; requires sterile technique and correct storage.',
-      'Nasal spray — absorption varies widely between people and products.',
-      'Topical — mostly cosmetic claims; systemic absorption is usually minimal.',
-      'Oral — generally destroyed by digestion unless specifically reformulated.',
+      'Subcutaneous injection, most common; requires sterile technique and correct storage.',
+      'Nasal spray, absorption varies widely between people and products.',
+      'Topical, mostly cosmetic claims; systemic absorption is usually minimal.',
+      'Oral, generally destroyed by digestion unless specifically reformulated.',
     ],
   },
   {
@@ -111,12 +111,12 @@ export const OPENING: GuideSection[] = [
     standfirst: 'Rarely where people expect.',
     body: [
       'The risk that gets discussed is side effects. The risks that actually cause harm in clinic are more mundane.',
-      'Interactions come first. If you take anything else — prescribed, over the counter, or another peptide — the combination has almost certainly never been studied. Your GP cannot warn you about something you have not told them about.',
+      'Interactions come first. If you take anything else, prescribed, over the counter, or another peptide, the combination has almost certainly never been studied. Your GP cannot warn you about something you have not told them about.',
       'Masking comes second. Fatigue, poor recovery, low mood and weight change are symptoms, not diagnoses. If something improves them without anyone establishing why they were there, a treatable condition can go unexamined for a year.',
       'And stopping matters. Several compounds act on hormonal axes that adapt to their presence. Coming off abruptly is not always neutral.',
     ],
     list: [
-      'Interactions with what you already take — least studied, most likely to matter.',
+      'Interactions with what you already take, least studied, most likely to matter.',
       'Symptoms improving while the actual cause goes uninvestigated.',
       'Non-sterile injection, wrong reconstitution, or storage at the wrong temperature.',
       'Stopping abruptly after affecting a hormonal axis.',
@@ -169,7 +169,7 @@ export const GROUPS: CompoundGroup[] = [
         name: 'AOD-9604',
         tier: 'experimental',
         claim: 'Fat loss without the other effects of growth hormone.',
-        evidence: 'Human trials exist and were largely disappointing — it did not outperform placebo for weight loss at the doses studied.',
+        evidence: 'Human trials exist and were largely disappointing, it did not outperform placebo for weight loss at the doses studied.',
         ukStatus: 'Not licensed as a medicine.',
         risk: 'The main risk is spending money and delaying something that would work.',
       },
@@ -177,7 +177,7 @@ export const GROUPS: CompoundGroup[] = [
         name: 'Tesamorelin',
         tier: 'licensed',
         claim: 'Reduction of visceral abdominal fat.',
-        evidence: 'Trial evidence in a specific population — HIV-associated lipodystrophy — where it is genuinely effective.',
+        evidence: 'Trial evidence in a specific population. HIV-associated lipodystrophy, where it is genuinely effective.',
         ukStatus: 'Licensed in some territories for that narrow indication; not a general weight-loss agent.',
         risk: 'Evidence outside that population is thin. Raises IGF-1, which carries the usual growth-axis considerations.',
       },
@@ -194,7 +194,7 @@ export const GROUPS: CompoundGroup[] = [
         claim: 'Accelerated healing of tendon, ligament and gut tissue.',
         evidence: 'Extensive and genuinely interesting animal research. Essentially no published controlled human trials.',
         ukStatus: 'Not licensed. Sold as a research chemical. Prohibited in sport by WADA.',
-        risk: 'The most popular peptide with the widest gap between reputation and human evidence. Effects on healing tissue are, by definition, effects on cell growth — an area where long-term data would matter and does not exist.',
+        risk: 'The most popular peptide with the widest gap between reputation and human evidence. Effects on healing tissue are, by definition, effects on cell growth, an area where long-term data would matter and does not exist.',
       },
       {
         name: 'TB-500',
@@ -203,7 +203,7 @@ export const GROUPS: CompoundGroup[] = [
         claim: 'Tissue repair, reduced inflammation, improved flexibility.',
         evidence: 'Animal and cell studies. No controlled human trials of consequence.',
         ukStatus: 'Not licensed. Prohibited in sport.',
-        risk: 'Promotes angiogenesis — new blood vessel growth. That is the mechanism, and it is also why anyone with a cancer history should not be experimenting unsupervised.',
+        risk: 'Promotes angiogenesis, new blood vessel growth. That is the mechanism, and it is also why anyone with a cancer history should not be experimenting unsupervised.',
       },
       {
         name: 'GHK-Cu',
@@ -234,7 +234,7 @@ export const GROUPS: CompoundGroup[] = [
   {
     title: 'Growth hormone secretagogues',
     intro:
-      'These do not supply growth hormone; they prompt your own pituitary to release more. That distinction is often used in marketing to suggest they are inherently safer. It is not that simple — the downstream effect is still raised IGF-1.',
+      'These do not supply growth hormone; they prompt your own pituitary to release more. That distinction is often used in marketing to suggest they are inherently safer. It is not that simple, the downstream effect is still raised IGF-1.',
     compounds: [
       {
         name: 'CJC-1295',
@@ -258,7 +258,7 @@ export const GROUPS: CompoundGroup[] = [
         claim: 'Stimulates natural growth hormone production.',
         evidence: 'Was historically a licensed medicine for paediatric growth hormone deficiency; more clinical history than most of this category.',
         ukStatus: 'Withdrawn from many markets; not generally available as a licensed product.',
-        risk: 'Diagnosing yourself with growth hormone deficiency is the actual risk here — it is a specific clinical condition with specific tests.',
+        risk: 'Diagnosing yourself with growth hormone deficiency is the actual risk here, it is a specific clinical condition with specific tests.',
       },
       {
         name: 'Hexarelin',
@@ -273,7 +273,7 @@ export const GROUPS: CompoundGroup[] = [
   {
     title: 'Cognitive and mood',
     intro:
-      'The category where the gap between marketing and evidence is widest, and where self-treating is least advisable — because the symptoms being targeted are frequently signs of something a doctor should be looking at.',
+      'The category where the gap between marketing and evidence is widest, and where self-treating is least advisable, because the symptoms being targeted are frequently signs of something a doctor should be looking at.',
     compounds: [
       {
         name: 'Semax',
@@ -281,7 +281,7 @@ export const GROUPS: CompoundGroup[] = [
         claim: 'Focus, memory, recovery after stroke.',
         evidence: 'Russian clinical use and literature; very little that meets Western trial standards.',
         ukStatus: 'Not licensed in the UK or EU.',
-        risk: 'Cognitive complaints have many treatable causes — sleep apnoea, thyroid disease, depression, anaemia. Masking them is the real harm.',
+        risk: 'Cognitive complaints have many treatable causes, sleep apnoea, thyroid disease, depression, anaemia. Masking them is the real harm.',
       },
       {
         name: 'Selank',
@@ -329,7 +329,7 @@ export const GROUPS: CompoundGroup[] = [
         claim: 'Improved sleep quality and depth.',
         evidence: 'Old and inconsistent human studies. Results have not been reliably reproduced.',
         ukStatus: 'Not licensed.',
-        risk: 'Persistent poor sleep is a symptom. Sleep apnoea in particular is common, serious and treatable — and frequently missed.',
+        risk: 'Persistent poor sleep is a symptom. Sleep apnoea in particular is common, serious and treatable, and frequently missed.',
       },
       {
         name: 'Epitalon',
@@ -419,7 +419,7 @@ export const GROUPS: CompoundGroup[] = [
 export const CLOSING: GuideSection[] = [
   {
     heading: 'Questions worth answering before you start anything',
-    standfirst: 'If you cannot answer these, you are not ready to take it — whatever it is.',
+    standfirst: 'If you cannot answer these, you are not ready to take it, whatever it is.',
     body: [
       'These are the questions a doctor would work through with you. Working through them alone is better than not working through them at all.',
     ],
@@ -427,7 +427,7 @@ export const CLOSING: GuideSection[] = [
       'What specifically am I trying to change, and how would I know if it worked?',
       'What is the human evidence for this compound, for that outcome, in people like me?',
       'What else am I taking, and has anyone studied the combination?',
-      'Have the ordinary causes been ruled out — bloods, thyroid, iron, B12, sleep, mood?',
+      'Have the ordinary causes been ruled out, bloods, thyroid, iron, B12, sleep, mood?',
       'Can the seller produce a batch-matched certificate of analysis?',
       'Who is monitoring me, and what would make me stop early?',
       'What is the exit plan, and what happens when I stop?',
@@ -437,7 +437,7 @@ export const CLOSING: GuideSection[] = [
     heading: 'The boring answer that usually wins',
     body: [
       'A large share of people who arrive asking about peptides turn out to have something simpler going on. Untreated sleep apnoea. Iron deficiency. Subclinical thyroid disease. Chronic under-recovery from training. Depression presenting as fatigue. Perimenopause.',
-      'None of that is exciting advice. It is, however, what actually resolves the symptom — and it costs a fraction of a year of unlicensed compounds bought from a stranger.',
+      'None of that is exciting advice. It is, however, what actually resolves the symptom, and it costs a fraction of a year of unlicensed compounds bought from a stranger.',
       'A good doctor is not trying to talk you out of peptides. They are trying to make sure you are not treating a fixable problem with something unlicensed, unverified and unmonitored.',
     ],
   },

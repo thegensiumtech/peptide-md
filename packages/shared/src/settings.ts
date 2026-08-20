@@ -8,7 +8,7 @@ export interface ConsultationSettings {
   /** What the consultation covers, shown on the consultation details screen. */
   summary: string;
   inclusions: string[];
-  /** How the consultation is delivered — the joining link is emailed on confirm. */
+  /** How the consultation is delivered, the joining link is emailed on confirm. */
   deliveryNote: string;
 }
 

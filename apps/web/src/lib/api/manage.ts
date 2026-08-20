@@ -33,7 +33,7 @@ export interface CancelOutcome {
 export interface CodeRequestResult {
   sent: true;
   /**
-   * Present only where the API is not delivering email — a local development
+   * Present only where the API is not delivering email, a local development
    * environment on the console provider. Never sent by a production build, so
    * the UI that shows it is dead code in production by construction.
    */
@@ -43,7 +43,7 @@ export interface CodeRequestResult {
 /**
  * Ask for a six-digit code.
  *
- * Succeeds whether or not the address has any appointments — that is the point.
+ * Succeeds whether or not the address has any appointments, that is the point.
  * A response that varied would leak exactly what the code exists to protect.
  */
 export function requestAccessCode(email: string): Promise<ApiResult<CodeRequestResult>> {

@@ -64,7 +64,7 @@ export default async function AdminDashboardPage() {
             value={String(summary.monthVolume.total)}
             detail="Across both channels"
           />
-          <StatTile label="Next appointment" value={upcoming[0] ? formatTime(upcoming[0].startsAt, DOCTOR_TZ) : '—'} detail={upcoming[0] ? formatDate(upcoming[0].startsAt, DOCTOR_TZ) : 'Nothing booked'} />
+          <StatTile label="Next appointment" value={upcoming[0] ? formatTime(upcoming[0].startsAt, DOCTOR_TZ) : ', '} detail={upcoming[0] ? formatDate(upcoming[0].startsAt, DOCTOR_TZ) : 'Nothing booked'} />
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -166,7 +166,7 @@ export default async function AdminDashboardPage() {
               <CardBody>
                 <p className="text-sm leading-relaxed text-muted">
                   Your weekly pattern and any one-off changes are managed on the availability
-                  screen. A change there applies everywhere at once — this website and every
+                  screen. A change there applies everywhere at once, this website and every
                   partner site.
                 </p>
                 <ButtonLink href="/admin/availability" variant="secondary" size="sm" className="mt-5">
@@ -176,7 +176,7 @@ export default async function AdminDashboardPage() {
             </Card>
           )}
 
-          {/* Billable per partner — each tile leads to that partner's draft invoice. */}
+          {/* Billable per partner, each tile leads to that partner's draft invoice. */}
           {can(session, 'invoices.manage') ? (
             <Card>
               <CardHeader

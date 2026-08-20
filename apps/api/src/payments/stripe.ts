@@ -55,7 +55,7 @@ export async function createCheckoutSession(request: CheckoutRequest): Promise<S
     success_url: `${config.WEB_URL}/book/slot?booking=${request.bookingId}&session={CHECKOUT_SESSION_ID}`,
     cancel_url: `${config.WEB_URL}/book/payment?booking=${request.bookingId}&cancelled=1`,
     // Abandoned sessions expire rather than lingering. Nothing was held, so
-    // nothing needs releasing — but it closes the booking out cleanly.
+    // nothing needs releasing, but it closes the booking out cleanly.
     expires_at: Math.floor(Date.now() / 1000) + 60 * 60,
   });
 }

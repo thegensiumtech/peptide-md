@@ -49,7 +49,7 @@ const GROUPS: NavGroup[] = [
 ];
 
 /**
- * Navigation is filtered by permission, but that is presentation only — the
+ * Navigation is filtered by permission, but that is presentation only, the
  * middleware and the screens enforce the same rules. A visible link is never
  * what makes a screen reachable.
  */

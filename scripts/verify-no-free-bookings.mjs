@@ -3,7 +3,7 @@
  *
  * This is the question a public booking link cannot answer safely. If the
  * calendar lives on someone else's domain, the URL is shareable and whoever
- * has it can book. Here the calendar is only a list of free times — taking one
+ * has it can book. Here the calendar is only a list of free times, taking one
  * requires a booking the server has independently confirmed as paid.
  *
  * Every attempt below is what someone would actually try after opening dev
@@ -23,11 +23,11 @@ const results = [];
 
 const blocked = (name, detail = '') => {
   results.push(true);
-  console.log(`  ✓ blocked  ${name}${detail ? ` — ${detail}` : ''}`);
+  console.log(`  ✓ blocked  ${name}${detail ? `, ${detail}` : ''}`);
 };
 const leaked = (name, detail = '') => {
   results.push(false);
-  console.log(`  ✗ LEAKED   ${name}${detail ? ` — ${detail}` : ''}`);
+  console.log(`  ✗ LEAKED   ${name}${detail ? `, ${detail}` : ''}`);
 };
 
 async function api(path, options = {}) {

@@ -1,4 +1,4 @@
-# Peptide MD — System Architecture
+# Peptide MD. System Architecture
 
 Milestone 1 deliverable 1: the database design, the service breakdown, and the
 scheduling and Stripe integration design.
@@ -21,7 +21,7 @@ flowchart TB
     PS[Partner staff]
   end
 
-  subgraph web [Next.js 14 — apps/web]
+  subgraph web [Next.js 14, apps/web]
     MKT[Public site<br/>9 pages]
     BOOK[Booking flow<br/>5 steps]
     ADM[Admin panel]
@@ -29,7 +29,7 @@ flowchart TB
     MAN[Patient self-service<br/>/manage]
   end
 
-  subgraph api [Express — apps/api]
+  subgraph api [Express, apps/api]
     AUTH[Auth<br/>JWT + bcrypt]
     BK[Booking service<br/>availability, hold, confirm]
     SCH[Scheduling port]
@@ -69,8 +69,7 @@ flowchart TB
   BK --> RD
 ```
 
-**Why the API is separate from Next.js.** The partner API is a public product —
-other companies build against it, it is versioned, and it is rate limited per
+**Why the API is separate from Next.js.** The partner API is a public product, other companies build against it, it is versioned, and it is rate limited per
 partner. That is a different lifecycle from the website, so it is a different
 deployable. It also keeps the scheduling and payment logic in one place rather
 than split between route handlers and server actions.
@@ -108,11 +107,11 @@ Eighteen tables. The ones carrying a design decision rather than just data:
 
 | Table | Why it exists in this shape |
 |---|---|
-| `slot_holds` | Unique on `(doctorId, startsAt)`. **This constraint is the shared-calendar guarantee** — when two channels reach for one time, the database lets exactly one insert through. |
+| `slot_holds` | Unique on `(doctorId, startsAt)`. **This constraint is the shared-calendar guarantee**, when two channels reach for one time, the database lets exactly one insert through. |
 | `webhook_events` | Unique on `(source, externalId)`. Stripe retries; this makes handling idempotent and keeps the payload so a failed handler is replayable rather than a lost booking. |
 | `intake_responses` | Rows, not a JSON blob, so the question set can change without rewriting historic answers. |
 | `consent_records` | Stores the **exact wording agreed to**, so consent stays provable after the wording changes. |
-| `invoice_lines` | Unique on `(invoiceId, bookingId)` — a booking is billed once and only once. The rate is copied onto the line, so a later rate change never restates history. |
+| `invoice_lines` | Unique on `(invoiceId, bookingId)`, a booking is billed once and only once. The rate is copied onto the line, so a later rate change never restates history. |
 | `payments` | Append-only event log per booking, not a status column. The sequence is the audit trail. |
 | `email_logs` | Answers "did the patient get their confirmation?" without guessing, and stops a reminder double-sending. |
 
@@ -139,7 +138,7 @@ stateDiagram-v2
 ```
 
 **Payment precedes the calendar.** A booking exists before payment but holds
-nothing. Only a `PAID` booking may hold a slot, enforced in the API — the
+nothing. Only a `PAID` booking may hold a slot, enforced in the API, the
 `/hold` endpoint returns `PAYMENT_REQUIRED` otherwise. So an abandoned or
 declined checkout can never leave a time in limbo.
 
@@ -169,18 +168,18 @@ sequenceDiagram
   A-->>B: calendar unlocked
 ```
 
-Two paths, deliberately. The **webhook is authoritative** — it arrives whether
+Two paths, deliberately. The **webhook is authoritative**, it arrives whether
 or not the patient comes back. The **return path** exists because the patient
 usually beats the webhook, and staring at a spinner after paying is where
 people abandon. It is not trusting the browser: the browser supplies a session
 id and the server asks Stripe what that session's status actually is.
 
-Both are idempotent. Card data never touches Peptide MD — Stripe Checkout is
+Both are idempotent. Card data never touches Peptide MD. Stripe Checkout is
 hosted, so the PCI surface is Stripe's.
 
 ---
 
-## 5. Scheduling — in-house
+## 5. Scheduling, in-house
 
 Everything scheduling goes through one interface, `SchedulingProvider`
 (`apps/api/src/scheduling/provider.ts`): `getAvailability`, `hold`, `confirm`,
@@ -207,8 +206,7 @@ existed and was tested, the calculus changed:
   booking page. Anyone with the link books without paying, and Peptide MD
   takes payment *before* the calendar. Cal.com's own payment app is a paid
   feature and inverts that order.
-- **Licensing.** Self-hosting is AGPL; white-labelling into partner sites —
-  the entire Milestone 2 model — is what the free licence does not cover. The
+- **Licensing.** Self-hosting is AGPL; white-labelling into partner sites, the entire Milestone 2 model, is what the free licence does not cover. The
   scope flagged this itself.
 
 What Cal.com would still have added is two-way sync with the doctor's personal
@@ -226,18 +224,18 @@ he uses.
 
 `/admin/availability` carries two things:
 
-1. **The week** — every slot his pattern produces, labelled booked / free /
+1. **The week**, every slot his pattern produces, labelled booked / free /
    blocked / held. One tap blocks a free slot; one tap frees it again.
-2. **The standing pattern** — weekly windows plus dated overrides, set once.
+2. **The standing pattern**, weekly windows plus dated overrides, set once.
 
 Both read the same grid (`buildSlotGrid`), so the diary and the patient-facing
 calendar cannot disagree about where the slots are.
 
 Two rules enforced in the API, not the UI:
 
-- **A booked slot cannot be blocked** — `409 SLOT_BOOKED`. The patient is
+- **A booked slot cannot be blocked**, `409 SLOT_BOOKED`. The patient is
   already coming; cancel the appointment so they are told.
-- **A doctor can only reach his own diary** — `403` otherwise.
+- **A doctor can only reach his own diary**, `403` otherwise.
 
 Blocking invalidates the availability cache, so the change applies to the
 website and every partner site at the same moment.
@@ -260,7 +258,7 @@ express a question about another partner's data.
 | Role | Reach |
 |---|---|
 | Admin | Everything |
-| Doctor | Own diary, own availability, own public profile. No money, rates, partners or invoices — stripped server-side, not hidden in CSS. |
+| Doctor | Own diary, own availability, own public profile. No money, rates, partners or invoices, stripped server-side, not hidden in CSS. |
 | Partner | Own bookings, totals, invoices, credentials. Never clinical content. |
 | Patient | No account. `/manage` proves inbox control with a six-digit code. |
 
@@ -269,7 +267,7 @@ express a question about another partner's data.
 ## 7. Caching and resilience
 
 Redis carries availability caching (60s), slot-hold fast path, and rate
-limiting. It is **not** the source of truth — Postgres is. If Redis is
+limiting. It is **not** the source of truth. Postgres is. If Redis is
 unavailable the platform still books correctly, with more database work.
 
 Login rate limiting counts **failed attempts only**, keyed per email + IP, so a
@@ -282,14 +280,14 @@ while credential spraying is still throttled.
 
 | Suite | Covers |
 |---|---|
-| `node scripts/e2e.mjs` | 60 — real Stripe Checkout, all four roles, validation, failure paths, six widths, WCAG 2.2 tap targets |
-| `node scripts/verify-api.mjs` | 20 — API contracts, concurrency, webhook signature rejection |
-| `node scripts/verify-scheduling.mjs` | 9 — provider contract; run against any adapter to compare |
-| `node scripts/verify-timezones.mjs` | 5 — both UK clock changes, Sydney across both hemispheres' transitions |
-| `node scripts/verify-no-free-bookings.mjs` | 7 — adversarial: every route to a consultation without paying |
-| `node scripts/verify-diary.mjs` | 8 — diary rendering, one-tap block, booked-slot protection, cross-doctor access |
+| `node scripts/e2e.mjs` | 60, real Stripe Checkout, all four roles, validation, failure paths, six widths, WCAG 2.2 tap targets |
+| `node scripts/verify-api.mjs` | 20. API contracts, concurrency, webhook signature rejection |
+| `node scripts/verify-scheduling.mjs` | 9, provider contract; run against any adapter to compare |
+| `node scripts/verify-timezones.mjs` | 5, both UK clock changes, Sydney across both hemispheres' transitions |
+| `node scripts/verify-no-free-bookings.mjs` | 7, adversarial: every route to a consultation without paying |
+| `node scripts/verify-diary.mjs` | 8, diary rendering, one-tap block, booked-slot protection, cross-doctor access |
 
-Run `pnpm build` only when the web server is stopped — rebuilding under a
+Run `pnpm build` only when the web server is stopped, rebuilding under a
 running `next start` rewrites chunk hashes and every page dies with a
 ChunkLoadError. `scripts/e2e.mjs` detects this and fails fast with that message.
 

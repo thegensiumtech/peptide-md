@@ -20,8 +20,8 @@ const API = 'http://localhost:4000';
 const prisma = new PrismaClient();
 const results = [];
 
-const pass = (n, d = '') => { results.push(true); console.log(`  ✓ ${n}${d ? ` — ${d}` : ''}`); };
-const fail = (n, d = '') => { results.push(false); console.log(`  ✗ ${n}${d ? ` — ${d}` : ''}`); };
+const pass = (n, d = '') => { results.push(true); console.log(`  ✓ ${n}${d ? `, ${d}` : ''}`); };
+const fail = (n, d = '') => { results.push(false); console.log(`  ✗ ${n}${d ? `, ${d}` : ''}`); };
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
@@ -29,7 +29,7 @@ const page = await context.newPage();
 const crashes = [];
 page.on('pageerror', (e) => crashes.push(e.message.slice(0, 120)));
 
-// Signed in as the doctor — this is his screen, and it exercises the RBAC path.
+// Signed in as the doctor, this is his screen, and it exercises the RBAC path.
 await page.goto(`${WEB}/admin/login`, { waitUntil: 'networkidle' });
 await page.fill('#email', 'james@peptidemd.com');
 await page.fill('#password', 'peptide-dev-2026');
@@ -126,7 +126,7 @@ if (blockedTime) {
   });
 
   if (booking) {
-    // Straight at the API, which is where the rule has to hold — the UI not
+    // Straight at the API, which is where the rule has to hold, the UI not
     // offering the button is presentation, not protection.
     const token = await context.cookies().then((cs) => cs.find((c) => c.name === 'pmd_access')?.value);
     const response = await fetch(`${API}/api/admin/doctor/${booking.doctorId}/slots/toggle`, {

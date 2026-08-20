@@ -120,7 +120,7 @@ export default async function PartnerBookingsPage() {
                   <Td align="right">
                     <span className="font-mono text-sm text-ink">
                       {booking.status === 'cancelled'
-                        ? '—'
+                        ? ', '
                         : formatMoney(partner.ratePerAppointment, partner.currency)}
                     </span>
                   </Td>

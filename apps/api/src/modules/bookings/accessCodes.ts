@@ -29,8 +29,7 @@ const ATTEMPT_LIMIT = 5;
 const RESEND_COOLDOWN_SECONDS = 60;
 
 /**
- * How long the screens stay open after a code is accepted. Deliberately short —
- * these screens show clinical appointments and are often opened on a phone that
+ * How long the screens stay open after a code is accepted. Deliberately short, * these screens show clinical appointments and are often opened on a phone that
  * is then put down.
  */
 const SESSION_TTL_MINUTES = 30;
@@ -41,8 +40,8 @@ const ISSUER = 'peptide-md';
  * Whether the code may be handed back to the browser instead of only emailed.
  *
  * Two locks, both of which must be open. A production build never qualifies,
- * and neither does any environment wired to a provider that genuinely delivers
- * — so this can only be true where the email goes nowhere and the code would
+ * and neither does any environment wired to a provider that genuinely delivers,
+ * so this can only be true where the email goes nowhere and the code would
  * otherwise have to be dug out of the server log.
  *
  * Read once at boot rather than per request, so no runtime value can flip it.
@@ -70,7 +69,7 @@ function hashesMatch(a: string, b: string): boolean {
   return timingSafeEqual(left, right);
 }
 
-/** Uniform across all million values — Math.random is not, and this is a credential. */
+/** Uniform across all million values. Math.random is not, and this is a credential. */
 const generateCode = () => String(randomInt(0, 1_000_000)).padStart(6, '0');
 
 // --- Issuing -----------------------------------------------------------------
@@ -78,7 +77,7 @@ const generateCode = () => String(randomInt(0, 1_000_000)).padStart(6, '0');
 /**
  * Email a fresh code, if the address has anything to show.
  *
- * Returns the code only so the caller can decide whether to expose it — see
+ * Returns the code only so the caller can decide whether to expose it, see
  * CODES_ARE_EXPOSED. Whether one was issued says nothing to the outside world:
  * the endpoint reports the same thing either way, so asking for a code cannot
  * be used to discover who is a patient, which is the whole reason this step
@@ -104,20 +103,20 @@ export async function requestAccessCode(
     });
 
     if (recent) {
-      logger.info('Access code requested inside the cooldown — not resending');
+      logger.info('Access code requested inside the cooldown, not resending');
       return null;
     }
   }
 
   // Never email an address that has nothing here. A stranger typed into the
-  // form must not receive anything at all — and must not be shown a code
+  // form must not receive anything at all, and must not be shown a code
   // either, so this check runs before any code exists.
   const bookings = await prisma.booking.count({
     where: { patient: { email }, status: { not: 'PENDING_PAYMENT' } },
   });
 
   if (bookings === 0) {
-    logger.info('Access code requested for an address with no bookings — nothing sent');
+    logger.info('Access code requested for an address with no bookings, nothing sent');
     return null;
   }
 
@@ -242,7 +241,7 @@ export function requireManageSession(req: Request, _res: Response, next: NextFun
     req.manageEmail = payload.sub.toLowerCase();
     return next();
   } catch {
-    // A staff token must not open a patient's screens, and vice versa — the
+    // A staff token must not open a patient's screens, and vice versa, the
     // scope check above is what keeps the two apart.
     return next(unauthorized('Your session has expired. Confirm your email again.'));
   }

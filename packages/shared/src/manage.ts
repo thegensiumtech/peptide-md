@@ -1,7 +1,7 @@
 /**
  * Self-service appointment management.
  *
- * Patients have no login — the scope excludes patient accounts — so a booking
+ * Patients have no login, the scope excludes patient accounts, so a booking
  * is reached by the two things the patient already holds: the reference from
  * their confirmation email, and the email address they booked with. Listing
  * runs off the email alone; anything that changes the diary requires both.
@@ -37,7 +37,7 @@ export interface BookingPermissions {
   canCancel: boolean;
   /** True when cancelling now returns the money automatically. */
   refundOnCancel: boolean;
-  /** Set when the action is unavailable — ready to show, not a code. */
+  /** Set when the action is unavailable, ready to show, not a code. */
   rescheduleBlockedReason: string | null;
   cancelBlockedReason: string | null;
 }
@@ -60,7 +60,7 @@ export interface ManagedBooking extends ManagedBookingSummary {
   patientEmail: string;
   patientPhone: string;
   joiningUrl: string | null;
-  /** Minor units. Null on partner bookings — the partner took the payment. */
+  /** Minor units. Null on partner bookings, the partner took the payment. */
   amountPaid: number | null;
   currency: string;
   durationMinutes: number;

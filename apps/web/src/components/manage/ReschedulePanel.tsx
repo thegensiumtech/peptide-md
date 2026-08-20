@@ -12,7 +12,7 @@ import { DateLine, Notice } from './ManagePrimitives';
 
 /**
  * Time zones offered explicitly. The zone the patient booked in is preselected,
- * but it stays changeable — someone who has since moved should not have to do
+ * but it stays changeable, someone who has since moved should not have to do
  * the arithmetic to recognise their own appointment.
  */
 const BASE_ZONES = [

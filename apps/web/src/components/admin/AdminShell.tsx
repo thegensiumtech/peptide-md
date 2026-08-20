@@ -19,7 +19,7 @@ export interface Crumb {
 
 /**
  * Frame for every admin screen: persistent navigation, the signed-in identity
- * and its role, and breadcrumbs. Breadcrumbs are not decoration here — they
+ * and its role, and breadcrumbs. Breadcrumbs are not decoration here, they
  * are the guaranteed way back out of a detail screen without browser history.
  */
 export function AdminShell({
@@ -43,7 +43,7 @@ export function AdminShell({
 
       <aside className="hidden border-r border-line bg-paper-deep lg:flex lg:h-screen lg:flex-col lg:sticky lg:top-0">
         <div className="border-b border-line px-5 py-4">
-          <Link href="/admin" aria-label="Peptides MD admin — dashboard">
+          <Link href="/admin" aria-label="Peptides MD admin, dashboard">
             <Wordmark />
           </Link>
           <p className="mt-1.5 font-mono text-eyebrow uppercase tracking-[0.16em] text-muted">

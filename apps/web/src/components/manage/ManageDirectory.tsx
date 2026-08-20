@@ -33,7 +33,7 @@ export function ManageDirectory() {
     setLoading(false);
 
     if (!response.success) {
-      // A dead token is not an error to read — it sends the patient back to the
+      // A dead token is not an error to read, it sends the patient back to the
       // gate, which explains itself.
       if (response.code === 'SESSION_EXPIRED') return close('expired');
       setError(response.error);
@@ -44,7 +44,7 @@ export function ManageDirectory() {
   }, [session.token, close]);
 
   // Re-read the diary on every visit rather than showing whatever was here last
-  // time — appointments move.
+  // time, appointments move.
   useEffect(() => {
     void load();
   }, [load]);
@@ -88,7 +88,7 @@ function Results({ result }: { result: ManageLookupResult }) {
       <div className="mt-6 rounded-lg border border-line bg-surface">
         <EmptyState
           title="No appointments under that address"
-          description="Nothing is booked with this email. If you booked with a different address, try that one — otherwise the consultation may never have been paid for."
+          description="Nothing is booked with this email. If you booked with a different address, try that one, otherwise the consultation may never have been paid for."
           action={
             <div className="flex flex-wrap justify-center gap-3">
               <ButtonLink href="/book" size="md">
@@ -165,7 +165,7 @@ function Section({
 }
 
 /**
- * One appointment as a ledger line. The whole row is the target — a link that
+ * One appointment as a ledger line. The whole row is the target, a link that
  * only works on a small chevron is a link most people miss on a phone.
  */
 function BookingRow({

@@ -26,8 +26,8 @@ type Errors = Partial<Record<FieldName, string>>;
  * Intake.
  *
  * The five questions the doctor reads before joining. Consent is captured
- * explicitly and separately — one box for the clinical record, one for the
- * terms — rather than bundled into a single catch-all tick.
+ * explicitly and separately, one box for the clinical record, one for the
+ * terms, rather than bundled into a single catch-all tick.
  */
 export function IntakeForm() {
   const { state, update } = useBooking();
@@ -53,7 +53,7 @@ export function IntakeForm() {
     if (!read('phone')) next.phone = 'Used only if we cannot reach you by email on the day.';
 
     if (read('concern').length < 10) {
-      next.concern = 'A sentence or two is enough — it is what the doctor reads first.';
+      next.concern = 'A sentence or two is enough, it is what the doctor reads first.';
     }
     if (!read('compounds')) {
       next.compounds = 'Write “none” if you are not taking anything. Leaving it blank is not the same.';
@@ -76,7 +76,7 @@ export function IntakeForm() {
     }
 
     if (!state.bookingId || !state.holdToken) {
-      setSubmitError('Your held time has expired. Choose another — you will not be charged again.');
+      setSubmitError('Your held time has expired. Choose another, you will not be charged again.');
       return;
     }
 
@@ -207,7 +207,7 @@ export function IntakeForm() {
               htmlFor="history"
               required
               error={errors.history}
-              hint="Conditions, prescriptions, allergies — anything that could change what is safe for you."
+              hint="Conditions, prescriptions, allergies, anything that could change what is safe for you."
             >
               <Textarea
                 id="history"
@@ -260,7 +260,7 @@ export function IntakeForm() {
             >
               <p className="text-sm font-semibold text-danger">We could not confirm your booking.</p>
               <p className="mt-1.5 text-micro leading-relaxed text-ink">
-                {submitError} You have already paid — do not pay again.
+                {submitError} You have already paid, do not pay again.
               </p>
               {!state.holdToken ? (
                 <Link
@@ -302,8 +302,7 @@ export function IntakeForm() {
             </>
           ) : null}
 
-          {/* Changing the time is an explicit action, not browser-back —
-              re-picking has to release the slot currently held. */}
+          {/* Changing the time is an explicit action, not browser-back, re-picking has to release the slot currently held. */}
           <Link
             href="/book/slot"
             className="mt-6 inline-block text-micro text-muted underline decoration-line underline-offset-4 transition-colors hover:text-ink"

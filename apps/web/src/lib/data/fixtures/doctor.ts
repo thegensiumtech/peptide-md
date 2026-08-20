@@ -9,7 +9,7 @@ export const doctorProfile: DoctorProfile = {
   headline: 'A doctor who will tell you when the answer is no.',
   bio: [
     'James Hartley has practised for eighteen years, the last six of them working almost entirely with patients who are using, or thinking about using, peptide therapies.',
-    'He came to it the way most people do — patients arriving with a protocol they had found online, a box of vials, and nobody willing to talk to them about it. Most had been sold something. Almost none had been examined.',
+    'He came to it the way most people do, patients arriving with a protocol they had found online, a box of vials, and nobody willing to talk to them about it. Most had been sold something. Almost none had been examined.',
     'The consultation is twenty minutes and it is deliberately plain. He will ask what you are taking, what you are trying to fix, and what your history is. Then he will tell you what he thinks, including when he thinks the honest answer is that you should not be taking anything at all.',
     'He has no products to sell and no affiliation with any supplier. That is the point of the service.',
   ].join('\n\n'),
@@ -71,7 +71,7 @@ export const availability: Availability = {
       kind: 'blocked',
       startTime: '09:00',
       endTime: '12:00',
-      note: 'Clinic commitment — morning only',
+      note: 'Clinic commitment, morning only',
     },
   ],
 };

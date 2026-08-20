@@ -6,9 +6,9 @@
  * attribution or invoicing work. This interface is that layer.
  *
  * Two adapters implement it:
- *  - `internal` — Postgres-backed, used until the Cal.com account exists, and
+ *  - `internal`. Postgres-backed, used until the Cal.com account exists, and
  *    the fallback if Cal.com is ever unavailable.
- *  - `calcom`   — the Cal.com Platform API.
+ *  - `calcom`, the Cal.com Platform API.
  *
  * Nothing above this interface knows which is in use.
  */
@@ -61,7 +61,7 @@ export interface SchedulingProvider {
   getAvailability(query: AvailabilityQuery): Promise<TimeSlot[]>;
 
   /**
-   * Hold a slot for one channel. Must be atomic across every channel — when
+   * Hold a slot for one channel. Must be atomic across every channel, when
    * two people reach for the same time, exactly one hold succeeds.
    * Returns null when the slot has just gone.
    */

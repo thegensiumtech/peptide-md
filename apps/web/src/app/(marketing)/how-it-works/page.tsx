@@ -24,7 +24,7 @@ export default async function HowItWorksPage() {
     },
     {
       title: 'You choose a time',
-      body: 'The calendar shows the doctor’s real availability, in your own time zone. Nothing is converted in your head — a patient in Sydney sees Sydney times.',
+      body: 'The calendar shows the doctor’s real availability, in your own time zone. Nothing is converted in your head, a patient in Sydney sees Sydney times.',
       detail: 'The moment you select a time it is locked to you, so nobody on any other site can take it while you finish.',
     },
     {
@@ -34,7 +34,7 @@ export default async function HowItWorksPage() {
     },
     {
       title: 'You talk',
-      body: `${consultation.durationMinutes} minutes over video. He will ask questions, look at what you are doing, and tell you what he thinks — including when he thinks you should stop.`,
+      body: `${consultation.durationMinutes} minutes over video. He will ask questions, look at what you are doing, and tell you what he thinks, including when he thinks you should stop.`,
       detail: 'A written summary follows by email within 24 hours.',
     },
   ];
@@ -95,7 +95,7 @@ export default async function HowItWorksPage() {
             </p>
             <p className="text-ink">
               It is the same reason a slot you select is held for you straight away rather than at
-              the end — so the time you picked is still there when you finish.
+              the end, so the time you picked is still there when you finish.
             </p>
           </div>
         </div>

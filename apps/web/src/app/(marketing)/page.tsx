@@ -101,15 +101,15 @@ export default async function HomePage() {
           <div className="max-w-prose space-y-6 text-lead text-ink-soft">
             <p>
               They arrive with a protocol found on a forum, a box of vials from a supplier, and
-              nobody willing to look at it with them. The supplier will not — they are not a
-              clinician. The GP often will not — it is outside what they see.
+              nobody willing to look at it with them. The supplier will not, they are not a
+              clinician. The GP often will not, it is outside what they see.
             </p>
             <p>
               That gap is where people get hurt: interactions nobody checked, doses nobody
               questioned, and symptoms nobody connected to what was being injected.
             </p>
             <p className="text-ink">
-              Peptides MD is one thing only — a consultation with a doctor who knows this area and
+              Peptides MD is one thing only, a consultation with a doctor who knows this area and
               has no financial interest in what you decide.
             </p>
           </div>
@@ -246,7 +246,7 @@ export default async function HomePage() {
               </h2>
               <p className="mt-4 max-w-lg text-lead leading-relaxed text-muted">
                 Almost everything written about peptides is written by someone selling them. This is
-                not — including the parts that say you probably should not take anything.
+                not, including the parts that say you probably should not take anything.
               </p>
             </div>
             <div>

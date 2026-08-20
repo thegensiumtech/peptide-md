@@ -111,7 +111,7 @@ const manageUrl = (context: BookingEmailContext) =>
   `${context.webUrl}/manage/${encodeURIComponent(context.reference)}`;
 
 const manageLine = (context: BookingEmailContext) =>
-  `<p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:#6B7A76;">Need to move or cancel? <a href="${manageUrl(context)}" style="color:#B87503;">Manage your appointment</a> — rescheduling is free, and cancelling with more than 24 hours' notice is refunded in full.</p>`;
+  `<p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:#6B7A76;">Need to move or cancel? <a href="${manageUrl(context)}" style="color:#B87503;">Manage your appointment</a>, rescheduling is free, and cancelling with more than 24 hours' notice is refunded in full.</p>`;
 
 export function patientConfirmation(context: BookingEmailContext): OutgoingEmail {
   const when = formatIn(context.startsAt, context.patientTimezone);
@@ -131,7 +131,7 @@ export function patientConfirmation(context: BookingEmailContext): OutgoingEmail
 
   return {
     to: context.patientEmail,
-    subject: `Your consultation is confirmed — ${when}`,
+    subject: `Your consultation is confirmed, ${when}`,
     text: `Your consultation with ${context.doctorName} is confirmed.\n\nWhen: ${when}\nReference: ${context.reference}\n${context.joiningUrl ? `Join: ${context.joiningUrl}\n` : ''}\nA calendar invite is attached.\n\nMove or cancel: ${manageUrl(context)}`,
     html: shell(
       'You are in the diary.',
@@ -149,7 +149,7 @@ export function doctorNotification(context: BookingEmailContext, doctorEmail: st
 
   return {
     to: doctorEmail,
-    subject: `New booking — ${when}`,
+    subject: `New booking, ${when}`,
     text: `New consultation booked.\n\nPatient: ${context.patientName}\nWhen (your time): ${when}\nPatient's local time: ${patientLocal}\nReference: ${context.reference}`,
     html: shell(
       'New consultation booked.',
@@ -175,7 +175,7 @@ export function appointmentReminder(context: BookingEmailContext): OutgoingEmail
 
   return {
     to: context.patientEmail,
-    subject: `Reminder — your consultation is ${when}`,
+    subject: `Reminder, your consultation is ${when}`,
     text: `A reminder that your consultation with ${context.doctorName} is ${when}.\n\nReference: ${context.reference}\n${context.joiningUrl ? `Join: ${context.joiningUrl}\n` : ''}\nMove or cancel: ${manageUrl(context)}`,
     html: shell(
       'Your consultation is tomorrow.',
@@ -239,7 +239,7 @@ export function rescheduleNotice(context: BookingEmailContext, previous: Date): 
           ['Now', nowWhen],
           ['Reference', context.reference],
         ]),
-        p('An updated calendar invite is attached — accepting it will replace the old entry.'),
+        p('An updated calendar invite is attached, accepting it will replace the old entry.'),
       ].join(''),
       'Reply to this email if the new time does not work.'
     ),
@@ -251,7 +251,7 @@ export function rescheduleNotice(context: BookingEmailContext, previous: Date): 
 /**
  * The six-digit code that opens the self-service screens.
  *
- * Carries no appointment detail at all — not a date, not a doctor, not a
+ * Carries no appointment detail at all, not a date, not a doctor, not a
  * reference. If it reaches the wrong inbox it must give away nothing, and a
  * code sitting in a lock-screen preview should say only that a code arrived.
  */
@@ -274,7 +274,7 @@ export function accessCodeNotice(input: {
   return {
     to: input.to,
     subject: `${spaced} is your Peptides MD code`,
-    text: `Your Peptides MD code is ${input.code}.\n\nIt works once, and expires in ${input.minutes} minutes.\n\nIf you did not ask for this, ignore it — nothing has changed.`,
+    text: `Your Peptides MD code is ${input.code}.\n\nIt works once, and expires in ${input.minutes} minutes.\n\nIf you did not ask for this, ignore it, nothing has changed.`,
     html: shell(
       'Your access code',
       body,
@@ -319,11 +319,11 @@ export function guideDelivery(name: string, to: string, downloadUrl: string): Ou
   return {
     to,
     subject: 'Your peptide guide',
-    text: `Hi ${first},\n\nHere is the guide: ${downloadUrl}\n\nIt is written by a doctor who has no products to sell — including the parts that say you probably should not take anything.\n\nIf you want that conversation properly, a consultation is twenty minutes and ninety-five pounds.\n\nPeptides MD`,
+    text: `Hi ${first},\n\nHere is the guide: ${downloadUrl}\n\nIt is written by a doctor who has no products to sell, including the parts that say you probably should not take anything.\n\nIf you want that conversation properly, a consultation is twenty minutes and ninety-five pounds.\n\nPeptides MD`,
     html: shell(
       `Here is your guide, ${first}.`,
       [
-        p('It is written by a doctor with no products, no suppliers and no affiliate income — including the parts that say you probably should not take anything at all.'),
+        p('It is written by a doctor with no products, no suppliers and no affiliate income, including the parts that say you probably should not take anything at all.'),
         button(downloadUrl, 'Download the guide'),
         p('If you would rather ask about your own situation, a consultation is twenty minutes with a GMC-registered doctor.'),
       ].join(''),

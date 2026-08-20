@@ -3,7 +3,7 @@
  *
  * Money is stored in minor units everywhere, so every display of a price goes
  * through formatMoney rather than dividing by 100 inline. Times are stored in
- * UTC and always rendered into an explicit timezone — a patient in Sydney
+ * UTC and always rendered into an explicit timezone, a patient in Sydney
  * should never have to work out what a London time means for them.
  */
 

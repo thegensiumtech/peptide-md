@@ -26,7 +26,7 @@ import {
  *
  * Patients have no account, so access rests on proving control of the inbox the
  * booking was made from: a six-digit code is emailed, and accepting it opens a
- * short session. An email address on its own opens nothing — it is not a
+ * short session. An email address on its own opens nothing, it is not a
  * secret, and appointment times are clinical information.
  *
  * Everything is POST, including the reads. An email address in a query string
@@ -179,7 +179,7 @@ function summarise(booking: BookingWithRelations, now: Date): ManagedBookingSumm
 
   return {
     reference: booking.reference,
-    // Prisma's enums are upper case and the shared contract's are lower — the
+    // Prisma's enums are upper case and the shared contract's are lower, the
     // same mapping the admin API does, kept in the serialiser rather than the UI.
     status: booking.status.toLowerCase() as ManagedBookingSummary['status'],
     paymentStatus: booking.paymentStatus.toLowerCase() as ManagedBookingSummary['paymentStatus'],
@@ -272,7 +272,7 @@ const availabilityInput = referenceInput.extend({
 
 /**
  * Free times for a reschedule, from this booking's own doctor rather than
- * whoever happens to be the active one — the patient must land back with the
+ * whoever happens to be the active one, the patient must land back with the
  * doctor they were booked with.
  */
 manageBookingRouter.post(
@@ -295,7 +295,7 @@ manageBookingRouter.post(
     });
 
     // Grouped by the doctor's calendar day; the browser renders them in the
-    // patient's own zone. Deliberately uncached — a patient choosing a
+    // patient's own zone. Deliberately uncached, a patient choosing a
     // replacement time needs the diary as it is this second.
     const byDay = new Map<string, Array<{ startsAt: string; endsAt: string }>>();
     for (const slot of slots) {
@@ -358,7 +358,7 @@ manageBookingRouter.post(
     const provider = schedulingProvider();
 
     // The slot must be one the doctor actually offers, not merely one nobody
-    // has taken — otherwise a crafted request could book outside surgery hours.
+    // has taken, otherwise a crafted request could book outside surgery hours.
     const offered = await provider.getAvailability({
       doctorId: booking.doctorId,
       from: new Date(startsAt.getTime() - 60_000),
@@ -411,8 +411,8 @@ const cancelInput = referenceInput.extend({
 /**
  * Cancel an appointment.
  *
- * The slot returns to the diary as part of this — a cancelled booking no longer
- * counts as taken, and any hold against it is deleted — so the time is bookable
+ * The slot returns to the diary as part of this, a cancelled booking no longer
+ * counts as taken, and any hold against it is deleted, so the time is bookable
  * by the next patient immediately.
  */
 manageBookingRouter.post(
@@ -446,9 +446,9 @@ manageBookingRouter.post(
     return ok(res, {
       booking: detail(cancelled, settings.consultationDuration, new Date()),
       // What actually happened, and what was owed. They differ when a refund is
-      // due but Stripe declined it — the patient is told a person will finish it
+      // due but Stripe declined it, the patient is told a person will finish it
       // rather than being told their money is already on its way.
-      // The money has not moved yet — an admin still has to approve it.
+      // The money has not moved yet, an admin still has to approve it.
       refundRequested,
       refundDue: verdict.refundOnCancel,
     });

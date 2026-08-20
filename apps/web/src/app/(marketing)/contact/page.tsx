@@ -44,7 +44,7 @@ export default function ContactPage() {
                 <div>
                   <dt className="text-micro text-muted">Existing appointment</dt>
                   <dd className="mt-1 text-sm leading-relaxed text-ink-soft">
-                    Reply directly to your confirmation email — it reaches the right place fastest
+                    Reply directly to your confirmation email, it reaches the right place fastest
                     and already carries your booking reference.
                   </dd>
                 </div>

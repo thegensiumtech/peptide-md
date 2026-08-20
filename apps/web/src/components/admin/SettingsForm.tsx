@@ -134,7 +134,7 @@ export function SettingsForm({ settings }: { settings: PlatformSettings }) {
             </Field>
             <p className="rounded border border-line bg-paper-deep px-4 py-3 text-micro leading-relaxed text-muted">
               Changing the default rate does not restate existing partners or any invoice already
-              raised — rates are captured on each invoice at the moment it is generated.
+              raised, rates are captured on each invoice at the moment it is generated.
             </p>
           </CardBody>
         </Card>

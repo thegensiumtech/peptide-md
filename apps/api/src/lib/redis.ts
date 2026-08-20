@@ -24,7 +24,7 @@ redis.on('ready', () => {
 });
 
 redis.on('error', (error) => {
-  if (available) logger.warn({ err: error.message }, 'Redis unavailable — falling back to Postgres');
+  if (available) logger.warn({ err: error.message }, 'Redis unavailable, falling back to Postgres');
   available = false;
 });
 
@@ -36,7 +36,7 @@ export async function connectRedis(): Promise<void> {
   } catch (error) {
     logger.warn(
       { err: error instanceof Error ? error.message : error },
-      'Redis unreachable at boot — continuing without the cache layer'
+      'Redis unreachable at boot, continuing without the cache layer'
     );
   }
 }
@@ -66,6 +66,6 @@ export async function cacheDelete(pattern: string): Promise<void> {
     const keys = await redis.keys(pattern);
     if (keys.length > 0) await redis.del(...keys);
   } catch {
-    // Nothing to do — the entry will expire on its own.
+    // Nothing to do, the entry will expire on its own.
   }
 }

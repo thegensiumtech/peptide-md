@@ -22,7 +22,7 @@ import { apiFetch, query } from './server';
 // The API returns lowercase enum strings already, matching the shared types.
 type ApiBooking = Booking & {
   partnerName: string | null;
-  /** A refund is a separate decision from the cancellation — see the API. */
+  /** A refund is a separate decision from the cancellation, see the API. */
   refundStatus: 'none' | 'pending' | 'approved' | 'declined' | 'failed';
   refundAmount: number | null;
   refundDeclineReason: string | null;

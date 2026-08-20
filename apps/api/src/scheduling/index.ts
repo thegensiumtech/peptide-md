@@ -12,7 +12,7 @@ let instance: SchedulingProvider | null = null;
  * Chooses the adapter once, at boot.
  *
  * Selecting `calcom` without credentials falls back to the internal provider
- * rather than failing every booking — a misconfiguration should degrade, not
+ * rather than failing every booking, a misconfiguration should degrade, not
  * take the diary offline.
  */
 export function schedulingProvider(): SchedulingProvider {
@@ -24,7 +24,7 @@ export function schedulingProvider(): SchedulingProvider {
       instance = new CalComSchedulingProvider();
       return instance;
     }
-    logger.warn('SCHEDULING_PROVIDER=calcom but credentials are empty — using internal provider');
+    logger.warn('SCHEDULING_PROVIDER=calcom but credentials are empty, using internal provider');
   }
 
   logger.info('Scheduling provider: internal');

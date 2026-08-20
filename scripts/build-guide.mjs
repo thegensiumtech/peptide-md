@@ -147,7 +147,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8">
   </ol>
   <div class="callout" style="margin-top:8mm">
     <div class="t">A note on what is not here</div>
-    <p>No doses, and no protocols. A dose that suits one person can be actively unsafe for another taking a GLP-1, an antidepressant, or with undiagnosed thyroid disease — and a printed guide cannot know which you are. Each compound instead gets what the evidence supports, its UK legal status, and the specific risk worth knowing.</p>
+    <p>No doses, and no protocols. A dose that suits one person can be actively unsafe for another taking a GLP-1, an antidepressant, or with undiagnosed thyroid disease, and a printed guide cannot know which you are. Each compound instead gets what the evidence supports, its UK legal status, and the specific risk worth knowing.</p>
   </div>
 </div>
 
@@ -186,7 +186,7 @@ await page.pdf({
   displayHeaderFooter: true,
   headerTemplate: '<div></div>',
   footerTemplate:
-    '<div style="width:100%;font-family:monospace;font-size:7pt;color:#697D92;padding:0 22mm;display:flex;justify-content:space-between;"><span>Peptides MD — general information, not medical advice. No compound is supplied or prescribed.</span><span class="pageNumber"></span></div>',
+    '<div style="width:100%;font-family:monospace;font-size:7pt;color:#697D92;padding:0 22mm;display:flex;justify-content:space-between;"><span>Peptides MD, general information, not medical advice. No compound is supplied or prescribed.</span><span class="pageNumber"></span></div>',
 });
 await browser.close();
 console.log(`  written: ${total} compounds across ${GROUPS.length} categories`);

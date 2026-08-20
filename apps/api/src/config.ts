@@ -61,7 +61,7 @@ export function assertProductionReadiness(warn: (message: string) => void): void
   const problems: string[] = [];
 
   if (config.STRIPE_WEBHOOK_SECRET === 'whsec_REPLACE_ME') {
-    problems.push('STRIPE_WEBHOOK_SECRET is still the placeholder — webhooks cannot be verified');
+    problems.push('STRIPE_WEBHOOK_SECRET is still the placeholder, webhooks cannot be verified');
   }
   if (config.SCHEDULING_PROVIDER === 'calcom' && !config.CALCOM_CLIENT_ID) {
     problems.push('SCHEDULING_PROVIDER is calcom but CALCOM_CLIENT_ID is empty');

@@ -3,7 +3,7 @@
  *
  * Every screen reads "now" from here rather than calling Date.now(). With
  * static fixtures that keeps server and client rendering identical (no
- * hydration mismatch) and keeps the demo stable — "upcoming" always means the
+ * hydration mismatch) and keeps the demo stable, "upcoming" always means the
  * same set of appointments. Replacing the fixtures with live endpoints means
  * deleting this and using the real clock.
  */

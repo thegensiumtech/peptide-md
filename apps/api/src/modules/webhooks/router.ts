@@ -51,7 +51,7 @@ webhookRouter.post('/stripe', raw({ type: 'application/json' }), async (req, res
   });
 
   if (record.processedAt) {
-    logger.debug({ eventId: event.id, type: event.type }, 'Webhook already processed — ignoring');
+    logger.debug({ eventId: event.id, type: event.type }, 'Webhook already processed, ignoring');
     return res.json({ received: true, duplicate: true });
   }
 
@@ -80,7 +80,7 @@ async function handleEvent(event: Stripe.Event): Promise<void> {
         return;
       }
 
-      // Payment is confirmed, but the patient has not chosen a time yet — this
+      // Payment is confirmed, but the patient has not chosen a time yet, this
       // flow takes the money first. Marking PAID is what unlocks the calendar.
       await prisma.booking.update({
         where: { id: bookingId },
@@ -95,7 +95,7 @@ async function handleEvent(event: Stripe.Event): Promise<void> {
         currency: (session.currency ?? 'gbp').toUpperCase(),
       });
 
-      logger.info({ bookingId }, 'Payment confirmed — calendar unlocked');
+      logger.info({ bookingId }, 'Payment confirmed, calendar unlocked');
       return;
     }
 

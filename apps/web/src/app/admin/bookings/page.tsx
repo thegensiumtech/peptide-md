@@ -145,7 +145,7 @@ export default async function BookingsPage({ searchParams }: { searchParams: Sea
                     <Td align="right">
                       <span className="font-mono text-sm text-ink">
                         {booking.amountPaid === null
-                          ? '—'
+                          ? ', '
                           : formatMoney(booking.amountPaid, booking.currency)}
                       </span>
                     </Td>
@@ -159,7 +159,7 @@ export default async function BookingsPage({ searchParams }: { searchParams: Sea
 
       {!isDoctor ? (
         <p className="mt-4 max-w-2xl text-micro leading-relaxed text-muted">
-          A dash in the paid column means the appointment came through a partner — the patient paid
+          A dash in the paid column means the appointment came through a partner, the patient paid
           that partner directly, and the appointment is billed to them at month end instead.
         </p>
       ) : null}

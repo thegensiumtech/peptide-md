@@ -2,7 +2,7 @@
  * End-to-end verification.
  *
  * Builds nothing and assumes `pnpm build` has run. Starts its own server on its
- * own port and shuts it down afterwards — that isolation is deliberate: serving
+ * own port and shuts it down afterwards, that isolation is deliberate: serving
  * a freshly rebuilt .next from an already-running server makes the HTML
  * reference the previous build's chunk hashes, which surfaces in the browser as
  * "Application error: a client-side exception has occurred".
@@ -252,7 +252,7 @@ stopServer();
 // --- Report ------------------------------------------------------------------
 
 for (const r of results) {
-  console.log(`${r.ok ? 'PASS ' : 'FAIL '} ${r.name}${r.detail ? ` — ${r.detail}` : ''}`);
+  console.log(`${r.ok ? 'PASS ' : 'FAIL '} ${r.name}${r.detail ? `, ${r.detail}` : ''}`);
 }
 const failed = results.filter((r) => !r.ok).length;
 console.log(`\n${results.length - failed} passed, ${failed} failed`);

@@ -12,7 +12,7 @@ export interface LegalSection {
  *
  * The scope puts final wording with Ross's legal advisor, so the copy here is
  * a working draft. The banner is deliberately visible rather than a code
- * comment — it should be impossible to ship these unreviewed by accident.
+ * comment, it should be impossible to ship these unreviewed by accident.
  */
 export function LegalDocument({
   eyebrow,
@@ -33,7 +33,7 @@ export function LegalDocument({
 
       <section className="shell mt-12">
         <p className="rounded border border-accent/30 bg-accent-tint px-5 py-4 text-micro leading-relaxed text-ink">
-          <span className="font-semibold">Draft — awaiting legal review.</span> This wording is a
+          <span className="font-semibold">Draft, awaiting legal review.</span> This wording is a
           working draft prepared to complete the page. It must be reviewed and approved by Peptide
           MD’s legal advisor before launch.
         </p>

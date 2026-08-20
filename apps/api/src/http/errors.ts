@@ -5,7 +5,7 @@ import { isProduction } from '../config';
 
 /**
  * Errors the API raises deliberately. Anything else is a bug and is reported
- * as a 500 with a generic message — internal detail never reaches a client.
+ * as a 500 with a generic message, internal detail never reaches a client.
  */
 export class AppError extends Error {
   constructor(
@@ -40,7 +40,7 @@ export function errorHandler(error: unknown, req: Request, res: Response, _next:
   }
 
   if (error instanceof AppError) {
-    // Expected failures are logged at info — they are not incidents.
+    // Expected failures are logged at info, they are not incidents.
     logger.info({ status: error.status, path: req.path, code: error.code }, error.message);
     return res
       .status(error.status)

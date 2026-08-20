@@ -25,7 +25,7 @@ export default async function PartnerLoginPage({
     <AuthScreen
       eyebrow="Partner portal"
       title="Sign in."
-      lede="For companies offering Peptides MD consultations inside their own site. You will see your own appointments, totals and invoices — and nobody else’s."
+      lede="For companies offering Peptides MD consultations inside their own site. You will see your own appointments, totals and invoices, and nobody else’s."
       crossLink={{ href: '/admin/login', label: 'Peptides MD team? Sign in to the admin panel →' }}
       aside={<DemoAccounts accounts={partnerAccounts} />}
     >

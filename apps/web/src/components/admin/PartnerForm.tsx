@@ -352,7 +352,7 @@ export function PartnerForm({
                     role="status"
                     className="rounded border border-accent/25 bg-accent-tint px-4 py-3 text-micro leading-relaxed text-ink"
                   >
-                    New secret issued. Copy it now — it cannot be shown again. The old secret stops
+                    New secret issued. Copy it now, it cannot be shown again. The old secret stops
                     working in 24 hours.
                   </p>
                 ) : null}

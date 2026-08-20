@@ -37,11 +37,11 @@ const started = Date.now();
 
 const pass = (name, detail = '') => {
   results.push({ ok: true, name, detail });
-  process.stdout.write(`  ✓ ${name}${detail ? ` — ${detail}` : ''}\n`);
+  process.stdout.write(`  ✓ ${name}${detail ? `, ${detail}` : ''}\n`);
 };
 const fail = (name, detail = '') => {
   results.push({ ok: false, name, detail });
-  process.stdout.write(`  ✗ ${name}${detail ? ` — ${detail}` : ''}\n`);
+  process.stdout.write(`  ✗ ${name}${detail ? `, ${detail}` : ''}\n`);
 };
 const section = (title) => process.stdout.write(`\n${title}\n`);
 
@@ -106,7 +106,7 @@ async function shot(page, name) {
 }
 
 // ===========================================================================
-section('1. Patient booking journey — real Stripe Checkout');
+section('1. Patient booking journey, real Stripe Checkout');
 // ===========================================================================
 
 let bookingReference = null;
@@ -333,7 +333,7 @@ section('2. Guards and failure handling');
     ? pass('Wrong password rejected with a clear message')
     : fail('Wrong password rejected');
 
-  // A forged cookie must not grant access — the API verifies the signature.
+  // A forged cookie must not grant access, the API verifies the signature.
   await context.addCookies([
     { name: 'pmd_access', value: 'forged.token.value', domain: 'localhost', path: '/' },
   ]);
@@ -346,7 +346,7 @@ section('2. Guards and failure handling');
 }
 
 // ===========================================================================
-section('3. Admin — live data and RBAC');
+section('3. Admin, live data and RBAC');
 // ===========================================================================
 
 {
@@ -464,7 +464,7 @@ section('3. Admin — live data and RBAC');
 }
 
 // ===========================================================================
-section('4. Patient self-service — /manage');
+section('4. Patient self-service, /manage');
 // ===========================================================================
 
 {
@@ -495,7 +495,7 @@ section('4. Patient self-service — /manage');
 }
 
 // ===========================================================================
-section('5. Responsive — six widths, public and signed-in');
+section('5. Responsive, six widths, public and signed-in');
 // ===========================================================================
 
 const WIDTHS = [320, 375, 414, 768, 1024, 1440];
@@ -634,7 +634,7 @@ process.stdout.write(`\n${'='.repeat(64)}\n`);
 process.stdout.write(`${results.length - failed.length} passed, ${failed.length} failed  (${seconds}s)\n`);
 if (failed.length) {
   process.stdout.write('\nFailures:\n');
-  failed.forEach((f) => process.stdout.write(`  ✗ ${f.name}${f.detail ? ` — ${f.detail}` : ''}\n`));
+  failed.forEach((f) => process.stdout.write(`  ✗ ${f.name}${f.detail ? `, ${f.detail}` : ''}\n`));
 }
 process.stdout.write(`\nScreenshots: ${SHOTS}\n`);
 process.exit(failed.length > 0 ? 1 : 0);

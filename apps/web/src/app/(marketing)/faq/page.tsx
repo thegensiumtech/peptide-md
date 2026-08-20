@@ -80,7 +80,7 @@ export default async function FaqPage() {
       <PageIntro
         eyebrow="Questions"
         title="The things people ask before booking."
-        lede="If yours is not here, ask us directly — we would rather answer it than have you guess."
+        lede="If yours is not here, ask us directly, we would rather answer it than have you guess."
       />
 
       <section className="shell mt-16">

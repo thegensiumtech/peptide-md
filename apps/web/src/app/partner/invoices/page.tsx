@@ -42,7 +42,7 @@ export default async function PartnerInvoicesPage() {
     >
       <Card>
         <CardHeader
-          title={`${formatPeriod(CURRENT_PERIOD)} — still counting`}
+          title={`${formatPeriod(CURRENT_PERIOD)}, still counting`}
           description="Not yet raised. This is what the invoice would be if the month closed now."
         />
         <CardBody>
@@ -119,7 +119,7 @@ export default async function PartnerInvoicesPage() {
                   </Td>
                   <Td>
                     <span className="font-mono text-micro text-muted">
-                      {invoice.dueAt ? formatDate(invoice.dueAt, VIEW_TZ) : '—'}
+                      {invoice.dueAt ? formatDate(invoice.dueAt, VIEW_TZ) : ', '}
                     </span>
                   </Td>
                   <Td align="right">

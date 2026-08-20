@@ -40,7 +40,7 @@ function serialiseBooking(booking: Prisma.BookingGetPayload<{
     intake: booking.intakeResponses
       .sort((a, b) => a.position - b.position)
       .map((r) => ({ question: r.question, answer: r.answer })),
-    // Money is commercial, not clinical — the doctor role never receives it.
+    // Money is commercial, not clinical, the doctor role never receives it.
     amountPaid: hideCommercial ? null : booking.amountPaid,
     currency: booking.currency,
     joiningUrl: booking.joiningUrl,
@@ -121,7 +121,7 @@ adminRouter.get(
 );
 
 const cancelInput = z.object({
-  reason: z.string().min(1, 'Give a reason — it goes in the patient’s email.'),
+  reason: z.string().min(1, 'Give a reason, it goes in the patient’s email.'),
   refund: z.boolean().default(true),
 });
 
@@ -163,7 +163,7 @@ adminRouter.post(
  *
  * Separate from cancelling on purpose: releasing the appointment is
  * operational and happens at once, while sending money back is commercial and
- * needs a person to agree to it. Only an administrator may decide — the doctor
+ * needs a person to agree to it. Only an administrator may decide, the doctor
  * role never sees money.
  */
 adminRouter.get(
@@ -224,7 +224,7 @@ adminRouter.post(
 );
 
 const declineInput = z.object({
-  reason: z.string().min(1, 'Give a reason — it stays on the record.'),
+  reason: z.string().min(1, 'Give a reason, it stays on the record.'),
 });
 
 adminRouter.post(
@@ -250,7 +250,7 @@ adminRouter.post(
 /**
  * Guide downloads.
  *
- * Marketing contacts, kept deliberately apart from patients — someone who
+ * Marketing contacts, kept deliberately apart from patients, someone who
  * downloaded a guide has not booked anything. Admin only: the doctor role has
  * no business in the marketing list.
  */

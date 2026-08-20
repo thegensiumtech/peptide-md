@@ -6,7 +6,7 @@ import { apiFetch } from './server';
  * Public data, read on the server.
  *
  * The price and the doctor's profile are admin-editable, so the marketing and
- * booking screens read them live rather than from a build-time copy — a price
+ * booking screens read them live rather than from a build-time copy, a price
  * change in the admin panel has to be true on the site immediately.
  */
 interface ConsultationResponse extends ConsultationSettings {

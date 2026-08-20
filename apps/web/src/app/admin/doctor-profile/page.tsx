@@ -21,7 +21,7 @@ export default async function DoctorProfilePage() {
       user={session}
       crumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Public profile' }]}
       title="Public profile"
-      description="What patients see on the website — the bio, the credentials and the photograph. Changes go live on the public site."
+      description="What patients see on the website, the bio, the credentials and the photograph. Changes go live on the public site."
     >
       <DoctorProfileForm profile={profileRes.data} />
     </AdminShell>

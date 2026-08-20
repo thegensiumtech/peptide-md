@@ -9,8 +9,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Shown when a signed-in user reaches a screen their role does not cover —
- * in practice, the doctor opening a commercial screen. It explains the limit
+ * Shown when a signed-in user reaches a screen their role does not cover, * in practice, the doctor opening a commercial screen. It explains the limit
  * rather than pretending the screen does not exist, and always offers a way on.
  */
 export default async function NoAccessPage() {
@@ -20,7 +19,7 @@ export default async function NoAccessPage() {
     <AdminShell
       user={session}
       title="That screen is not part of your access."
-      description="Your account covers the clinical side of the platform. Commercial screens — partners, invoices and platform settings — are restricted to administrators."
+      description="Your account covers the clinical side of the platform. Commercial screens, partners, invoices and platform settings, are restricted to administrators."
     >
       <div className="max-w-xl rounded-lg border border-line bg-surface p-8">
         <p className="eyebrow">What you can reach</p>

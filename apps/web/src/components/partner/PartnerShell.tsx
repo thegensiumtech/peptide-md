@@ -34,7 +34,7 @@ export function PartnerShell({
       <header className="border-b border-line bg-paper-deep">
         <div className="shell flex h-16 items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Link href="/partner/bookings" aria-label="Partner portal — bookings">
+            <Link href="/partner/bookings" aria-label="Partner portal, bookings">
               <Wordmark />
             </Link>
             <span aria-hidden className="hidden h-5 w-px bg-line sm:block" />

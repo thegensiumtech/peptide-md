@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /**
- * Clinical Amber — the single source of truth for colour.
+ * Clinical Amber, the single source of truth for colour.
  *
  * Ground is a cool clinical off-white, not cream. Ink carries a green
  * undertone so it reads clinical rather than printed-black. Amber is the
@@ -16,9 +16,9 @@
   --paper: 245 248 250; /* #F5F8FA */
   --paper-deep: 234 240 244; /* #EAF0F4 */
   --surface: 255 255 255;
-  --ink: 12 45 76; /* #0C2D4C — logo navy */
+  --ink: 12 45 76; /* #0C2D4C, logo navy */
   --ink-soft: 41 74 102; /* #294A66 */
-  --muted: 105 125 146; /* #697D92 — logo strapline */
+  --muted: 105 125 146; /* #697D92, logo strapline */
   --line: 216 227 234; /* #D8E3EA */
 
   /* The one active thing on a screen. Mid teal from the mark: it carries
@@ -26,7 +26,7 @@
      logo teal does not. */
   --accent: 21 116 144; /* #157490 */
   --accent-tint: 227 241 245; /* #E3F1F5 */
-  /* The bright teal reads well only on dark ground — used on the CTA band. */
+  /* The bright teal reads well only on dark ground, used on the CTA band. */
   --brand-bright: 51 187 193; /* #33BBC1 */
 
   --signal: 14 124 90; /* #0E7C5A */
@@ -89,7 +89,7 @@
   }
 
   /**
-   * A standalone text link — one that sits on its own as a call to action
+   * A standalone text link, one that sits on its own as a call to action
    * rather than inside a sentence. These are tap targets, so they carry a
    * real hit area instead of just the height of their text. Links genuinely
    * inline in prose are exempt under WCAG 2.2 SC 2.5.8 and keep their
@@ -102,7 +102,7 @@
   /**
    * Loading placeholder.
    *
-   * The sweep animates background-position only — nothing reflows, nothing
+   * The sweep animates background-position only, nothing reflows, nothing
    * repaints outside the element, so it stays on the compositor. The global
    * reduced-motion rule below stops it entirely rather than leaving a
    * distracting pulse for anyone who asked for stillness.
@@ -145,9 +145,8 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
+@media (prefers-reduced-motion: reduce) {,
+  * *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

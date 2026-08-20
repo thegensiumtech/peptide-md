@@ -7,13 +7,13 @@ import { AuthScreen, DemoAccounts } from '@/components/auth/AuthScreen';
 import { LoginForm } from '@/components/auth/LoginForm';
 
 export const metadata: Metadata = {
-  title: 'Sign in — Peptides MD team',
+  title: 'Sign in. Peptides MD team',
   robots: { index: false, follow: false },
 };
 
 /**
  * One door for the Peptides MD team. Administrators and the doctor sign in
- * here and are separated by role afterwards — the doctor lands on the same
+ * here and are separated by role afterwards, the doctor lands on the same
  * dashboard route but sees his own diary rather than the commercial view.
  */
 export default async function AdminLoginPage({

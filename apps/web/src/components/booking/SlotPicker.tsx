@@ -24,7 +24,7 @@ import { useBooking } from './BookingContext';
 
 /**
  * Time zones offered explicitly. The patient's own zone is detected and
- * pre-selected, but it stays changeable — someone booking from a hotel in a
+ * pre-selected, but it stays changeable, someone booking from a hotel in a
  * third country should not have to do the arithmetic.
  */
 const BASE_ZONES = [
@@ -89,7 +89,7 @@ export function SlotPicker() {
    * Confirm the payment before showing any calendar.
    *
    * The webhook is the primary path, but the patient usually gets back here
-   * first. The server asks Stripe directly what that session's status is — the
+   * first. The server asks Stripe directly what that session's status is, the
    * browser only supplies the id, it never asserts the outcome.
    */
   useEffect(() => {
@@ -102,7 +102,7 @@ export function SlotPicker() {
         if (!cancelled) {
           setPhase('unpaid');
           setMessage(
-            'We could not find your booking. Start again — nothing will be charged twice.'
+            'We could not find your booking. Start again, nothing will be charged twice.'
           );
         }
         return;
@@ -173,7 +173,7 @@ export function SlotPicker() {
     if (!result.success) {
       setHolding(false);
       setHoldError(result.error);
-      // Someone took it while this patient was deciding — refresh so the grid
+      // Someone took it while this patient was deciding, refresh so the grid
       // reflects reality rather than leaving a dead button.
       if (result.code === 'SLOT_TAKEN') {
         setSelected(null);
@@ -244,7 +244,7 @@ export function SlotPicker() {
         <h1 className="font-display text-h1 font-medium text-ink">No times are open.</h1>
         <p className="mt-4 text-lead text-muted">
           The doctor’s diary has nothing free in the next three weeks. You have paid, so do not pay
-          again — contact us and we will find you a time.
+          again, contact us and we will find you a time.
         </p>
         <Link
           href="/contact"
@@ -270,7 +270,7 @@ export function SlotPicker() {
           finish.
         </p>
 
-        {/* Time zone first — it changes every number on this screen. */}
+        {/* Time zone first, it changes every number on this screen. */}
         <div className="mt-8 flex flex-wrap items-end gap-4 rounded-lg border border-line bg-surface p-4">
           <div className="grid gap-1.5">
             <label htmlFor="timezone" className="text-micro font-medium text-ink-soft">
@@ -408,8 +408,8 @@ export function SlotPicker() {
           <p className="eyebrow text-signal">Payment received</p>
           <p className="mt-3 text-micro leading-relaxed text-ink">
             Your consultation is paid for
-            {state.bookingReference ? ` — reference ${state.bookingReference}` : ''}. If you cannot
-            find a time that works, do not pay again —{' '}
+            {state.bookingReference ? `, reference ${state.bookingReference}` : ''}. If you cannot
+            find a time that works, do not pay again, {' '}
             <Link href="/contact" className="underline underline-offset-2">
               contact us
             </Link>{' '}

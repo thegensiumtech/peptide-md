@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-/** Reads the bearer token if present. Does not reject — use `requireAuth` for that. */
+/** Reads the bearer token if present. Does not reject, use `requireAuth` for that. */
 export function attachUser(req: Request, _res: Response, next: NextFunction) {
   const header = req.headers.authorization;
   const cookie = req.cookies?.pmd_access as string | undefined;

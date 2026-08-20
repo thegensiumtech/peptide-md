@@ -48,7 +48,7 @@ function readStored(): ManageSession | null {
  *
  * Held in sessionStorage rather than localStorage so a shared or borrowed
  * device forgets it when the tab closes, and it is short-lived at the server
- * end regardless. Nothing here grants access on its own — the token is signed
+ * end regardless. Nothing here grants access on its own, the token is signed
  * and re-verified on every request.
  */
 export function ManageSessionProvider({ children }: { children: React.ReactNode }) {

@@ -3,10 +3,10 @@ import { Newsreader, Inter, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 
 /**
- * Three roles, three faces. Newsreader is a low-contrast journal serif — it
+ * Three roles, three faces. Newsreader is a low-contrast journal serif, it
  * carries the public site with the authority of medical literature rather than
  * the fashion-magazine look of a high-contrast display serif. Plex Mono is not
- * decoration: it sets everything that is read as data — slot times, booking
+ * decoration: it sets everything that is read as data, slot times, booking
  * references, rates, API credentials, invoice totals.
  */
 const display = Newsreader({
@@ -38,7 +38,7 @@ const mono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://peptidemd.com'),
   title: {
-    default: 'Peptides MD — Consult a doctor who knows peptides',
+    default: 'Peptides MD. Consult a doctor who knows peptides',
     template: '%s · Peptides MD',
   },
   description:

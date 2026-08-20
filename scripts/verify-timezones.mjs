@@ -23,11 +23,11 @@ const results = [];
 
 const pass = (name, detail = '') => {
   results.push(true);
-  console.log(`  ✓ ${name}${detail ? ` — ${detail}` : ''}`);
+  console.log(`  ✓ ${name}${detail ? `, ${detail}` : ''}`);
 };
 const fail = (name, detail = '') => {
   results.push(false);
-  console.log(`  ✗ ${name}${detail ? ` — ${detail}` : ''}`);
+  console.log(`  ✗ ${name}${detail ? `, ${detail}` : ''}`);
 };
 
 const doctor = await prisma.doctor.findFirst({ where: { isActive: true } });

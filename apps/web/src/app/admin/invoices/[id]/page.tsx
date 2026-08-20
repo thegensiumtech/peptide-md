@@ -153,10 +153,10 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
                   {invoice.issuedAt ? formatDate(invoice.issuedAt, VIEW_TZ) : 'Not yet raised'}
                 </DataRow>
                 <DataRow label="Due" mono>
-                  {invoice.dueAt ? formatDate(invoice.dueAt, VIEW_TZ) : '—'}
+                  {invoice.dueAt ? formatDate(invoice.dueAt, VIEW_TZ) : ', '}
                 </DataRow>
                 <DataRow label="Paid" mono>
-                  {invoice.paidAt ? formatDate(invoice.paidAt, VIEW_TZ) : '—'}
+                  {invoice.paidAt ? formatDate(invoice.paidAt, VIEW_TZ) : ', '}
                 </DataRow>
               </dl>
             </CardBody>

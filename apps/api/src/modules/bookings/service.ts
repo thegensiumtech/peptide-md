@@ -19,7 +19,7 @@ import { cacheDelete } from '../../lib/redis';
 /**
  * Availability is cached for a minute, so anything that frees or takes a time
  * has to invalidate it. Without this a cancelled slot keeps reading as busy for
- * up to sixty seconds — which is exactly the window a patient is looking at it.
+ * up to sixty seconds, which is exactly the window a patient is looking at it.
  */
 async function bustAvailability(doctorId: string): Promise<void> {
   await cacheDelete(`availability:${doctorId}:*`);
@@ -45,7 +45,7 @@ export async function nextReference(): Promise<string> {
 
 export async function getSettings() {
   const settings = await prisma.platformSettings.findUnique({ where: { id: 'singleton' } });
-  if (!settings) throw new Error('Platform settings row is missing — run the seed.');
+  if (!settings) throw new Error('Platform settings row is missing, run the seed.');
   return settings;
 }
 
@@ -80,7 +80,7 @@ async function loadBooking(bookingId: string) {
  * Confirm a paid booking.
  *
  * Called only from the Stripe webhook for direct bookings, and from the
- * partner API for partner bookings. The browser never reaches this — that is
+ * partner API for partner bookings. The browser never reaches this, that is
  * what stops an unpaid booking existing in the diary.
  *
  * Idempotent: Stripe retries webhooks, so a second call on an already
@@ -153,7 +153,7 @@ export async function confirmBooking(bookingId: string, holdToken?: string): Pro
  * Two independent paths report the same fact: the Stripe webhook, and the
  * return-path verification when the patient beats the webhook back. Both are
  * correct and either may arrive first, so this is an upsert keyed on the
- * payment intent — the identifier Stripe guarantees is unique per payment.
+ * payment intent, the identifier Stripe guarantees is unique per payment.
  *
  * The session id deliberately stays on the CHECKOUT_CREATED row that already
  * holds it. Writing it again here collides with that row's unique index, which
@@ -182,7 +182,7 @@ export async function recordSuccessfulPayment(options: {
   });
 }
 
-/** Payment failed or the session expired. No slot was consumed — release the hold. */
+/** Payment failed or the session expired. No slot was consumed, release the hold. */
 export async function failBooking(
   bookingId: string,
   reason: string,
@@ -199,14 +199,13 @@ export async function failBooking(
     data: { paymentStatus: 'FAILED' },
   });
 
-  logger.info({ bookingId, reason }, 'Payment failed — slot released');
+  logger.info({ bookingId, reason }, 'Payment failed, slot released');
 }
 
 /**
  * Cancel and, where the terms allow it, refund.
  *
- * Returns whether the money actually moved rather than whether it was owed —
- * a refund can be due and still fail at Stripe, and the patient must not be
+ * Returns whether the money actually moved rather than whether it was owed, * a refund can be due and still fail at Stripe, and the patient must not be
  * told they have been refunded when they have not.
  */
 export async function cancelBooking(options: {
@@ -226,7 +225,7 @@ export async function cancelBooking(options: {
   // but the money is a separate decision an admin makes afterwards.
   const refundRequested = options.refund && booking.paymentStatus === 'PAID';
 
-  // Release the slot first — a cancellation must return the time to the
+  // Release the slot first, a cancellation must return the time to the
   // calendar even if the notification emails fail afterwards.
   if (booking.externalBookingId) {
     await schedulingProvider().cancel(booking.externalBookingId).catch(() => undefined);
@@ -341,7 +340,7 @@ export async function sendDueReminders(): Promise<number> {
  */
 export async function releaseExpiredHolds(): Promise<number> {
   // Every hold is linked to its booking the moment it is taken, so filtering
-  // on a null bookingId would sweep nothing at all — and a patient who paid,
+  // on a null bookingId would sweep nothing at all, and a patient who paid,
   // chose a time, then closed the browser at the intake step would block that
   // slot forever. What actually matters is whether the booking ever reached
   // CONFIRMED; if it did, the booking itself keeps the time occupied and the
@@ -359,7 +358,7 @@ export async function releaseExpiredHolds(): Promise<number> {
   await prisma.slotHold.deleteMany({ where: { id: { in: expired.map((h) => h.id) } } });
 
   // Availability is cached for a minute. Without this the freed time keeps
-  // reading as busy for up to sixty seconds — exactly while someone is looking
+  // reading as busy for up to sixty seconds, exactly while someone is looking
   // at the calendar wondering why it is not there.
   await Promise.all([...new Set(expired.map((h) => h.doctorId))].map(bustAvailability));
 
@@ -370,8 +369,7 @@ export async function releaseExpiredHolds(): Promise<number> {
 /**
  * Raise a refund on a booking that was cancelled without one.
  *
- * An administrator may cancel first and decide about the money afterwards —
- * the patient rings back, or the circumstances turn out differently. Without
+ * An administrator may cancel first and decide about the money afterwards, * the patient rings back, or the circumstances turn out differently. Without
  * this there is no way to start a refund after the fact, which is a dead end.
  */
 export async function requestRefund(bookingId: string, requestedBy: string): Promise<void> {
@@ -380,7 +378,7 @@ export async function requestRefund(bookingId: string, requestedBy: string): Pro
 
   if (booking.paymentStatus !== 'PAID') {
     throw badRequest(
-      'There is nothing to refund — this booking was never paid for.',
+      'There is nothing to refund, this booking was never paid for.',
       'NOTHING_TO_REFUND'
     );
   }

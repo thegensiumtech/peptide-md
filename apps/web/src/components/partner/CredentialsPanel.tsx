@@ -177,7 +177,7 @@ export function CredentialsPanel({ partner }: { partner: Partner }) {
           <CardBody>
             <p className="text-micro leading-relaxed text-muted">
               Sandbox credentials book against a test diary rather than the doctor’s real one. Use
-              them for your whole integration build — nothing you do there reaches a real patient
+              them for your whole integration build, nothing you do there reaches a real patient
               or appears on your invoice.
             </p>
             <Button variant="secondary" size="sm" className="mt-4">

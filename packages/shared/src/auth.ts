@@ -3,7 +3,7 @@
  *
  * Admin and doctor share one login at /admin/login and are separated by role.
  * Partner staff sign in separately at /partner/login and are additionally
- * scoped to a single partnerId — the scope document requires that no query can
+ * scoped to a single partnerId, the scope document requires that no query can
  * ever return another partner's data.
  */
 
@@ -35,7 +35,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     'invoices.manage',
   ],
   // The doctor sees his own diary and controls his own availability. He does
-  // not see commercial data — partner rates, invoices or platform settings.
+  // not see commercial data, partner rates, invoices or platform settings.
   doctor: ['bookings.viewOwn', 'doctor.manageAvailability', 'doctor.editProfile'],
   partner: ['partnerPortal.access'],
 };
@@ -45,7 +45,7 @@ export interface SessionUser {
   name: string;
   email: string;
   role: UserRole;
-  /** Set only for the partner role — the tenant this user is locked to. */
+  /** Set only for the partner role, the tenant this user is locked to. */
   partnerId: string | null;
 }
 

@@ -25,7 +25,7 @@ interface Flash {
  * One appointment, and the two things a patient can do to it.
  *
  * Whether either is offered is decided by the API and arrives as flags on the
- * booking. This screen renders the verdict — it does not re-derive it — so a
+ * booking. This screen renders the verdict, it does not re-derive it, so a
  * tab left open overnight cannot offer to move an appointment that has since
  * started.
  */
@@ -127,7 +127,7 @@ export function ManageBookingScreen({ reference }: { reference: string }) {
         </div>
       </header>
 
-      {/* Cleared of the sticky site header, which is 4rem tall — scrolling a
+      {/* Cleared of the sticky site header, which is 4rem tall, scrolling a
           panel to y=0 would put its heading underneath it. */}
       <div ref={focusRef} className="scroll-mt-24" />
 
@@ -171,7 +171,7 @@ export function ManageBookingScreen({ reference }: { reference: string }) {
                 tone: 'signal',
                 title: 'Your appointment is cancelled.',
                 body: outcome.refunded
-                  ? 'You have been refunded in full — it usually reaches your account within five to ten working days. The time is back in the doctor’s diary.'
+                  ? 'You have been refunded in full, it usually reaches your account within five to ten working days. The time is back in the doctor’s diary.'
                   : outcome.refundDue
                     ? 'A full refund is due and our team will process it. The time is back in the doctor’s diary.'
                     : 'A confirmation is on its way. The time is back in the doctor’s diary for someone else.',
@@ -184,7 +184,7 @@ export function ManageBookingScreen({ reference }: { reference: string }) {
       <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-14">
         <div className="min-w-0">
           {/* A patient needs to see which address their confirmation went
-              to — a typo here is the usual reason an email "never arrived". */}
+              to, a typo here is the usual reason an email "never arrived". */}
           <h2 className="eyebrow">Your details</h2>
           <dl className="mt-3">
             <DataRow label="Name">{booking.patientName}</DataRow>
@@ -192,7 +192,7 @@ export function ManageBookingScreen({ reference }: { reference: string }) {
               {booking.patientEmail}
             </DataRow>
             <DataRow label="Phone" mono>
-              {booking.patientPhone || '—'}
+              {booking.patientPhone || ', '}
             </DataRow>
           </dl>
           <p className="mt-3 text-micro leading-relaxed text-muted">
@@ -304,7 +304,7 @@ export function ManageBookingScreen({ reference }: { reference: string }) {
           </div>
 
           <p className="mt-5 px-1 text-micro leading-relaxed text-muted">
-            Anything else —{' '}
+            Anything else, {' '}
             <Link href="/contact" className="text-ink underline underline-offset-2">
               contact us
             </Link>{' '}

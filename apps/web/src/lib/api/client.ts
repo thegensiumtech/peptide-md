@@ -29,7 +29,7 @@ interface ApiEnvelope<T> {
 }
 
 /**
- * All manage endpoints are POST, reads included — an email address in a query
+ * All manage endpoints are POST, reads included, an email address in a query
  * string ends up in server logs and referrer headers, which is the wrong place
  * for it on a medical booking.
  *
@@ -62,7 +62,7 @@ export async function postJson<T>(
     );
   }
 
-  // A dead or missing token is not an error to show — it means the patient has
+  // A dead or missing token is not an error to show, it means the patient has
   // to confirm their address again, and the screens send them back to do it.
   if (response.status === 401) {
     return failure('Your session has expired. Confirm your email again.', 'SESSION_EXPIRED');

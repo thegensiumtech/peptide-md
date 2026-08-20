@@ -1,9 +1,8 @@
-// Peptides MD — database schema
+// Peptides MD, database schema
 //
 // Covers Milestone 1 deliverable 4: bookings, patients, intake responses,
 // doctors, partners, rates and invoices. The partner, rate and invoice tables
-// are created now even though the features they serve land in Milestone 2 —
-// every booking is attributed from day one, so the attribution has somewhere
+// are created now even though the features they serve land in Milestone 2, // every booking is attributed from day one, so the attribution has somewhere
 // to go and no backfill is needed later.
 //
 // Money is stored in minor units (pence) as Int everywhere. Times are stored
@@ -77,7 +76,7 @@ model RefreshToken {
 // Doctor and availability
 // ---------------------------------------------------------------------------
 
-/// The platform launches with one doctor but is built for many — the second
+/// The platform launches with one doctor but is built for many, the second
 /// and the tenth are added from the admin panel, not by a developer.
 model Doctor {
   id          String  @id @default(cuid())
@@ -188,7 +187,7 @@ model Partner {
   contactEmail String
   billingEmail String
 
-  /// Branding for the embedded widget — the patient sees the partner, never us.
+  /// Branding for the embedded widget, the patient sees the partner, never us.
   brandPrimaryColor String @default("#0B3C49")
   brandAccentColor  String @default("#E4572E")
   brandFontFamily   String @default("Inter")
@@ -237,7 +236,7 @@ model PartnerCredential {
 // Patients and bookings
 // ---------------------------------------------------------------------------
 
-/// Patients have no login — the scope excludes patient accounts. This record
+/// Patients have no login, the scope excludes patient accounts. This record
 /// exists so repeat bookings from the same person can be recognised and so the
 /// doctor has continuity.
 model Patient {
@@ -272,12 +271,12 @@ enum BookingStatus {
 
 /// A refund is a separate decision from a cancellation.
 ///
-/// Cancelling releases the appointment immediately — the patient should never
+/// Cancelling releases the appointment immediately, the patient should never
 /// wait on an approval for that. Whether the money goes back is a commercial
 /// judgement the admin makes afterwards, so it has its own state and never
 /// happens automatically.
 enum RefundStatus {
-  /// No refund is in play — unpaid, or nobody asked.
+  /// No refund is in play, unpaid, or nobody asked.
   NONE
   /// Requested and waiting for the admin.
   PENDING
@@ -323,7 +322,7 @@ model Booking {
   /// Booking id in the scheduling core, once mirrored.
   externalBookingId String? @unique
 
-  /// Minor units. Null on partner bookings — the partner took the payment.
+  /// Minor units. Null on partner bookings, the partner took the payment.
   amountPaid Int?
   currency   String @default("GBP")
 
@@ -357,7 +356,7 @@ model Booking {
   emails          EmailLog[]
   invoiceLines    InvoiceLine[]
 
-  /// The diary is queried by doctor and time constantly — this is the index
+  /// The diary is queried by doctor and time constantly, this is the index
   /// that keeps availability lookups cheap as volume grows.
   @@index([doctorId, startsAt])
   @@index([partnerId, startsAt])
@@ -384,7 +383,7 @@ model IntakeResponse {
   @@map("intake_responses")
 }
 
-/// Explicit, separately recorded consent — clinical record and terms are two
+/// Explicit, separately recorded consent, clinical record and terms are two
 /// distinct agreements and are captured as such.
 model ConsentRecord {
   id        String   @id @default(cuid())
@@ -402,7 +401,7 @@ model ConsentRecord {
 }
 
 // ---------------------------------------------------------------------------
-// Slot holds — the shared-calendar guarantee
+// Slot holds, the shared-calendar guarantee
 // ---------------------------------------------------------------------------
 
 /// A slot held for one patient while they finish booking.
@@ -444,7 +443,7 @@ model SlotHold {
 /// A single-use code emailed to a patient so they can open their own
 /// appointments.
 ///
-/// Patients have no account, and an email address is not a secret — anyone who
+/// Patients have no account, and an email address is not a secret, anyone who
 /// knows one could otherwise read when that person is seeing a doctor. Proving
 /// control of the inbox is what closes that, and it is the same proof the
 /// confirmation email already relies on.
@@ -488,7 +487,7 @@ enum PaymentEventType {
 }
 
 /// Stripe activity against a booking. The webhook is the only thing that moves
-/// a booking to CONFIRMED — the browser never decides a payment succeeded.
+/// a booking to CONFIRMED, the browser never decides a payment succeeded.
 model Payment {
   id        String  @id @default(cuid())
   bookingId String
@@ -577,7 +576,7 @@ model Invoice {
   @@map("invoices")
 }
 
-/// One counted appointment on an invoice — the evidence behind the total.
+/// One counted appointment on an invoice, the evidence behind the total.
 model InvoiceLine {
   id        String  @id @default(cuid())
   invoiceId String
@@ -685,7 +684,7 @@ model AuditEvent {
 /// Lead magnet: the peptide guide, given in exchange for a name and email.
 ///
 /// Kept separate from Patient. Someone who downloads a guide has not booked
-/// anything and is not a patient — conflating the two would put marketing
+/// anything and is not a patient, conflating the two would put marketing
 /// contacts inside the clinical record.
 model GuideRequest {
   id    String @id @default(cuid())

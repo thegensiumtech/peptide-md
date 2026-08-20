@@ -15,7 +15,7 @@ import {
 
 /**
  * Frame for every booking step: the rail, the guard, and a deliberately
- * stripped header. Site navigation is removed here on purpose — once a patient
+ * stripped header. Site navigation is removed here on purpose, once a patient
  * is in the flow, the only paths are forward, or out through Contact.
  */
 export function BookingShell({
@@ -34,7 +34,7 @@ export function BookingShell({
 
   /**
    * A patient returning from Stripe carries the booking and session on the URL
-   * and, for one render, still has `paid: false` in context — the payment has
+   * and, for one render, still has `paid: false` in context, the payment has
    * not been verified yet because the screen that verifies it has not mounted.
    *
    * Without this exemption the guard would bounce them straight back to
@@ -45,7 +45,7 @@ export function BookingShell({
   const returningFromCheckout =
     Boolean(searchParams.get('booking')) && Boolean(searchParams.get('session'));
 
-  // 'details' is always reachable — it is the entry point, and re-reading what
+  // 'details' is always reachable, it is the entry point, and re-reading what
   // the consultation covers should never be blocked.
   const blocked =
     ready && step !== 'details' && !returningFromCheckout && currentIndex > allowedIndex;
@@ -68,7 +68,7 @@ export function BookingShell({
     <>
       <header className="border-b border-line bg-paper">
         <div className="shell flex h-16 items-center justify-between gap-4">
-          <Link href="/" aria-label="Peptides MD — home">
+          <Link href="/" aria-label="Peptides MD, home">
             <Wordmark />
           </Link>
           <Link

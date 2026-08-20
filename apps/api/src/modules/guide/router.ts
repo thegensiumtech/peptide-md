@@ -25,7 +25,7 @@ const request = z.object({
   marketingConsent: z.boolean().default(false),
   source: z.string().max(60).default('website'),
   /**
-   * Honeypot. Accepts anything on purpose — validating it to empty would
+   * Honeypot. Accepts anything on purpose, validating it to empty would
    * return a 400 and tell a bot precisely which field caught it. It is read
    * and discarded below instead.
    */
@@ -38,7 +38,7 @@ const CONSENT_WORDING =
 /**
  * The lead magnet.
  *
- * Kept out of the Patient table on purpose — someone who downloads a guide has
+ * Kept out of the Patient table on purpose, someone who downloads a guide has
  * not booked anything, and marketing contacts do not belong in a clinical
  * record. The download is not conditional on marketing consent: the guide is
  * the exchange for an email address, nothing more.

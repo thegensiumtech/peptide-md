@@ -24,7 +24,7 @@ class ConsoleEmailProvider implements EmailProvider {
   async send(email: OutgoingEmail) {
     logger.info(
       { to: email.to, subject: email.subject, hasInvite: Boolean(email.icsContent) },
-      'Email (console provider — not delivered)'
+      'Email (console provider, not delivered)'
     );
     logger.debug({ body: email.text }, 'Email body');
     return { messageId: `console_${Date.now()}` };
@@ -33,7 +33,7 @@ class ConsoleEmailProvider implements EmailProvider {
 
 /**
  * AWS SES. Left unconstructed until credentials and a verified sender domain
- * exist — SES rejects unverified senders, so switching this on before the
+ * exist. SES rejects unverified senders, so switching this on before the
  * domain is verified would fail every send.
  */
 class SesEmailProvider implements EmailProvider {

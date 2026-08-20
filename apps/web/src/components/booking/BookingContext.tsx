@@ -11,8 +11,7 @@ export interface BookingState {
   /** The booking record on the server, created when checkout starts. */
   bookingId: string | null;
   /**
-   * Mirrors the server's payment state. Only ever set from an API response —
-   * either the Stripe webhook has landed, or the server has asked Stripe
+   * Mirrors the server's payment state. Only ever set from an API response, * either the Stripe webhook has landed, or the server has asked Stripe
    * directly about the returning session. The browser never decides this.
    */
   paid: boolean;
@@ -63,7 +62,7 @@ const BookingContext = createContext<BookingContextValue | null>(null);
  *
  * Held in sessionStorage so a refresh mid-flow does not lose a paid booking,
  * and cleared when the flow completes. In production this state lives on the
- * booking record itself — the Stripe webhook is the only thing that can set
+ * booking record itself, the Stripe webhook is the only thing that can set
  * `paid`, exactly as the scope requires.
  */
 export function BookingProvider({ children }: { children: React.ReactNode }) {

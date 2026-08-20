@@ -8,7 +8,7 @@ import type { BookingPermissions, BookingPolicyTerms } from '@peptide/shared';
  * confirmation screen, the confirmation email, and the manage screens. Changing
  * a number here changes all of them.
  *
- * These are the terms the site already promises — free rescheduling, and a full
+ * These are the terms the site already promises, free rescheduling, and a full
  * refund on a cancellation with a day's notice. They belong in platform
  * settings once the admin needs to edit them without a deploy.
  */
@@ -57,7 +57,7 @@ export function evaluatePolicy(booking: PolicyInput, now: Date = new Date()): Po
     };
   }
 
-  // Cancelling stays open right up to the appointment — a patient who cannot
+  // Cancelling stays open right up to the appointment, a patient who cannot
   // attend should always be able to say so, and the slot returns to the diary
   // either way. Only the refund depends on how much notice was given.
   const refundOnCancel =

@@ -39,7 +39,7 @@ server on port 3100 and shutting it down afterwards.
 ## Layout
 
 ```
-apps/web/                  the application — public site, booking, admin, partner portal
+apps/web/                  the application, public site, booking, admin, partner portal
   src/app/
     (marketing)/           9 public pages
     (booking)/book/        5-step booking flow
@@ -51,7 +51,7 @@ apps/web/                  the application — public site, booking, admin, part
     data/fixtures/         static records
     auth/                  session + RBAC
   src/middleware.ts        route guards
-packages/shared/           domain types — the contract the API will implement
+packages/shared/           domain types, the contract the API will implement
 docs/screen-map.md         every screen, route, journey and access rule
 proposal/                  the scope document and diagrams (git-ignored)
 ```
@@ -80,7 +80,7 @@ in [docs/screen-map.md](docs/screen-map.md).
 
 ## Live data: patient self-service
 
-`/manage` is the exception to the above — it does not read fixtures. A patient
+`/manage` is the exception to the above, it does not read fixtures. A patient
 moving or cancelling an appointment has to be looking at the real diary, so those
 screens call the Express API directly through `src/lib/api/`.
 
@@ -96,20 +96,20 @@ booking was made from:
 
 1. They enter the address they booked with.
 2. If it has appointments, a six-digit code is emailed. If it does not, nothing
-   is sent — and the response is identical either way, so the form cannot be
+   is sent, and the response is identical either way, so the form cannot be
    used to discover who is a patient.
 3. The code opens a 30-minute session. Every endpoint under `/api/booking/manage`
    requires it, and the address is read from the signed token, never from the
    request body.
 
 An email address is not a secret, and when someone is seeing a doctor is clinical
-information — that is the gap this closes. References are sequential and
+information, that is the gap this closes. References are sequential and
 therefore guessable, so the link in the confirmation email is gated too; it only
 prefills the reference.
 
 **In local development the code is shown on screen and prefilled**, in a dashed
 box marked "email not delivered", so there is no digging through the server log.
-This requires *both* a non-production build *and* `EMAIL_PROVIDER=console` — the
+This requires *both* a non-production build *and* `EMAIL_PROVIDER=console`, the
 API omits the code from its response otherwise, so a deployed site cannot render
 that box no matter what the front end asks for. The switch is `CODES_ARE_EXPOSED`
 in `accessCodes.ts`. The 60-second resend cooldown is also skipped while it is
@@ -122,13 +122,13 @@ same interval that releases abandoned slot holds. The knobs are the constants at
 the top of `apps/api/src/modules/bookings/accessCodes.ts`.
 
 What a patient may then do is decided in
-`apps/api/src/modules/bookings/policy.ts` and sent to the browser as flags — the
+`apps/api/src/modules/bookings/policy.ts` and sent to the browser as flags, the
 notice periods live there and nowhere else.
 
 ## Design
 
 Colour lives once, in `apps/web/src/app/globals.css`, as RGB channel tokens.
-Nothing hardcodes a hex value — dropping in Peptide MD's real palette is an edit
+Nothing hardcodes a hex value, dropping in Peptide MD's real palette is an edit
 to that one block.
 
 Chart series colours are separate from status colours and were validated for
@@ -140,24 +140,24 @@ Not Cal.com. The scope named it; we built it instead, behind the same provider
 interface so Cal.com remains a config change (`SCHEDULING_PROVIDER=calcom`).
 Reasoning and cost comparison in [docs/architecture.md](docs/architecture.md).
 
-The doctor manages his own week at `/admin/availability` — one tap blocks a
+The doctor manages his own week at `/admin/availability`, one tap blocks a
 slot, and it disappears from this site and every partner site at once. A slot
 with a patient booked into it cannot be blocked.
 
 ## Verification
 
 ```bash
-node scripts/e2e.mjs                     # 60 — full journeys, real Stripe, mobile
-node scripts/verify-api.mjs              # 20 — contracts, concurrency
-node scripts/verify-scheduling.mjs       #  9 — provider contract
-node scripts/verify-timezones.mjs        #  5 — DST, both hemispheres
-node scripts/verify-no-free-bookings.mjs #  7 — payment bypass attempts
-node scripts/verify-diary.mjs            #  8 — the doctor's diary
+node scripts/e2e.mjs                     # 60, full journeys, real Stripe, mobile
+node scripts/verify-api.mjs              # 20, contracts, concurrency
+node scripts/verify-scheduling.mjs       #  9, provider contract
+node scripts/verify-timezones.mjs        #  5. DST, both hemispheres
+node scripts/verify-no-free-bookings.mjs #  7, payment bypass attempts
+node scripts/verify-diary.mjs            #  8, the doctor's diary
 ```
 
 ## Still outstanding
 
 - Peptide MD's real logo and brand palette (placeholder wordmark in `Wordmark.tsx`)
 - A photograph of the doctor (the portrait frame degrades to initials until then)
-- Legal copy approved by Ross's legal advisor — the three legal pages carry a
+- Legal copy approved by Ross's legal advisor, the three legal pages carry a
   visible draft banner until that happens

@@ -5,15 +5,15 @@ import { SectionHeading, CtaBand } from '@/components/marketing/Primitives';
 export const metadata: Metadata = {
   title: 'The peptide guide',
   description:
-    'A free guide to peptide therapy written by a doctor with no products to sell — what the evidence says, what you are actually buying, and the questions to ask before you start.',
+    'A free guide to peptide therapy written by a doctor with no products to sell, what the evidence says, what you are actually buying, and the questions to ask before you start.',
 };
 
 const CONTENTS: [string, string][] = [
   ['Why this guide exists', 'Who writes peptide advice, and why that shapes what it says.'],
   ['What a peptide actually is', 'Why “do peptides work” is the wrong question.'],
-  ['The three tiers of evidence', 'Licensed, researched, or anecdote — and how to tell.'],
+  ['The three tiers of evidence', 'Licensed, researched, or anecdote, and how to tell.'],
   ['What you are actually buying', 'Why a vial bought online is not a medicine, and how to read a COA.'],
-  ['How they are taken', 'Injection, nasal, topical, oral — and why the route changes the dose.'],
+  ['How they are taken', 'Injection, nasal, topical, oral, and why the route changes the dose.'],
   ['Where the real risks are', 'Interactions, masking, technique. Rarely what people expect.'],
   ['30 compounds, assessed', 'Metabolic · repair · growth hormone · cognitive · sleep · immune.'],
   ['Questions before you start', 'If you cannot answer these, you are not ready.'],
@@ -33,7 +33,7 @@ export default function GuidePage() {
             <p className="mt-6 max-w-xl text-lead leading-relaxed text-ink-soft">
               Almost everything written about peptides is written by someone selling them. This is
               not. It is written by a GMC-registered doctor with no products, no suppliers and no
-              affiliate income — including the parts that say you probably should not take anything.
+              affiliate income, including the parts that say you probably should not take anything.
             </p>
 
             <ol className="mt-10 grid gap-0 border-t border-line">
@@ -72,7 +72,7 @@ export default function GuidePage() {
       <div className="mt-section">
         <CtaBand
           title="Or skip the reading and ask the doctor directly."
-          body="Twenty minutes, £95, and a straight answer about your own situation — including when the answer is that you should not be taking anything."
+          body="Twenty minutes, £95, and a straight answer about your own situation, including when the answer is that you should not be taking anything."
         />
       </div>
     </>

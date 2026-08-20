@@ -11,7 +11,7 @@ const DAYS_AHEAD = 21;
  * Deterministic "already taken" marker.
  *
  * Real availability comes from the scheduling core. Here it is derived from a
- * stable hash so the same slots are taken on every render — no Math.random,
+ * stable hash so the same slots are taken on every render, no Math.random,
  * which would desynchronise server and client output.
  */
 function isTaken(key: string): boolean {

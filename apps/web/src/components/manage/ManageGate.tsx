@@ -14,7 +14,7 @@ const RESEND_COOLDOWN_SECONDS = 60;
 /**
  * The way in.
  *
- * An email address is not a secret — plenty of people know yours — and when a
+ * An email address is not a secret, plenty of people know yours, and when a
  * patient is seeing a doctor is clinical information. So the address alone
  * opens nothing here. It gets a six-digit code sent to that inbox, and proving
  * you can read the inbox is what opens the screens behind this.
@@ -33,7 +33,7 @@ export function ManageGate({
   const { session, ready, endedReason, open } = useManageSession();
   const [email, setEmail] = useState('');
   const [sentTo, setSentTo] = useState<string | null>(null);
-  /** Only ever set in local development — see CodeRequestResult.devCode. */
+  /** Only ever set in local development, see CodeRequestResult.devCode. */
   const [devCode, setDevCode] = useState<string | undefined>(undefined);
 
   if (!ready) {
@@ -131,7 +131,7 @@ function EmailStep({
       </h2>
       <p className="mt-3 text-sm leading-relaxed text-muted">
         We will email you a six-digit code. Your appointments are clinical information, so we check
-        it really is you before showing them — there is no password and no account to create.
+        it really is you before showing them, there is no password and no account to create.
       </p>
 
       {reference ? <ReferenceLine reference={reference} /> : null}
@@ -198,7 +198,7 @@ function CodeStep({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Straight into the field — the patient is arriving back from their inbox
+  // Straight into the field, the patient is arriving back from their inbox
   // with six digits in their head or on their clipboard.
   useEffect(() => {
     inputRef.current?.focus();

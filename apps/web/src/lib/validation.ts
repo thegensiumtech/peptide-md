@@ -1,7 +1,7 @@
 /**
  * Shared form validation.
  *
- * Client-side validation is a courtesy — it tells someone what is wrong before
+ * Client-side validation is a courtesy, it tells someone what is wrong before
  * they wait for a round trip. The API validates the same rules again with Zod,
  * and that is the boundary that actually counts.
  */

@@ -90,7 +90,7 @@ export function AvailabilityEditor({ availability }: { availability: Availabilit
                     </p>
                   ) : (
                     <ul className="grid gap-2">
-                      {/* Named `slot`, not `window` — shadowing the global
+                      {/* Named `slot`, not `window`, shadowing the global
                           inside a component scope is how a stray
                           window.setTimeout call becomes a runtime crash. */}
                       {windows.map((slot) => (
@@ -117,7 +117,7 @@ export function AvailabilityEditor({ availability }: { availability: Availabilit
                             className="w-32 font-mono"
                           />
                           {/* The late windows are what make the Australian
-                              side of the business work — worth naming. */}
+                              side of the business work, worth naming. */}
                           {Number(slot.startTime.split(':')[0]) >= 20 ? (
                             <span className="rounded border border-accent/25 bg-accent-tint px-2 py-0.5 font-mono text-eyebrow uppercase tracking-[0.12em] text-accent">
                               Australia friendly

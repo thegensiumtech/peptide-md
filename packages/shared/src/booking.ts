@@ -1,7 +1,7 @@
 /**
  * Booking domain.
  *
- * Every booking — taken on peptidemd.com or inside a partner's website — is
+ * Every booking, taken on peptidemd.com or inside a partner's website, is
  * mirrored here and carries the channel it arrived through. That tag is what
  * the whole commercial model rests on: it is how the platform knows, at month
  * end, that New You sent sixty appointments and Five Peptides sent forty five.
@@ -48,7 +48,7 @@ export interface Booking {
   patientEmail: string;
   patientPhone: string;
   intake: IntakeAnswer[];
-  /** Minor units (pence). Null on partner bookings — the partner takes payment. */
+  /** Minor units (pence). Null on partner bookings, the partner takes payment. */
   amountPaid: number | null;
   currency: string;
   createdAt: string;
@@ -70,7 +70,7 @@ export interface BookingFilters {
 
 /**
  * A partner booking is billable to that partner unless it was cancelled.
- * Direct bookings are never partner-billable — the patient already paid.
+ * Direct bookings are never partner-billable, the patient already paid.
  */
 export function isBillableToPartner(
   booking: Pick<Booking, 'channel' | 'status' | 'partnerId'>

@@ -4,7 +4,7 @@ import { LegalDocument, type LegalSection } from '@/components/marketing/LegalDo
 export const metadata: Metadata = {
   title: 'Terms of service',
   description:
-    'The terms on which Peptides MD provides consultations — booking, payment, cancellation, refunds, and the limits of the service.',
+    'The terms on which Peptides MD provides consultations, booking, payment, cancellation, refunds, and the limits of the service.',
 };
 
 const sections: LegalSection[] = [

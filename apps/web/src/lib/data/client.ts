@@ -26,8 +26,7 @@ import { availableDays } from './fixtures/slots';
  *
  * Every screen reads through these functions and nothing else. They are async
  * and return the same ApiResponse envelope the Express API will return, so
- * swapping static fixtures for real endpoints is a change to this file alone —
- * each function body becomes a fetch, and no screen changes.
+ * swapping static fixtures for real endpoints is a change to this file alone, * each function body becomes a fetch, and no screen changes.
  *
  * See docs/screen-map.md for the function-to-endpoint mapping.
  */
@@ -59,7 +58,7 @@ export async function getBookings(
 
   if (channel !== 'all') rows = rows.filter((b) => b.channel === channel);
   if (status !== 'all') rows = rows.filter((b) => b.status === status);
-  // Partner scoping is applied here, before anything is returned — the portal
+  // Partner scoping is applied here, before anything is returned, the portal
   // never filters another partner's rows out on the client.
   if (partnerId) rows = rows.filter((b) => b.partnerId === partnerId);
   if (from) rows = rows.filter((b) => b.startsAt >= `${from}T00:00:00.000Z`);
@@ -222,7 +221,7 @@ export async function getInvoice(id: string): Promise<ApiResponse<Invoice>> {
   return ok(invoice);
 }
 
-/** The appointments counted into an invoice — the evidence behind the total. */
+/** The appointments counted into an invoice, the evidence behind the total. */
 export async function getInvoiceBookings(id: string): Promise<ApiResponse<Booking[]>> {
   const invoice = invoices.find((i) => i.id === id);
   if (!invoice) return fail('Invoice not found');

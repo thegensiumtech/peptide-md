@@ -9,7 +9,7 @@ const REFRESH_TTL_DAYS = 30;
 export interface AccessTokenPayload {
   sub: string;
   role: UserRole;
-  /** Present only for PARTNER users — the tenant boundary, carried in the token. */
+  /** Present only for PARTNER users, the tenant boundary, carried in the token. */
   partnerId: string | null;
   doctorId: string | null;
 }
@@ -33,7 +33,7 @@ export function verifyAccessToken(token: string): AccessTokenPayload {
   }
 }
 
-/** Refresh tokens are stored hashed — a database leak must not yield live sessions. */
+/** Refresh tokens are stored hashed, a database leak must not yield live sessions. */
 const hash = (token: string) => createHash('sha256').update(token).digest('hex');
 
 export async function issueRefreshToken(userId: string): Promise<string> {

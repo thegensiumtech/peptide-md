@@ -29,7 +29,7 @@ interface Lead {
 
 export default async function LeadsPage() {
   const session = await requireSession('admin', '/admin/leads');
-  // Marketing contacts are commercial, not clinical — the doctor role has no
+  // Marketing contacts are commercial, not clinical, the doctor role has no
   // business in this list.
   requirePermission(session, 'settings.manage');
 
@@ -50,7 +50,7 @@ export default async function LeadsPage() {
       user={session}
       crumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Guide downloads' }]}
       title="Guide downloads"
-      description="Everyone who has asked for the peptide guide. These are marketing contacts, not patients — nobody here has booked anything."
+      description="Everyone who has asked for the peptide guide. These are marketing contacts, not patients, nobody here has booked anything."
     >
       <div className="grid gap-4 sm:grid-cols-3">
         <StatTile label="Total downloads" value={String(total)} detail="Since the guide went live" />
@@ -133,7 +133,7 @@ export default async function LeadsPage() {
 
       <p className="mt-4 max-w-2xl text-micro leading-relaxed text-muted">
         Only email people marked <strong>Opted in</strong>. “Guide only” means they took the guide
-        and did not agree to marketing — emailing them anyway would breach UK GDPR and the consent
+        and did not agree to marketing, emailing them anyway would breach UK GDPR and the consent
         wording we showed them.
       </p>
     </AdminShell>

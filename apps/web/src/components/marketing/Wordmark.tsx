@@ -34,7 +34,7 @@ export function Wordmark({
     <span className={cn('inline-flex min-h-11 items-center', className)}>
       <Image
         src="/brand/peptides-md-lockup.png"
-        alt="Peptides MD — medical consultations"
+        alt="Peptides MD, medical consultations"
         width={480}
         height={240}
         priority

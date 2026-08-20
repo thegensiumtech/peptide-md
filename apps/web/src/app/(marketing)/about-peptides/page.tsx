@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Educational content. Deliberately plain and non-promotional — Peptides MD
+ * Educational content. Deliberately plain and non-promotional. Peptides MD
  * sells a consultation, not a compound, and this page has to read that way.
  */
 export default function AboutPeptidesPage() {
@@ -69,7 +69,7 @@ export default function AboutPeptidesPage() {
           <SectionHeading
             eyebrow="Before you start"
             title="Five questions worth having an answer to."
-            lede="If you cannot answer these, that is not a failure — it is the reason the consultation exists."
+            lede="If you cannot answer these, that is not a failure, it is the reason the consultation exists."
           />
           <ol className="mt-10 grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2">
             {QUESTIONS.map((question) => (
@@ -112,7 +112,7 @@ const SECTIONS = [
     id: 'what-they-are',
     title: 'What they are',
     body: [
-      'A peptide is a short chain of amino acids — the same building blocks proteins are made of, just fewer of them joined together. Your body already makes and uses thousands of them; insulin is one.',
+      'A peptide is a short chain of amino acids, the same building blocks proteins are made of, just fewer of them joined together. Your body already makes and uses thousands of them; insulin is one.',
       'The compounds people mean when they say "peptides" are synthetic versions designed to act on a particular system: tissue repair, appetite, growth hormone release, pigmentation. They are not a single class of drug with a single effect, which is why blanket claims about "peptides" are close to meaningless.',
     ],
   },
@@ -120,7 +120,7 @@ const SECTIONS = [
     id: 'evidence',
     title: 'Where the evidence actually is',
     body: [
-      'The evidence base is extremely uneven. A small number of peptide medicines are licensed, thoroughly trialled and prescribed routinely — the GLP-1 agonists used for diabetes and weight management are the obvious example.',
+      'The evidence base is extremely uneven. A small number of peptide medicines are licensed, thoroughly trialled and prescribed routinely, the GLP-1 agonists used for diabetes and weight management are the obvious example.',
       'Most of what is sold online sits in a different category: promising early research, often in animals, often at doses and purities that bear little relationship to what arrives in a vial. That is not the same as "it does not work". It is "nobody has established what it does in people like you".',
     ],
     callout:
@@ -138,7 +138,7 @@ const SECTIONS = [
     id: 'regulation',
     title: 'What the law says in the UK',
     body: [
-      'Most of these compounds are not licensed medicines in the UK. Many are sold as "research chemicals not for human consumption" — wording that exists to move legal responsibility onto the buyer, not because the seller believes it.',
+      'Most of these compounds are not licensed medicines in the UK. Many are sold as "research chemicals not for human consumption", wording that exists to move legal responsibility onto the buyer, not because the seller believes it.',
       'That status is why a consultation is a consultation and nothing more. The doctor can review what you are doing, assess your history and give you a clinical opinion. He cannot supply anything, and he will not pretend otherwise.',
     ],
   },
@@ -146,7 +146,7 @@ const SECTIONS = [
 
 const QUESTIONS = [
   'What specifically are you trying to change, and how would you know if it worked?',
-  'What exactly are you taking — the compound, the dose, the source and the purity?',
+  'What exactly are you taking, the compound, the dose, the source and the purity?',
   'What else are you taking, including prescribed medication and supplements?',
   'Has anything in your history been investigated that could explain the symptom?',
   'What is your stopping point, and what would make you stop sooner?',

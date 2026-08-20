@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  *
  * The scope hands weekly availability to the scheduling core's own interface,
  * but it also gives the doctor the job of managing it. Without this screen the
- * doctor role has no journey, so it is built here — reading and writing the
+ * doctor role has no journey, so it is built here, reading and writing the
  * same shape the integration layer exposes.
  */
 export default async function AvailabilityPage() {
@@ -30,7 +30,7 @@ export default async function AvailabilityPage() {
       user={session}
       crumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Availability' }]}
       title="Availability"
-      description={`The weekly pattern ${doctorRes.data.name.split(' ').slice(-1)[0]} works, plus one-off changes. A change here applies everywhere at once — this website and every partner site.`}
+      description={`The weekly pattern ${doctorRes.data.name.split(' ').slice(-1)[0]} works, plus one-off changes. A change here applies everywhere at once, this website and every partner site.`}
     >
       {/* The diary comes first: it is what the doctor opens this screen for.
           The standing pattern below is set once and rarely revisited. */}
@@ -39,7 +39,7 @@ export default async function AvailabilityPage() {
       <div className="mt-10">
         <h2 className="font-display text-h3 font-medium text-ink">Your standing pattern</h2>
         <p className="mt-1.5 max-w-2xl text-sm text-muted">
-          The hours you normally work. Set this once — use the diary above for anything that
+          The hours you normally work. Set this once, use the diary above for anything that
           changes week to week.
         </p>
         <div className="mt-4">

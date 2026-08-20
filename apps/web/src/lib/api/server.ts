@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
  *
  * Used by server components and server actions. It forwards the staff access
  * token from the httpOnly cookie, so the browser never holds a JWT it could
- * leak through script — the cookie goes out with the request and the token
+ * leak through script, the cookie goes out with the request and the token
  * never reaches client JavaScript.
  *
  * The browser-facing client for patient self-service is lib/api/client.ts.

@@ -11,7 +11,7 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 /**
  * The lead magnet.
  *
- * The download is not conditional on the marketing tick — the guide is the
+ * The download is not conditional on the marketing tick, the guide is the
  * exchange for an address, and making consent the price of it would be both
  * poor practice and hard to defend under UK GDPR. The tick is asked for
  * separately and left unchecked.
@@ -67,7 +67,7 @@ export function GuideForm({ source = 'website' }: { source?: string }) {
       <div className="rounded-lg border border-signal/25 bg-signal-tint px-6 py-8">
         <p className="eyebrow text-signal">On its way</p>
         <h3 className="mt-3 font-display text-h3 font-medium text-ink">
-          Thanks{done.name ? `, ${done.name.split(' ')[0]}` : ''} — it is in your inbox.
+          Thanks{done.name ? `, ${done.name.split(' ')[0]}` : ''}, it is in your inbox.
         </h3>
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">
           We have emailed you a copy. You can also read it right now.
@@ -112,7 +112,7 @@ export function GuideForm({ source = 'website' }: { source?: string }) {
       <Checkbox
         name="marketing"
         label="Email me occasionally about peptide therapy and the consultation service."
-        description="Optional — you get the guide either way. Unsubscribe at any time."
+        description="Optional, you get the guide either way. Unsubscribe at any time."
       />
 
       <div className="flex flex-wrap items-center gap-4 pt-1">

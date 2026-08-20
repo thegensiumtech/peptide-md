@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn';
 /**
  * A single figure with its label. The number is the loudest thing in the tile;
  * everything else recedes. Where a figure has somewhere to lead, the whole
- * tile is the link — a number the reader can act on should not need a
+ * tile is the link, a number the reader can act on should not need a
  * separate "view" affordance.
  */
 export function StatTile({

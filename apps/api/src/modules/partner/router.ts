@@ -12,7 +12,7 @@ export const partnerRouter = Router();
  * Every handler reads the partner id from the verified token via
  * `partnerIdOf`, never from a parameter or the body. That is the tenant
  * boundary the scope requires to be enforced in the API rather than left to
- * the front end — there is no route here that can be pointed at another
+ * the front end, there is no route here that can be pointed at another
  * partner's data.
  */
 partnerRouter.use(requireAuth, requirePartner);
@@ -74,7 +74,7 @@ partnerRouter.get(
       credentials: credential
         ? {
             clientId: credential.clientId,
-            // Never the secret itself — it is shown once, at issue.
+            // Never the secret itself, it is shown once, at issue.
             secretLastFour: credential.secretLastFour,
             createdAt: credential.createdAt.toISOString(),
             lastRotatedAt: credential.expiresAt?.toISOString() ?? null,

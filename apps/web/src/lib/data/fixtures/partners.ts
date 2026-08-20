@@ -2,7 +2,7 @@ import type { Partner } from '@peptide/shared';
 
 /**
  * Static partner records. The two named partners are the ones from the scope
- * discussion — New You Peptides, who will build against the API, and Five
+ * discussion. New You Peptides, who will build against the API, and Five
  * Peptides, who take the drop-in embed.
  */
 export const partners: Partner[] = [

@@ -4,7 +4,7 @@ import { formatDate, formatTime, formatWeekday, timezoneAbbreviation, timezoneLa
 /**
  * The date stamp.
  *
- * A consultation is a fixed point in a diary, so it is drawn as one — a torn
+ * A consultation is a fixed point in a diary, so it is drawn as one, a torn
  * calendar chit rather than a line of text. It is the anchor of every row in
  * the list and of the appointment header, which is what makes a page of
  * appointments scannable by date alone.

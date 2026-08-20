@@ -25,11 +25,11 @@ const prisma = new PrismaClient();
 const results = [];
 const pass = (name, detail = '') => {
   results.push({ ok: true, name, detail });
-  console.log(`  ✓ ${name}${detail ? ` — ${detail}` : ''}`);
+  console.log(`  ✓ ${name}${detail ? `, ${detail}` : ''}`);
 };
 const fail = (name, detail = '') => {
   results.push({ ok: false, name, detail });
-  console.log(`  ✗ ${name}${detail ? ` — ${detail}` : ''}`);
+  console.log(`  ✗ ${name}${detail ? `, ${detail}` : ''}`);
 };
 
 async function api(path, options = {}) {
@@ -141,7 +141,7 @@ let holdToken = null;
 }
 
 {
-  // Simultaneous, not merely sequential — the case a naive check-then-insert
+  // Simultaneous, not merely sequential, the case a naive check-then-insert
   // gets wrong.
   const { body } = await api('/api/booking/availability?days=21');
   const fresh = body?.data?.days?.[0]?.slots?.[0];
@@ -207,7 +207,7 @@ await prisma.$disconnect();
 
 const failed = results.filter((r) => !r.ok).length;
 console.log(`\n${'='.repeat(60)}`);
-console.log(`Provider: ${provider} — ${results.length - failed} passed, ${failed} failed`);
+console.log(`Provider: ${provider}, ${results.length - failed} passed, ${failed} failed`);
 if (failed === 0) {
   console.log('\nThis provider satisfies the contract and can be switched on in production.');
 } else {

@@ -11,7 +11,7 @@ import { apiFetch } from './server';
 /**
  * Partner portal data.
  *
- * There is no partner id in any of these calls — the API reads it from the
+ * There is no partner id in any of these calls, the API reads it from the
  * signed token. A portal screen cannot ask for another partner's data because
  * it has no way to express the question.
  */

@@ -7,7 +7,7 @@ import { useBooking } from './BookingContext';
 
 /**
  * Terminal screen. It confirms what was booked, says what happens next, and
- * offers the way out — it never loops back into the flow.
+ * offers the way out, it never loops back into the flow.
  */
 export function ConfirmationScreen({
   reminderLeadHours,
@@ -67,7 +67,7 @@ export function ConfirmationScreen({
           {patientEmail ? (
             <p className="mb-5 rounded border border-line bg-surface px-4 py-3 text-micro leading-relaxed text-muted">
               Confirmation and calendar invite sent to{' '}
-              <span className="font-mono text-ink">{patientEmail}</span>. Check the spelling — if it
+              <span className="font-mono text-ink">{patientEmail}</span>. Check the spelling, if it
               is wrong, contact us and we will resend it.
             </p>
           ) : null}
