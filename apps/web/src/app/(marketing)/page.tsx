@@ -1,5 +1,7 @@
 import { GuideForm } from '@/components/guide/GuideForm';
+import Image from 'next/image';
 import Link from 'next/link';
+import { GUIDE, GUIDE_COVER_PATH } from '@peptide/shared';
 import { getAvailableDays } from '@/lib/data/client';
 import { getConsultation } from '@/lib/api/public';
 import { formatDate, formatMoney, formatTime, timezoneLabel } from '@/lib/format';
@@ -109,7 +111,7 @@ export default async function HomePage() {
               questioned, and symptoms nobody connected to what was being injected.
             </p>
             <p className="text-ink">
-              Peptides MD is one thing only, a consultation with a doctor who knows this area and
+              Peptide MD is one thing only, a consultation with a doctor who knows this area and
               has no financial interest in what you decide.
             </p>
           </div>
@@ -176,7 +178,7 @@ export default async function HomePage() {
             <p className="eyebrow">What it is not</p>
             <ul className="mt-6 space-y-5 text-base leading-relaxed text-ink-soft">
               <li>
-                <span className="text-ink">Not a supplier.</span> Peptides MD does not sell,
+                <span className="text-ink">Not a supplier.</span> Peptide MD does not sell,
                 prescribe or dispense any compound.
               </li>
               <li>
@@ -236,27 +238,49 @@ export default async function HomePage() {
       </section>
 
       <div className="mt-section">
-        <section className="shell mt-section">
-        <div className="rounded-lg border border-line bg-surface px-6 py-10 sm:px-10 sm:py-12">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-16">
-            <div>
-              <p className="eyebrow">Free guide</p>
-              <h2 className="mt-4 font-display text-h2 font-medium tracking-tight text-ink">
-                What a doctor would actually tell you about peptides.
-              </h2>
-              <p className="mt-4 max-w-lg text-lead leading-relaxed text-muted">
-                Almost everything written about peptides is written by someone selling them. This is
-                not, including the parts that say you probably should not take anything.
-              </p>
-            </div>
-            <div>
-              <GuideForm source="homepage" />
+        <section className="shell">
+          <div className="overflow-hidden rounded-lg border border-line bg-surface">
+            <div className="grid gap-10 px-6 py-10 sm:px-10 sm:py-12 lg:grid-cols-[minmax(0,0.62fr)_minmax(0,1fr)_minmax(0,1.05fr)] lg:items-center lg:gap-12">
+              {/* The cover, small and tilted. One glance says this is a real
+                  document rather than a mailing-list signup. */}
+              <Link href="/guide" className="group relative mx-auto w-40 shrink-0 lg:w-full lg:max-w-[11rem]">
+                <span
+                  aria-hidden
+                  className="absolute inset-x-2 -bottom-1 top-2 rounded-sm bg-line"
+                />
+                <Image
+                  src={GUIDE_COVER_PATH}
+                  alt=""
+                  width={1588}
+                  height={2246}
+                  sizes="11rem"
+                  className="relative w-full rounded-sm shadow-[0_18px_36px_-14px_rgb(var(--ink)/0.45)] ring-1 ring-line transition-transform duration-normal group-hover:-translate-y-1"
+                />
+              </Link>
+
+              <div>
+                <p className="eyebrow">Free guide · {GUIDE.pages} pages</p>
+                <h2 className="mt-4 font-display text-h2 font-medium tracking-tight text-ink">
+                  What a doctor would actually tell you about peptides.
+                </h2>
+                <p className="mt-4 max-w-lg text-lead leading-relaxed text-muted">
+                  Almost everything written about peptides is written by someone selling them. This
+                  is not, including the parts that say you probably should not take anything.
+                </p>
+                <p className="mt-4 text-micro text-muted">
+                  {GUIDE.compounds} compounds assessed. No dosing protocols, because that is a
+                  conversation, not a download.
+                </p>
+              </div>
+
+              <div>
+                <GuideForm source="homepage" />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <CtaBand />
+        <CtaBand />
       </div>
     </>
   );

@@ -146,7 +146,7 @@ publicBookingRouter.post(
       amount: settings.consultationPrice,
       currency: settings.consultationCurrency,
       patientEmail: email,
-      consultationName: 'Peptides MD consultation',
+      consultationName: 'Peptide MD consultation',
       durationMinutes: settings.consultationDuration,
     });
 

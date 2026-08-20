@@ -81,7 +81,7 @@ export function BookingActions({
         <CardHeader title="Managing this booking" />
         <CardBody>
           <p className="text-micro leading-relaxed text-muted">
-            Cancellations, reschedules and refunds are handled by the Peptides MD team. Ask an
+            Cancellations, reschedules and refunds are handled by the Peptide MD team. Ask an
             administrator if this appointment needs to move.
           </p>
         </CardBody>

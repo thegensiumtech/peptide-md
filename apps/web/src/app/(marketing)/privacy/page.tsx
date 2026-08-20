@@ -4,15 +4,15 @@ import { LegalDocument, type LegalSection } from '@/components/marketing/LegalDo
 export const metadata: Metadata = {
   title: 'Privacy policy',
   description:
-    'What Peptides MD collects, why, how long it is kept, who it is shared with, and the rights you have over it under UK GDPR.',
+    'What Peptide MD collects, why, how long it is kept, who it is shared with, and the rights you have over it under UK GDPR.',
 };
 
 const sections: LegalSection[] = [
   {
     heading: 'Who we are',
     paragraphs: [
-      'Peptides MD provides private medical consultations about peptide therapy. For the purposes of UK data protection law, Peptides MD is the data controller for the information described in this policy.',
-      'If you booked through a partner company’s website, that company is a separate controller for the booking and payment information it holds about you. This policy covers only what Peptides MD holds.',
+      'Peptide MD provides private medical consultations about peptide therapy. For the purposes of UK data protection law, Peptide MD is the data controller for the information described in this policy.',
+      'If you booked through a partner company’s website, that company is a separate controller for the booking and payment information it holds about you. This policy covers only what Peptide MD holds.',
     ],
   },
   {
@@ -68,7 +68,7 @@ const sections: LegalSection[] = [
   {
     heading: 'Security',
     paragraphs: [
-      'Data is encrypted in transit and at rest. Access is restricted to the people who need it to do their job, and access to clinical information is limited to the doctor and to authorised Peptides MD staff.',
+      'Data is encrypted in transit and at rest. Access is restricted to the people who need it to do their job, and access to clinical information is limited to the doctor and to authorised Peptide MD staff.',
     ],
   },
   {

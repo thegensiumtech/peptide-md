@@ -117,7 +117,7 @@ export function ContactForm() {
       <Field label="" error={errors.consent}>
         <Checkbox
           name="consent"
-          label="I agree that Peptides MD may use my details to reply to this enquiry."
+          label="I agree that Peptide MD may use my details to reply to this enquiry."
           description="We do not add you to a mailing list."
         />
       </Field>

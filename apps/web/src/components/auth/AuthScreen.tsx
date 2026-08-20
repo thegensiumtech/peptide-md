@@ -27,7 +27,7 @@ export function AuthScreen({
       <SkipLink />
       <header className="border-b border-line">
         <div className="shell flex h-16 items-center">
-          <Link href="/" aria-label="Peptides MD, home">
+          <Link href="/" aria-label="Peptide MD, home">
             <Wordmark />
           </Link>
         </div>

@@ -120,12 +120,43 @@ if (blockedTime) {
 // --- A booked slot cannot be blocked ----------------------------------------
 
 {
-  const booking = await prisma.booking.findFirst({
-    where: { status: 'CONFIRMED', startsAt: { gte: new Date() } },
-    orderBy: { startsAt: 'asc' },
+  // Made rather than found. Relying on the seed meant this case quietly
+  // reported "nothing to test against" once the seeded diary aged past today,
+  // which reads like a failure but is really an absent test.
+  const doctor = await prisma.doctor.findFirst();
+  const patient = await prisma.patient.upsert({
+    where: { email: 'verify+diary@peptidemd.com' },
+    update: {},
+    create: {
+      email: 'verify+diary@peptidemd.com',
+      name: 'Diary Fixture',
+      phone: '+44 7700 900000',
+      timezone: 'Europe/London',
+    },
   });
 
-  if (booking) {
+  // Far enough out that it cannot collide with the slot the block/unblock
+  // case above is playing with.
+  const startsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  startsAt.setUTCMinutes(0, 0, 0);
+  const endsAt = new Date(startsAt.getTime() + 20 * 60 * 1000);
+
+  const booking = await prisma.booking.create({
+    data: {
+      reference: `PMD-DIARY-${startsAt.getTime()}`,
+      doctorId: doctor.id,
+      patientId: patient.id,
+      channel: 'DIRECT',
+      status: 'CONFIRMED',
+      paymentStatus: 'PAID',
+      startsAt,
+      endsAt,
+      patientTimezone: 'Europe/London',
+      amountPaid: 9500,
+    },
+  });
+
+  {
     // Straight at the API, which is where the rule has to hold, the UI not
     // offering the button is presentation, not protection.
     const token = await context.cookies().then((cs) => cs.find((c) => c.name === 'pmd_access')?.value);
@@ -142,9 +173,9 @@ if (blockedTime) {
     response.status === 409 && body.code === 'SLOT_BOOKED'
       ? pass('A booked slot cannot be blocked', body.error)
       : fail('A booked slot cannot be blocked', `${response.status} ${JSON.stringify(body)}`);
-  } else {
-    fail('A booked slot cannot be blocked', 'no confirmed future booking to test against');
   }
+
+  await prisma.booking.delete({ where: { id: booking.id } }).catch(() => {});
 }
 
 // --- A doctor cannot touch another doctor's diary ----------------------------
@@ -164,6 +195,7 @@ crashes.length === 0 ? pass('No runtime errors') : fail('No runtime errors', cra
 // --- Leave the diary as we found it ------------------------------------------
 
 await prisma.availabilityOverride.deleteMany({ where: { note: 'Blocked from the diary' } });
+await prisma.patient.deleteMany({ where: { email: 'verify+diary@peptidemd.com' } }).catch(() => {});
 await prisma.$disconnect();
 await browser.close();
 

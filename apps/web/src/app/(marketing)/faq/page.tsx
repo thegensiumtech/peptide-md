@@ -27,7 +27,7 @@ export default async function FaqPage() {
         },
         {
           q: 'Can he prescribe me something?',
-          a: 'No. This is a consultation, not a prescribing or dispensing service. Peptides MD does not supply any compound. If your situation needs a prescription, he will tell you what to ask your GP or specialist for, and why.',
+          a: 'No. This is a consultation, not a prescribing or dispensing service. Peptide MD does not supply any compound. If your situation needs a prescription, he will tell you what to ask your GP or specialist for, and why.',
         },
         {
           q: 'Is it worth booking if I have not started anything yet?',
@@ -65,11 +65,11 @@ export default async function FaqPage() {
       items: [
         {
           q: 'Who sees what I write on the intake form?',
-          a: 'The doctor, and the Peptides MD team who administer bookings. It is not shared with anyone else and it is not used for marketing.',
+          a: 'The doctor, and the Peptide MD team who administer bookings. It is not shared with anyone else and it is not used for marketing.',
         },
         {
           q: 'I booked through another company’s website. Who has my data?',
-          a: 'The company you booked with holds your booking and payment details, and Peptides MD holds what is needed to run the appointment and the doctor’s clinical record of it. Both are covered by their own privacy policies.',
+          a: 'The company you booked with holds your booking and payment details, and Peptide MD holds what is needed to run the appointment and the doctor’s clinical record of it. Both are covered by their own privacy policies.',
         },
       ],
     },

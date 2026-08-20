@@ -1,4 +1,4 @@
-// Peptides MD, database schema
+// Peptide MD, database schema
 //
 // Covers Milestone 1 deliverable 4: bookings, patients, intake responses,
 // doctors, partners, rates and invoices. The partner, rate and invoice tables
@@ -614,7 +614,7 @@ model PlatformSettings {
   slotHoldMinutes        Int @default(10)
   defaultRateLimitPerMin Int @default(60)
 
-  emailFromName      String  @default("Peptides MD")
+  emailFromName      String  @default("Peptide MD")
   emailFromAddress   String  @default("appointments@peptidemd.com")
   reminderLeadHours  Int     @default(24)
   notifyDoctorOnBooking      Boolean @default(true)

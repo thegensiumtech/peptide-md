@@ -5,3 +5,4 @@ export * from './doctor';
 export * from './manage';
 export * from './partner';
 export * from './settings';
+export * from './guide';

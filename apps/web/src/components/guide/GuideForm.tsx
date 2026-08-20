@@ -54,7 +54,7 @@ export function GuideForm({ source = 'website' }: { source?: string }) {
         setError(body.error ?? 'We could not send the guide. Try again in a moment.');
         return;
       }
-      setDone({ url: body.data.downloadUrl ?? '/guides/peptides-md-guide.pdf', name });
+      setDone({ url: body.data.downloadUrl ?? '/guides/peptide-md-guide.pdf', name });
     } catch {
       setError('We could not reach the server. Check your connection and try again.');
     } finally {

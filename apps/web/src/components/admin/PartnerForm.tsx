@@ -194,14 +194,14 @@ export function PartnerForm({
         <Card>
           <CardHeader
             title="Branding"
-            description="How the booking flow looks inside their site. The patient never sees Peptides MD."
+            description="How the booking flow looks inside their site. The patient never sees Peptide MD."
           />
           <CardBody className="grid gap-5">
             <Field
               label="Display name"
               htmlFor="display-name"
               required
-              hint="What their patients see. Never 'Peptides MD'."
+              hint="What their patients see. Never 'Peptide MD'."
             >
               <Input
                 id="display-name"

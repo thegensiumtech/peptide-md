@@ -157,7 +157,6 @@ node scripts/verify-diary.mjs            #  8, the doctor's diary
 
 ## Still outstanding
 
-- Peptide MD's real logo and brand palette (placeholder wordmark in `Wordmark.tsx`)
 - A photograph of the doctor (the portrait frame degrades to initials until then)
 - Legal copy approved by Ross's legal advisor, the three legal pages carry a
   visible draft banner until that happens

@@ -11,7 +11,7 @@
  * screen and is never used decoratively.
  */
 :root {
-  /* Taken from the Peptides MD mark: deep navy stem, teal bowl, slate
+  /* Taken from the Peptide MD mark: deep navy stem, teal bowl, slate
      strapline. Every colour in the product derives from these. */
   --paper: 245 248 250; /* #F5F8FA */
   --paper-deep: 234 240 244; /* #EAF0F4 */

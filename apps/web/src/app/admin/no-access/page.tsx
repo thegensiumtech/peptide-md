@@ -50,7 +50,7 @@ export default async function NoAccessPage() {
         </div>
 
         <p className="mt-6 text-micro leading-relaxed text-muted">
-          If you think you should have access to more than this, ask a Peptides MD administrator to
+          If you think you should have access to more than this, ask a Peptide MD administrator to
           change your role.
         </p>
       </div>

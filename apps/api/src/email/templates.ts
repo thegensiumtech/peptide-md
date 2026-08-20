@@ -1,3 +1,4 @@
+import { GUIDE } from '@peptide/shared';
 import type { OutgoingEmail } from './index';
 
 export interface BookingEmailContext {
@@ -47,7 +48,7 @@ export function buildIcs(context: BookingEmailContext): string {
   return [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Peptides MD//Consultations//EN',
+    'PRODID:-//Peptide MD//Consultations//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:REQUEST',
     'BEGIN:VEVENT',
@@ -73,18 +74,35 @@ export function buildIcs(context: BookingEmailContext): string {
     .join('\r\n');
 }
 
+/**
+ * Email palette.
+ *
+ * The site keeps colour in CSS custom properties, which every email client
+ * strips, so the same values are restated here once and interpolated. These
+ * are the tokens from apps/web/src/app/globals.css; if that block changes,
+ * change this one with it.
+ */
+const EMAIL = {
+  paper: '#F5F8FA',
+  surface: '#FFFFFF',
+  ink: '#0C2D4C',
+  muted: '#697D92',
+  line: '#D8E3EA',
+  accent: '#157490',
+} as const;
+
 /** Shared shell. Plain, narrow and readable in every client including Outlook. */
 function shell(heading: string, body: string, footer: string): string {
-  return `<!doctype html><html><body style="margin:0;padding:24px;background:#F6F7F5;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#12211F;">
+  return `<!doctype html><html><body style="margin:0;padding:24px;background:${EMAIL.paper};font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:${EMAIL.ink};">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
-<table role="presentation" width="100%" style="max-width:560px;background:#FFFFFF;border:1px solid #DDE2DE;border-radius:6px;">
+<table role="presentation" width="100%" style="max-width:560px;background:${EMAIL.surface};border:1px solid ${EMAIL.line};border-radius:6px;">
 <tr><td style="padding:28px 28px 8px;">
-<p style="margin:0 0 20px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6B7A76;">Peptides MD</p>
+<p style="margin:0 0 20px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:${EMAIL.muted};">Peptide MD</p>
 <h1 style="margin:0 0 16px;font-size:22px;line-height:1.25;font-weight:600;">${heading}</h1>
 ${body}
 </td></tr>
-<tr><td style="padding:8px 28px 28px;border-top:1px solid #DDE2DE;">
-<p style="margin:16px 0 0;font-size:12px;line-height:1.6;color:#6B7A76;">${footer}</p>
+<tr><td style="padding:8px 28px 28px;border-top:1px solid ${EMAIL.line};">
+<p style="margin:16px 0 0;font-size:12px;line-height:1.6;color:${EMAIL.muted};">${footer}</p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 }
@@ -92,15 +110,15 @@ ${body}
 const p = (text: string) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.6;">${text}</p>`;
 
 const detailBlock = (rows: Array<[string, string]>) =>
-  `<table role="presentation" width="100%" style="margin:18px 0;border:1px solid #DDE2DE;border-radius:4px;">${rows
+  `<table role="presentation" width="100%" style="margin:18px 0;border:1px solid ${EMAIL.line};border-radius:4px;">${rows
     .map(
       ([label, value], i) =>
-        `<tr${i > 0 ? ' style="border-top:1px solid #DDE2DE;"' : ''}><td style="padding:10px 14px;font-size:12px;color:#6B7A76;">${label}</td><td style="padding:10px 14px;font-size:14px;text-align:right;font-family:ui-monospace,Menlo,monospace;">${value}</td></tr>`
+        `<tr${i > 0 ? ` style="border-top:1px solid ${EMAIL.line};"` : ''}><td style="padding:10px 14px;font-size:12px;color:${EMAIL.muted};">${label}</td><td style="padding:10px 14px;font-size:14px;text-align:right;font-family:ui-monospace,Menlo,monospace;">${value}</td></tr>`
     )
     .join('')}</table>`;
 
 const button = (href: string, label: string) =>
-  `<p style="margin:20px 0;"><a href="${href}" style="display:inline-block;background:#B87503;color:#ffffff;text-decoration:none;padding:11px 20px;border-radius:3px;font-size:14px;font-weight:500;">${label}</a></p>`;
+  `<p style="margin:20px 0;"><a href="${href}" style="display:inline-block;background:${EMAIL.accent};color:#ffffff;text-decoration:none;padding:11px 20px;border-radius:3px;font-size:14px;font-weight:500;">${label}</a></p>`;
 
 /**
  * Where the patient goes to move or cancel without writing to anyone. The
@@ -111,7 +129,7 @@ const manageUrl = (context: BookingEmailContext) =>
   `${context.webUrl}/manage/${encodeURIComponent(context.reference)}`;
 
 const manageLine = (context: BookingEmailContext) =>
-  `<p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:#6B7A76;">Need to move or cancel? <a href="${manageUrl(context)}" style="color:#B87503;">Manage your appointment</a>, rescheduling is free, and cancelling with more than 24 hours' notice is refunded in full.</p>`;
+  `<p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:${EMAIL.muted};">Need to move or cancel? <a href="${manageUrl(context)}" style="color:${EMAIL.accent};">Manage your appointment</a>, rescheduling is free, and cancelling with more than 24 hours' notice is refunded in full.</p>`;
 
 export function patientConfirmation(context: BookingEmailContext): OutgoingEmail {
   const when = formatIn(context.startsAt, context.patientTimezone);
@@ -136,7 +154,7 @@ export function patientConfirmation(context: BookingEmailContext): OutgoingEmail
     html: shell(
       'You are in the diary.',
       body,
-      'Peptides MD provides private medical consultations. We do not supply, prescribe or dispense any compound.'
+      'Peptide MD provides private medical consultations. We do not supply, prescribe or dispense any compound.'
     ),
     icsContent: buildIcs(context),
     icsFilename: `${context.reference}.ics`,
@@ -266,15 +284,15 @@ export function accessCodeNotice(input: {
 
   const body = [
     p('Enter this code to see your appointments:'),
-    `<p style="margin:22px 0;text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:34px;letter-spacing:.22em;color:#12211F;">${spaced}</p>`,
+    `<p style="margin:22px 0;text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:34px;letter-spacing:.22em;color:${EMAIL.ink};">${spaced}</p>`,
     p(`It works once, and expires in ${input.minutes} minutes.`),
-    `<p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:#6B7A76;">If you did not ask for this, ignore it. Nothing has changed, and nobody can see your appointments without this code.</p>`,
+    `<p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:${EMAIL.muted};">If you did not ask for this, ignore it. Nothing has changed, and nobody can see your appointments without this code.</p>`,
   ].join('');
 
   return {
     to: input.to,
-    subject: `${spaced} is your Peptides MD code`,
-    text: `Your Peptides MD code is ${input.code}.\n\nIt works once, and expires in ${input.minutes} minutes.\n\nIf you did not ask for this, ignore it, nothing has changed.`,
+    subject: `${spaced} is your Peptide MD code`,
+    text: `Your Peptide MD code is ${input.code}.\n\nIt works once, and expires in ${input.minutes} minutes.\n\nIf you did not ask for this, ignore it, nothing has changed.`,
     html: shell(
       'Your access code',
       body,
@@ -319,15 +337,20 @@ export function guideDelivery(name: string, to: string, downloadUrl: string): Ou
   return {
     to,
     subject: 'Your peptide guide',
-    text: `Hi ${first},\n\nHere is the guide: ${downloadUrl}\n\nIt is written by a doctor who has no products to sell, including the parts that say you probably should not take anything.\n\nIf you want that conversation properly, a consultation is twenty minutes and ninety-five pounds.\n\nPeptides MD`,
+    text: `Hi ${first},\n\nHere is the guide: ${downloadUrl}\n\n${GUIDE.pages} pages, ${GUIDE.compounds} compounds assessed, and no dosing protocols, because that is a conversation rather than a download.\n\nIt is written by a doctor who has no products to sell, including the parts that say you probably should not take anything.\n\nIf you want that conversation properly, a consultation is twenty minutes and ninety-five pounds.\n\nPeptide MD`,
     html: shell(
       `Here is your guide, ${first}.`,
       [
         p('It is written by a doctor with no products, no suppliers and no affiliate income, including the parts that say you probably should not take anything at all.'),
+        detailBlock([
+          ['Pages', String(GUIDE.pages)],
+          ['Compounds assessed', String(GUIDE.compounds)],
+          ['Dosing protocols', 'None'],
+        ]),
         button(downloadUrl, 'Download the guide'),
-        p('If you would rather ask about your own situation, a consultation is twenty minutes with a GMC-registered doctor.'),
+        p('No dosing protocols are published, because the right dose depends on you rather than on a table. If you would rather ask about your own situation, a consultation is twenty minutes with a GMC-registered doctor.'),
       ].join(''),
-      'General information, not medical advice. Peptides MD does not supply, prescribe or dispense any compound.'
+      'General information, not medical advice. Peptide MD does not supply, prescribe or dispense any compound.'
     ),
   };
 }

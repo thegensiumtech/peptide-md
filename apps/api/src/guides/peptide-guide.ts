@@ -1,7 +1,7 @@
 /**
  * "The honest peptide guide", the lead magnet.
  *
- * Written from scratch for Peptides MD. It covers the compounds people
+ * Written from scratch for Peptide MD. It covers the compounds people
  * actually ask about, because a guide that avoids them is not useful, but it
  * deliberately publishes no dosing protocols. A GMC-registered doctor's brand
  * printing dose instructions for unlicensed compounds would contradict its own
@@ -444,7 +444,7 @@ export const CLOSING: GuideSection[] = [
   {
     heading: 'What we do',
     body: [
-      'Peptides MD is a twenty-minute private consultation with a GMC-registered doctor experienced in this area. You describe what you are taking or considering, and what you are trying to fix. He tells you what he thinks.',
+      'Peptide MD is a twenty-minute private consultation with a GMC-registered doctor experienced in this area. You describe what you are taking or considering, and what you are trying to fix. He tells you what he thinks.',
       'We do not sell, supply or prescribe any peptide, and we have no relationship with any supplier. If the honest answer is that you should not be taking anything, that is the answer you get.',
       'If you have already started something and want a second opinion, that is a perfectly good reason to book.',
     ],

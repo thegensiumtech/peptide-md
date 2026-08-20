@@ -75,7 +75,7 @@ async function signIn(
     return { error: 'That is a partner account. Sign in at the partner portal instead.' };
   }
   if (area === 'partner' && role !== 'partner') {
-    return { error: 'That is a Peptides MD account. Sign in at the admin panel instead.' };
+    return { error: 'That is a Peptide MD account. Sign in at the admin panel instead.' };
   }
 
   cookies().set(ACCESS_COOKIE, body.data.accessToken, {

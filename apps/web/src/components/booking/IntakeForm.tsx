@@ -314,7 +314,7 @@ export function IntakeForm() {
         <div className="mt-6 rounded-lg border border-line bg-paper-deep p-5">
           <p className="eyebrow">Privacy</p>
           <p className="mt-3 text-micro leading-relaxed text-muted">
-            These answers go to the doctor and to the Peptides MD team who administer bookings. They
+            These answers go to the doctor and to the Peptide MD team who administer bookings. They
             are never shared with a partner company and never used for marketing.
           </p>
         </div>

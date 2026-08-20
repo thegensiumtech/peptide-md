@@ -23,7 +23,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper">
       <div className="shell flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="shrink-0" aria-label="Peptides MD, home">
+        <Link href="/" className="shrink-0" aria-label="Peptide MD, home">
           <Wordmark />
         </Link>
 

@@ -33,7 +33,7 @@ const request = z.object({
 });
 
 const CONSENT_WORDING =
-  'I would like Peptides MD to email me occasionally about peptide therapy and the consultation service. I can unsubscribe at any time.';
+  'I would like Peptide MD to email me occasionally about peptide therapy and the consultation service. I can unsubscribe at any time.';
 
 /**
  * The lead magnet.
@@ -94,6 +94,6 @@ guideRouter.get(
       data: { downloadCount: { increment: 1 }, lastDownloadAt: new Date() },
     });
 
-    return ok(res, { file: '/guides/peptides-md-guide.pdf', name: record.name });
+    return ok(res, { file: '/guides/peptide-md-guide.pdf', name: record.name });
   })
 );

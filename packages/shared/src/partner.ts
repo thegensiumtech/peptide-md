@@ -16,7 +16,7 @@ export interface PartnerBranding {
   accentColor: string;
   fontFamily: string;
   logoUrl: string | null;
-  /** Name shown to the partner's patients, never 'Peptides MD'. */
+  /** Name shown to the partner's patients, never 'Peptide MD'. */
   displayName: string;
 }
 

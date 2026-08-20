@@ -13,7 +13,7 @@ export function MobileNav({ user }: { user: SessionUser }) {
   return (
     <div className="border-b border-line bg-paper-deep lg:hidden">
       <div className="flex h-14 items-center justify-between px-5">
-        <Link href="/admin" aria-label="Peptides MD admin, dashboard">
+        <Link href="/admin" aria-label="Peptide MD admin, dashboard">
           <Wordmark />
         </Link>
         <button

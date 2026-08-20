@@ -38,14 +38,14 @@ const mono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://peptidemd.com'),
   title: {
-    default: 'Peptides MD. Consult a doctor who knows peptides',
-    template: '%s · Peptides MD',
+    default: 'Peptide MD. Consult a doctor who knows peptides',
+    template: '%s · Peptide MD',
   },
   description:
     'Book a private video consultation with a UK-registered doctor experienced in peptide therapy. Twenty minutes, honest guidance, no product to sell you.',
   openGraph: {
     type: 'website',
-    siteName: 'Peptides MD',
+    siteName: 'Peptide MD',
   },
   robots: { index: true, follow: true },
 };
