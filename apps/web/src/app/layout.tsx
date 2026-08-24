@@ -47,11 +47,25 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Peptide MD',
   },
-  robots: { index: true, follow: true },
+  /**
+   * Indexing is opt-in, not the default.
+   *
+   * The site goes onto the live domain before the content behind it is final:
+   * the doctor's name and GMC number are placeholders until Ross supplies the
+   * real ones, and the three legal pages carry a visible draft banner. Google
+   * caching a fabricated registration number is far harder to undo than
+   * waiting, so a build only asks to be indexed when someone has said so.
+   *
+   * Set NEXT_PUBLIC_ALLOW_INDEXING=true once the content is real.
+   */
+  robots:
+    process.env.NEXT_PUBLIC_ALLOW_INDEXING === 'true'
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#F6F7F5',
+  themeColor: '#F5F8FA',
   width: 'device-width',
   initialScale: 1,
 };

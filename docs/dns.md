@@ -21,12 +21,17 @@ Two things to know about the GoDaddy form before you start:
 
 ## 1. The site
 
+The live site runs on the apex and `www`. GoDaddy's parking records for both
+must be **deleted first**, otherwise the new ones will not save.
+
 | Type | Name | Value |
 |---|---|---|
-| A | `staging` | `100.29.81.212` |
+| A | `@` | `100.29.81.212` |
+| CNAME | `www` | `peptidemd.co.uk` |
 
-That is the staging server. The apex (`peptidemd.co.uk`) and `www` are left on
-GoDaddy's parking page deliberately, see [Why not the apex yet](#why-not-the-apex-yet).
+`@` means the domain itself. GoDaddy currently has two parking A records on
+`@` (`15.197.148.33` and `3.33.130.190`) and a `www` record pointing at them.
+Delete all of those, then add the two above.
 
 ## 2. Email sending, SES DKIM
 
@@ -54,18 +59,32 @@ likely to be filtered.
 | MX | `mail` | `feedback-smtp.eu-west-2.amazonses.com` | 10 |
 | TXT | `mail` | `v=spf1 include:amazonses.com ~all` | |
 
-## 4. DMARC
+## 4. DMARC, edit rather than add
 
-| Type | Name | Value |
-|---|---|---|
-| TXT | `_dmarc` | `v=DMARC1; p=none;` |
+**GoDaddy has already created a `_dmarc` record.** It currently reads:
 
-`p=none` monitors without rejecting anything, which is the right setting while
-we confirm every legitimate sender passes. Tighten to `p=quarantine` once mail
-has been flowing cleanly for a couple of weeks.
+```
+v=DMARC1; p=quarantine; adkim=r; aspf=r; rua=mailto:dmarc_rua@onsecureserver.net;
+```
 
-No `rua=` reporting address is set, because reports need a mailbox on the
-domain to arrive at and there is not one yet.
+Do **not** add a second one. A domain with two DMARC records has no valid
+policy at all, and receivers discard both.
+
+**Edit** the existing record and change `p=quarantine` to `p=none`, leaving
+everything else as it is:
+
+```
+v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:dmarc_rua@onsecureserver.net;
+```
+
+`p=quarantine` tells receivers to spam-folder anything that fails. On a domain
+that has never sent mail and whose DKIM records are not live yet, that means
+the first confirmation emails land in spam and the domain starts building a
+poor reputation. `p=none` monitors without punishing while we confirm SPF and
+DKIM are aligning, which is the normal rollout order.
+
+Put it back to `p=quarantine` once mail has been flowing cleanly for a couple
+of weeks. That is a real improvement, just not the right first step.
 
 ## What happens after the records are added
 
@@ -84,15 +103,32 @@ our side:
    `SES_FROM_EMAIL=appointments@peptidemd.co.uk`.
 5. Update the Stripe webhook endpoint to the new hostname.
 
-## Why not the apex yet
+## Before the site is indexed
 
-`peptidemd.co.uk` and `www` stay parked until a production server exists.
+The domain going live and the site being ready for the public are two separate
+things. These are outstanding at the time of writing:
 
-The box at `100.29.81.212` runs Stripe **test** keys and a seeded demo diary.
-Pointing the public domain at it would put a site that takes fake payments and
-shows invented appointments on the address people will find in search results
-and on business cards. Staging gets its own subdomain, production takes the
-apex when it is built, and nothing has to be migrated later.
+1. **The doctor is invented.** The site publishes "Dr James Hartley, MBBS
+   MRCGP, GMC 7214883" on `/the-doctor`, in the portrait frame on the home
+   page, and in the page's meta description, which is the text Google shows in
+   results. The name and the number are placeholders. GMC numbers are seven
+   digits, so 7214883 may well belong to a real doctor who is not ours. This
+   has to be the real name, credentials and registration number before anyone
+   outside the team sees the site.
+2. **The legal pages are drafts** and say so in a visible banner. Privacy,
+   terms and the medical disclaimer need Ross's legal advisor.
+3. **Stripe is in test mode.** Real cards are declined. Live keys are needed
+   from the TDH Stripe account before the site can take money.
+4. **SES is in the sandbox.** Confirmation emails only reach individually
+   verified addresses, so a real patient booking would receive nothing.
+5. **The diary and admin panel hold seeded demo data**, including invented
+   patients, partners and invoices.
+
+Because of 1 and 2, indexing is opt-in. `apps/web/src/app/layout.tsx` emits
+`noindex` unless `NEXT_PUBLIC_ALLOW_INDEXING=true` is set. The site is fully
+reachable by anyone with the link either way; this only stops search engines
+recording placeholder content that is awkward to get removed later. Set it once
+the content above is real.
 
 ## Region
 
