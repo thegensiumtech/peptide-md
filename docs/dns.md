@@ -11,9 +11,13 @@ Two things to know about the GoDaddy form before you start:
   full name produces `staging.peptidemd.co.uk.peptidemd.co.uk`.
 - **MX priority** is its own field. Put `10` in it and only the hostname in
   Value.
-- **TTL** is a dropdown, not a number. Leave every record on the default
-  **1/2 Hour**. Short enough that changing an IP or re-issuing a DKIM token
-  propagates in minutes rather than sitting cached for a day.
+- **TTL** is a dropdown, not a number. Take whatever it defaults to, which is
+  1/2 Hour on some record types and 1 Hour on others. Either is fine. The one
+  to avoid is **1 Week**: if an IP changes or a DKIM token is re-issued,
+  resolvers would keep serving the dead value for seven days.
+- **CNAME values** are sometimes silently suffixed with your own domain. After
+  saving, check the row reads `....dkim.amazonses.com` and not
+  `....dkim.amazonses.com.peptidemd.co.uk`.
 
 ## 1. The site
 
