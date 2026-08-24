@@ -225,8 +225,8 @@ async function main() {
 
   // --- Users -------------------------------------------------------------
   const users = [
-    { email: 'ross@peptidemd.com', name: 'Ross Calder', role: UserRole.ADMIN, partnerSlug: null, doctorId: null },
-    { email: 'james@peptidemd.com', name: 'Dr James Hartley', role: UserRole.DOCTOR, partnerSlug: null, doctorId: doctor.id },
+    { email: 'ross@peptidemd.co.uk', name: 'Ross Calder', role: UserRole.ADMIN, partnerSlug: null, doctorId: null },
+    { email: 'james@peptidemd.co.uk', name: 'Dr James Hartley', role: UserRole.DOCTOR, partnerSlug: null, doctorId: doctor.id },
     { email: 'dana@newyoupeptides.com.au', name: 'Dana Whitfield', role: UserRole.PARTNER, partnerSlug: 'new-you-peptides', doctorId: null },
     { email: 'marcus@fivepeptides.co.uk', name: 'Marcus Iles', role: UserRole.PARTNER, partnerSlug: 'five-peptides', doctorId: null },
   ];

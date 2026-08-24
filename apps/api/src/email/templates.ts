@@ -52,7 +52,7 @@ export function buildIcs(context: BookingEmailContext): string {
     'CALSCALE:GREGORIAN',
     'METHOD:REQUEST',
     'BEGIN:VEVENT',
-    `UID:${context.reference}@peptidemd.com`,
+    `UID:${context.reference}@peptidemd.co.uk`,
     `DTSTAMP:${stamp(new Date())}`,
     `DTSTART:${stamp(context.startsAt)}`,
     `DTEND:${stamp(context.endsAt)}`,

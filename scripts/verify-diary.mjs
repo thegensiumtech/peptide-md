@@ -31,7 +31,7 @@ page.on('pageerror', (e) => crashes.push(e.message.slice(0, 120)));
 
 // Signed in as the doctor, this is his screen, and it exercises the RBAC path.
 await page.goto(`${WEB}/admin/login`, { waitUntil: 'networkidle' });
-await page.fill('#email', 'james@peptidemd.com');
+await page.fill('#email', 'james@peptidemd.co.uk');
 await page.fill('#password', 'peptide-dev-2026');
 await Promise.all([
   page.waitForURL((u) => !u.pathname.endsWith('/login'), { timeout: 20000 }),
@@ -125,10 +125,10 @@ if (blockedTime) {
   // which reads like a failure but is really an absent test.
   const doctor = await prisma.doctor.findFirst();
   const patient = await prisma.patient.upsert({
-    where: { email: 'verify+diary@peptidemd.com' },
+    where: { email: 'verify+diary@peptidemd.co.uk' },
     update: {},
     create: {
-      email: 'verify+diary@peptidemd.com',
+      email: 'verify+diary@peptidemd.co.uk',
       name: 'Diary Fixture',
       phone: '+44 7700 900000',
       timezone: 'Europe/London',
@@ -195,7 +195,7 @@ crashes.length === 0 ? pass('No runtime errors') : fail('No runtime errors', cra
 // --- Leave the diary as we found it ------------------------------------------
 
 await prisma.availabilityOverride.deleteMany({ where: { note: 'Blocked from the diary' } });
-await prisma.patient.deleteMany({ where: { email: 'verify+diary@peptidemd.com' } }).catch(() => {});
+await prisma.patient.deleteMany({ where: { email: 'verify+diary@peptidemd.co.uk' } }).catch(() => {});
 await prisma.$disconnect();
 await browser.close();
 

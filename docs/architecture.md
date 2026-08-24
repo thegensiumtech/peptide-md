@@ -15,7 +15,7 @@ scheduling and Stripe integration design.
 ```mermaid
 flowchart TB
   subgraph clients [ ]
-    P[Patient<br/>peptidemd.com]
+    P[Patient<br/>peptidemd.co.uk]
     PP[Patient<br/>on a partner site]
     A[Peptide MD team<br/>admin + doctor]
     PS[Partner staff]

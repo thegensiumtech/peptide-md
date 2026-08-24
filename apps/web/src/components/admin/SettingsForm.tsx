@@ -33,7 +33,7 @@ export function SettingsForm({ settings }: { settings: PlatformSettings }) {
         <Card>
           <CardHeader
             title="Consultation"
-            description="What a patient booking directly on peptidemd.com pays and gets."
+            description="What a patient booking directly on peptidemd.co.uk pays and gets."
           />
           <CardBody className="grid gap-5">
             <div className="grid gap-5 sm:grid-cols-2">

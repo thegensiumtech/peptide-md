@@ -325,7 +325,7 @@ section('2. Guards and failure handling');
     : fail('Unauthenticated admin redirected', page.url());
 
   // Wrong credentials.
-  await page.fill('#email', 'ross@peptidemd.com');
+  await page.fill('#email', 'ross@peptidemd.co.uk');
   await page.fill('#password', 'definitely-wrong');
   await page.click('button[type=submit]');
   await page.waitForTimeout(1500);
@@ -354,7 +354,7 @@ section('3. Admin, live data and RBAC');
   const page = await context.newPage();
   const crashes = watchForCrashes(page, 'admin');
 
-  await signIn(page, 'admin', 'ross@peptidemd.com');
+  await signIn(page, 'admin', 'ross@peptidemd.co.uk');
   await shot(page, '06-admin-dashboard');
   pass('Admin signed in with real credentials');
 
@@ -412,7 +412,7 @@ section('3. Admin, live data and RBAC');
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
 
-  await signIn(page, 'admin', 'james@peptidemd.com');
+  await signIn(page, 'admin', 'james@peptidemd.co.uk');
   pass('Doctor signed in through the shared admin door');
 
   const nav = await page.locator('nav[aria-label=Admin]').innerText();
@@ -503,7 +503,7 @@ const WIDTHS = [320, 375, 414, 768, 1024, 1440];
 // One sign-in, reused at every width.
 const authContext = await browser.newContext();
 const authPage = await authContext.newPage();
-await signIn(authPage, 'admin', 'ross@peptidemd.com');
+await signIn(authPage, 'admin', 'ross@peptidemd.co.uk');
 const adminSession = await authContext.storageState();
 await authContext.close();
 

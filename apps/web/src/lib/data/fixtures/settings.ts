@@ -24,7 +24,7 @@ export const platformSettings: PlatformSettings = {
   },
   notifications: {
     fromName: 'Peptide MD',
-    fromEmail: 'appointments@peptidemd.com',
+    fromEmail: 'appointments@peptidemd.co.uk',
     reminderLeadHours: 24,
     notifyDoctorOnBooking: true,
     notifyDoctorOnCancellation: true,

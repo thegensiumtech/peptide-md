@@ -1,7 +1,7 @@
 /**
  * Booking domain.
  *
- * Every booking, taken on peptidemd.com or inside a partner's website, is
+ * Every booking, taken on peptidemd.co.uk or inside a partner's website, is
  * mirrored here and carries the channel it arrived through. That tag is what
  * the whole commercial model rests on: it is how the platform knows, at month
  * end, that New You sent sixty appointments and Five Peptides sent forty five.

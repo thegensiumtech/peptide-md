@@ -226,7 +226,7 @@ ${CLOSING.map(section).join('')}
     <div><span>Registration</span><strong>GMC</strong></div>
   </div>
   <div class="cta">
-    <a href="https://peptidemd.com">Book a consultation</a>
+    <a href="https://peptidemd.co.uk">Book a consultation</a>
     <p class="small">No products, no suppliers, no affiliates. If the honest answer is that you should not be taking anything, that is the answer you get.</p>
   </div>
 </div>

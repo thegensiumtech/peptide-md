@@ -117,8 +117,8 @@ async function crawl(label, paths, setup) {
 }
 
 await crawl('public', PUBLIC);
-await crawl('admin', ADMIN, (p) => signIn(p, 'admin', 'ross@peptidemd.com'));
-await crawl('doctor', DOCTOR, (p) => signIn(p, 'admin', 'james@peptidemd.com'));
+await crawl('admin', ADMIN, (p) => signIn(p, 'admin', 'ross@peptidemd.co.uk'));
+await crawl('doctor', DOCTOR, (p) => signIn(p, 'admin', 'james@peptidemd.co.uk'));
 await crawl('partner', PARTNER, (p) => signIn(p, 'partner', 'dana@newyoupeptides.com.au'));
 
 // --- 2. Patient booking journey ---------------------------------------------
@@ -189,7 +189,7 @@ await crawl('partner', PARTNER, (p) => signIn(p, 'partner', 'dana@newyoupeptides
     ? pass('Unauthenticated admin', 'redirected to login')
     : fail('Unauthenticated admin', page.url());
 
-  await signIn(page, 'admin', 'james@peptidemd.com');
+  await signIn(page, 'admin', 'james@peptidemd.co.uk');
   const nav = await page.locator('nav[aria-label=Admin]').innerText();
   !/Partners|Invoices|Settings/.test(nav)
     ? pass('Doctor nav', 'commercial items hidden')
@@ -234,7 +234,7 @@ for (const width of [320, 375, 768, 1024, 1440]) {
     () => document.documentElement.scrollWidth > window.innerWidth + 1
   );
 
-  await signIn(page, 'admin', 'ross@peptidemd.com');
+  await signIn(page, 'admin', 'ross@peptidemd.co.uk');
   await page.goto(`${BASE}/admin/bookings`, { waitUntil: 'networkidle' });
   const overflowAdmin = await page.evaluate(
     () => document.documentElement.scrollWidth > window.innerWidth + 1

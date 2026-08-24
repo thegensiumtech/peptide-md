@@ -74,7 +74,7 @@ const sections: LegalSection[] = [
   {
     heading: 'Contacting us',
     paragraphs: [
-      'For any question about this policy, or to exercise any of the rights above, email hello@peptidemd.com. We respond within one month.',
+      'For any question about this policy, or to exercise any of the rights above, email hello@peptidemd.co.uk. We respond within one month.',
     ],
   },
 ];

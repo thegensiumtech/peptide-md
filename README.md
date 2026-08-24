@@ -62,8 +62,8 @@ Any password works; the email selects the role.
 
 | Screen | Email | Sees |
 |---|---|---|
-| `/admin/login` | `ross@peptidemd.com` | Everything |
-| `/admin/login` | `james@peptidemd.com` | Own diary and availability only |
+| `/admin/login` | `ross@peptidemd.co.uk` | Everything |
+| `/admin/login` | `james@peptidemd.co.uk` | Own diary and availability only |
 | `/partner/login` | `dana@newyoupeptides.com.au` | New You Peptides only |
 | `/partner/login` | `marcus@fivepeptides.co.uk` | Five Peptides only |
 

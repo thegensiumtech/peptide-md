@@ -192,10 +192,10 @@ export function CredentialsPanel({ partner }: { partner: Partner }) {
             <p className="text-micro leading-relaxed text-muted">
               We support your developers directly through onboarding. Email{' '}
               <a
-                href="mailto:developers@peptidemd.com"
+                href="mailto:developers@peptidemd.co.uk"
                 className="text-ink underline decoration-line underline-offset-4 hover:decoration-accent"
               >
-                developers@peptidemd.com
+                developers@peptidemd.co.uk
               </a>{' '}
               and you will get a person, not a ticket queue.
             </p>

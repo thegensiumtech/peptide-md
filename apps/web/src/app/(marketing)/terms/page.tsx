@@ -65,7 +65,7 @@ const sections: LegalSection[] = [
   {
     heading: 'Complaints',
     paragraphs: [
-      'If you are unhappy with any part of the service, email hello@peptidemd.com. We acknowledge complaints within two working days and aim to resolve them within twenty.',
+      'If you are unhappy with any part of the service, email hello@peptidemd.co.uk. We acknowledge complaints within two working days and aim to resolve them within twenty.',
     ],
   },
   {

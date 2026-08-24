@@ -283,7 +283,7 @@ export function PartnerForm({
                 readOnly
                 rows={5}
                 className="font-mono text-micro"
-                value={`<div id="peptide-booking"></div>\n<script\n  src="https://embed.peptidemd.com/v1/widget.js"\n  data-client-id="${partner?.credentials.clientId ?? 'issued on save'}"\n  defer\n></script>`}
+                value={`<div id="peptide-booking"></div>\n<script\n  src="https://embed.peptidemd.co.uk/v1/widget.js"\n  data-client-id="${partner?.credentials.clientId ?? 'issued on save'}"\n  defer\n></script>`}
               />
             </CardBody>
           </Card>

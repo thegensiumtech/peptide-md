@@ -43,16 +43,16 @@ const auth = (token) => ({ Authorization: `Bearer ${token}` });
 
 // --- Auth and RBAC -----------------------------------------------------------
 
-const adminToken = await login('ross@peptidemd.com');
+const adminToken = await login('ross@peptidemd.co.uk');
 adminToken ? pass('Admin login', 'bcrypt verified, JWT issued') : fail('Admin login');
 
-const doctorToken = await login('james@peptidemd.com');
+const doctorToken = await login('james@peptidemd.co.uk');
 doctorToken ? pass('Doctor login') : fail('Doctor login');
 
 {
   const { body } = await api('/api/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email: 'ross@peptidemd.com', password: 'wrong' }),
+    body: JSON.stringify({ email: 'ross@peptidemd.co.uk', password: 'wrong' }),
   });
   !body.success ? pass('Wrong password rejected') : fail('Wrong password rejected');
 }
@@ -105,7 +105,7 @@ let bookingId = null;
 {
   const { body } = await api('/api/booking/checkout', {
     method: 'POST',
-    body: JSON.stringify({ patientEmail: 'verify+patient@peptidemd.com' }),
+    body: JSON.stringify({ patientEmail: 'verify+patient@peptidemd.co.uk' }),
   });
   bookingId = body.data?.bookingId ?? null;
   body.data?.checkoutUrl?.startsWith('https://checkout.stripe.com')
@@ -142,7 +142,7 @@ let holdToken = null;
   // Two channels reaching for the same time. Exactly one may win.
   const { body: second } = await api('/api/booking/checkout', {
     method: 'POST',
-    body: JSON.stringify({ patientEmail: 'verify+rival@peptidemd.com' }),
+    body: JSON.stringify({ patientEmail: 'verify+rival@peptidemd.co.uk' }),
   });
   await prisma.booking.update({
     where: { id: second.data.bookingId },
@@ -180,7 +180,7 @@ let holdToken = null;
       bookingId,
       holdToken,
       name: 'Verification Patient',
-      email: 'verify+patient@peptidemd.com',
+      email: 'verify+patient@peptidemd.co.uk',
       phone: '+44 7700 900000',
       timezone: 'Australia/Sydney',
       answers: [

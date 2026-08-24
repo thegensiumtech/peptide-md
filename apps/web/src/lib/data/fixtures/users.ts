@@ -19,7 +19,7 @@ export const demoAccounts: DemoAccount[] = [
   {
     id: 'usr_admin',
     name: 'Ross Calder',
-    email: 'ross@peptidemd.com',
+    email: 'ross@peptidemd.co.uk',
     role: 'admin',
     partnerId: null,
     hint: 'Full access, bookings, doctor, partners, rates and invoices',
@@ -27,7 +27,7 @@ export const demoAccounts: DemoAccount[] = [
   {
     id: 'usr_doctor',
     name: 'Dr James Hartley',
-    email: 'james@peptidemd.com',
+    email: 'james@peptidemd.co.uk',
     role: 'doctor',
     partnerId: null,
     hint: 'His own diary and his own availability only',

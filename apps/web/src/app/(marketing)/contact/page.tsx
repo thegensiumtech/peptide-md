@@ -30,10 +30,10 @@ export default function ContactPage() {
                   <dt className="text-micro text-muted">Email</dt>
                   <dd className="mt-1">
                     <a
-                      href="mailto:hello@peptidemd.com"
+                      href="mailto:hello@peptidemd.co.uk"
                       className="font-mono text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
                     >
-                      hello@peptidemd.com
+                      hello@peptidemd.co.uk
                     </a>
                   </dd>
                 </div>

@@ -615,7 +615,7 @@ model PlatformSettings {
   defaultRateLimitPerMin Int @default(60)
 
   emailFromName      String  @default("Peptide MD")
-  emailFromAddress   String  @default("appointments@peptidemd.com")
+  emailFromAddress   String  @default("appointments@peptidemd.co.uk")
   reminderLeadHours  Int     @default(24)
   notifyDoctorOnBooking      Boolean @default(true)
   notifyDoctorOnCancellation Boolean @default(true)

@@ -36,7 +36,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://peptidemd.com'),
+  metadataBase: new URL('https://peptidemd.co.uk'),
   title: {
     default: 'Peptide MD. Consult a doctor who knows peptides',
     template: '%s · Peptide MD',
