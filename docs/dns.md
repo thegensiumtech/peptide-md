@@ -11,12 +11,15 @@ Two things to know about the GoDaddy form before you start:
   full name produces `staging.peptidemd.co.uk.peptidemd.co.uk`.
 - **MX priority** is its own field. Put `10` in it and only the hostname in
   Value.
+- **TTL** is a dropdown, not a number. Leave every record on the default
+  **1/2 Hour**. Short enough that changing an IP or re-issuing a DKIM token
+  propagates in minutes rather than sitting cached for a day.
 
 ## 1. The site
 
-| Type | Name | Value | TTL |
-|---|---|---|---|
-| A | `staging` | `100.29.81.212` | 600 |
+| Type | Name | Value |
+|---|---|---|
+| A | `staging` | `100.29.81.212` |
 
 That is the staging server. The apex (`peptidemd.co.uk`) and `www` are left on
 GoDaddy's parking page deliberately, see [Why not the apex yet](#why-not-the-apex-yet).
@@ -26,11 +29,11 @@ GoDaddy's parking page deliberately, see [Why not the apex yet](#why-not-the-ape
 Three CNAMEs. These are what let SES sign mail as this domain, and until all
 three resolve the domain stays unverified and no mail sends.
 
-| Type | Name | Value | TTL |
-|---|---|---|---|
-| CNAME | `mleje32njth3ngckwfmqe4b4ip2la45t._domainkey` | `mleje32njth3ngckwfmqe4b4ip2la45t.dkim.amazonses.com` | 3600 |
-| CNAME | `rmnwfo5hxbuptvfho2myf225zhcd7gms._domainkey` | `rmnwfo5hxbuptvfho2myf225zhcd7gms.dkim.amazonses.com` | 3600 |
-| CNAME | `scwi3zmoue5e6gnwldjvfzrex5rtaisi._domainkey` | `scwi3zmoue5e6gnwldjvfzrex5rtaisi.dkim.amazonses.com` | 3600 |
+| Type | Name | Value |
+|---|---|---|
+| CNAME | `mleje32njth3ngckwfmqe4b4ip2la45t._domainkey` | `mleje32njth3ngckwfmqe4b4ip2la45t.dkim.amazonses.com` |
+| CNAME | `rmnwfo5hxbuptvfho2myf225zhcd7gms._domainkey` | `rmnwfo5hxbuptvfho2myf225zhcd7gms.dkim.amazonses.com` |
+| CNAME | `scwi3zmoue5e6gnwldjvfzrex5rtaisi._domainkey` | `scwi3zmoue5e6gnwldjvfzrex5rtaisi.dkim.amazonses.com` |
 
 These tokens are specific to the **eu-west-2 (London)** SES identity. If the
 region ever changes, all three change with it.
@@ -42,16 +45,16 @@ Without these, the invisible return-path on every email belongs to
 sending domain, so DMARC alignment fails and confirmation emails are more
 likely to be filtered.
 
-| Type | Name | Value | Priority | TTL |
-|---|---|---|---|---|
-| MX | `mail` | `feedback-smtp.eu-west-2.amazonses.com` | 10 | 3600 |
-| TXT | `mail` | `v=spf1 include:amazonses.com ~all` | | 3600 |
+| Type | Name | Value | Priority |
+|---|---|---|---|
+| MX | `mail` | `feedback-smtp.eu-west-2.amazonses.com` | 10 |
+| TXT | `mail` | `v=spf1 include:amazonses.com ~all` | |
 
 ## 4. DMARC
 
-| Type | Name | Value | TTL |
-|---|---|---|---|
-| TXT | `_dmarc` | `v=DMARC1; p=none;` | 3600 |
+| Type | Name | Value |
+|---|---|---|
+| TXT | `_dmarc` | `v=DMARC1; p=none;` |
 
 `p=none` monitors without rejecting anything, which is the right setting while
 we confirm every legitimate sender passes. Tighten to `p=quarantine` once mail
