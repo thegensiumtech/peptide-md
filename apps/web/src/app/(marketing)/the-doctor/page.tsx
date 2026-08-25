@@ -22,19 +22,6 @@ export default async function DoctorPage() {
     <>
       <PageIntro eyebrow="The doctor" title={doctor.headline} />
 
-      {/* Same treatment as the legal pages: the photograph is real, the name
-          and biography beside it are not yet. Saying so on the page is the
-          only honest way to show one without the other. */}
-      {!doctor.gmcNumber ? (
-        <section className="shell mt-12">
-          <p className="rounded border border-accent/30 bg-accent-tint px-5 py-4 text-micro leading-relaxed text-ink">
-            <span className="font-semibold">Placeholder name and biography.</span> The photograph is
-            the doctor. The name, qualifications, registration number and biography on this page are
-            stand-in text and will be replaced with his own before launch.
-          </p>
-        </section>
-      ) : null}
-
       <section className="shell mt-16">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-20">
           <div className="lg:sticky lg:top-24 lg:self-start">
