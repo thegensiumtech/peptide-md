@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
@@ -7,6 +8,7 @@ import { handle, notFound, ok } from '../../http/errors';
 import { config } from '../../config';
 import { sendEmail } from '../../email';
 import { guideDelivery } from '../../email/templates';
+import { isValidUnsubscribeToken } from '../../email/unsubscribe';
 
 export const guideRouter = Router();
 
@@ -103,3 +105,42 @@ guideRouter.get(
     return ok(res, { file: '/guides/peptide-md-guide.pdf', name: record.name });
   })
 );
+
+/**
+ * Unsubscribe from marketing.
+ *
+ * Deliberately narrow: this turns off marketing only. Someone who opts out
+ * still receives the confirmation, reminder and cancellation emails for an
+ * appointment they have paid for, because those are not marketing and
+ * withholding them would leave a patient not knowing when to attend.
+ *
+ * Accepts GET as well as POST. Mail clients offering a one-click unsubscribe
+ * button issue a POST, and a person clicking the link in the footer issues a
+ * GET; both have to work or the promise on the form is not kept.
+ */
+const unsubscribeSchema = z.object({
+  email: z.string().email(),
+  token: z.string().min(1),
+});
+
+async function handleUnsubscribe(req: Request, res: Response) {
+  const source = req.method === 'GET' ? req.query : req.body;
+  const parsed = unsubscribeSchema.safeParse(source);
+
+  // The same answer either way. Telling an unauthenticated caller that an
+  // address is unknown would turn this into a way of discovering who is on
+  // the list.
+  if (!parsed.success || !isValidUnsubscribeToken(parsed.data.email, parsed.data.token)) {
+    return ok(res, { unsubscribed: true });
+  }
+
+  await prisma.guideRequest.updateMany({
+    where: { email: parsed.data.email.trim().toLowerCase(), marketingConsent: true },
+    data: { marketingConsent: false, unsubscribedAt: new Date() },
+  });
+
+  return ok(res, { unsubscribed: true });
+}
+
+guideRouter.get('/unsubscribe', handle(handleUnsubscribe));
+guideRouter.post('/unsubscribe', handle(handleUnsubscribe));

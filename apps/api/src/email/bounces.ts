@@ -124,9 +124,14 @@ export async function recordDeliveryEvent(raw: string): Promise<void> {
   }
 
   if (kind === 'delivery' && messageId) {
-    // Nothing to correct, but it confirms the message genuinely landed.
+    // Nothing to correct, but it confirms the message reached the mail server.
+    //
+    // Guarded, because these events are not ordered. A complaint arrives after
+    // the delivery that caused it, and SES sends both: writing 'Delivered'
+    // unconditionally overwrote the reason a complaint was recorded, leaving
+    // an audit trail that said the opposite of what happened.
     await prisma.emailLog.updateMany({
-      where: { providerMessageId: messageId },
+      where: { providerMessageId: messageId, bouncedAt: null, complainedAt: null },
       data: { deliveryDetail: 'Delivered' },
     });
   }

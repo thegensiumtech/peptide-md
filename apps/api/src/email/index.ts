@@ -11,6 +11,12 @@ export interface OutgoingEmail {
   /** Calendar invite attached to confirmations and reschedules. */
   icsContent?: string;
   icsFilename?: string;
+  /**
+   * One-click unsubscribe. Set on anything a recipient could reasonably regard
+   * as marketing, so their mail client offers an unsubscribe button rather than
+   * a spam button, which is the outcome that actually costs a sender.
+   */
+  unsubscribeUrl?: string;
 }
 
 interface EmailProvider {
@@ -60,6 +66,12 @@ class SesEmailProvider implements EmailProvider {
       `From: ${from}`,
       `To: ${email.to}`,
       ...(config.SES_REPLY_TO ? [`Reply-To: ${config.SES_REPLY_TO}`] : []),
+      ...(email.unsubscribeUrl
+        ? [
+            `List-Unsubscribe: <${email.unsubscribeUrl}>`,
+            'List-Unsubscribe-Post: List-Unsubscribe=One-Click',
+          ]
+        : []),
       `Subject: ${encode(email.subject)}`,
       'MIME-Version: 1.0',
       `Content-Type: multipart/mixed; boundary="${boundary}"`,

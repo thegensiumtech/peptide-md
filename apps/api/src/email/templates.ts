@@ -1,4 +1,5 @@
 import { GUIDE } from '@peptide/shared';
+import { unsubscribeUrl } from './unsubscribe';
 import type { OutgoingEmail } from './index';
 
 export interface BookingEmailContext {
@@ -334,10 +335,12 @@ export function refundConfirmation(
 /** Delivers the lead-magnet guide. */
 export function guideDelivery(name: string, to: string, downloadUrl: string): OutgoingEmail {
   const first = name.split(' ')[0] ?? name;
+  const optOut = unsubscribeUrl(to);
   return {
     to,
+    unsubscribeUrl: optOut,
     subject: 'Your peptide guide',
-    text: `Hi ${first},\n\nHere is the guide: ${downloadUrl}\n\n${GUIDE.pages} pages, ${GUIDE.compounds} compounds assessed, and no dosing protocols, because that is a conversation rather than a download.\n\nIt is written by a doctor who has no products to sell, including the parts that say you probably should not take anything.\n\nIf you want that conversation properly, a consultation is twenty minutes and ninety-five pounds.\n\nPeptide MD`,
+    text: `Hi ${first},\n\nHere is the guide: ${downloadUrl}\n\n${GUIDE.pages} pages, ${GUIDE.compounds} compounds assessed, and no dosing protocols, because that is a conversation rather than a download.\n\nIt is written by a doctor who has no products to sell, including the parts that say you probably should not take anything.\n\nIf you want that conversation properly, a consultation is twenty minutes and ninety-five pounds.\n\nPeptide MD\n\nUnsubscribe: ${optOut}`,
     html: shell(
       `Here is your guide, ${first}.`,
       [
@@ -350,7 +353,7 @@ export function guideDelivery(name: string, to: string, downloadUrl: string): Ou
         button(downloadUrl, 'Download the guide'),
         p('No dosing protocols are published, because the right dose depends on you rather than on a table. If you would rather ask about your own situation, a consultation is twenty minutes with a GMC-registered doctor.'),
       ].join(''),
-      'General information, not medical advice. Peptide MD does not supply, prescribe or dispense any compound.'
+      `General information, not medical advice. Peptide MD does not supply, prescribe or dispense any compound. <a href="${optOut}" style="color:${EMAIL.muted};">Unsubscribe</a>.`
     ),
   };
 }

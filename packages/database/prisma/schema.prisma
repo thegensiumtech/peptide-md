@@ -743,6 +743,9 @@ model GuideRequest {
 
   /// Explicit and separate from the download itself.
   marketingConsent Boolean @default(false)
+  /// When they opted out. Kept rather than just flipping the flag, so we can
+  /// show when an opt-out was honoured if anyone ever asks.
+  unsubscribedAt   DateTime?
   consentWording   String
 
   emailSentAt DateTime?
