@@ -123,7 +123,9 @@ if (blockedTime) {
   // Made rather than found. Relying on the seed meant this case quietly
   // reported "nothing to test against" once the seeded diary aged past today,
   // which reads like a failure but is really an absent test.
-  const doctor = await prisma.doctor.findFirst();
+  // Filtered, because a sandbox doctor now exists for the partner API and an
+  // unfiltered findFirst could pick him, testing the wrong diary.
+  const doctor = await prisma.doctor.findFirst({ where: { isActive: true } });
   const patient = await prisma.patient.upsert({
     where: { email: 'verify+diary@peptidemd.co.uk' },
     update: {},

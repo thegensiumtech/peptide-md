@@ -38,6 +38,24 @@ const created = [];
  * platform actually offers. An EXTRA override is used because it adds capacity
  * on one specific date without touching the standing weekly pattern.
  */
+/**
+ * Refuses a date that has already passed.
+ *
+ * Availability never offers a past slot, so a hardcoded date here stops
+ * testing anything the moment it ages out, and reports a clean pass or a
+ * confusing failure rather than "this test has expired".
+ */
+function assertFuture(date) {
+  if (new Date(`${date}T23:59:59.000Z`) <= new Date()) {
+    console.error(
+      `\n  This suite is anchored to ${date}, which has passed. Roll the dates`
+    );
+    console.error('  in verify-timezones.mjs forward to the next equivalent transition.\n');
+    process.exit(1);
+  }
+  return date;
+}
+
 async function utcFor(date) {
   const override = await prisma.availabilityOverride.create({
     data: {
@@ -113,8 +131,13 @@ console.log(`\nDoctor timezone: ${doctor.timezone}\n`);
 // late-evening UK slot has to land at a civilised Sydney hour either way.
 
 {
-  const august = await utcFor('2026-08-21'); // London BST, Sydney AEST (+10)
-  const october = await utcFor('2026-10-27'); // London GMT, Sydney AEDT (+11)
+  // Dates must be in the future: availability deliberately never offers a slot
+  // in the past, so a date-anchored test like this one quietly reports "no
+  // slot" once it ages past today. That is an expired fixture reading as a
+  // failure, which is exactly what happened to 2026-08-21. assertFuture below
+  // makes it say so plainly instead.
+  const august = await utcFor(assertFuture('2027-08-20')); // London BST, Sydney AEST (+10)
+  const october = await utcFor(assertFuture('2026-10-27')); // London GMT, Sydney AEDT (+11)
 
   const sydney = (iso) =>
     new Intl.DateTimeFormat('en-GB', {

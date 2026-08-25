@@ -326,6 +326,11 @@ model Booking {
   amountPaid Int?
   currency   String @default("GBP")
 
+  /// Made with a sandbox credential while a partner builds their integration.
+  /// These sit on a separate doctor so they cannot consume a real appointment,
+  /// and they are excluded from admin lists, reporting and invoicing.
+  isSandbox Boolean @default(false)
+
   /// Where the consultation happens. Emailed on confirmation and reminder.
   joiningUrl String?
 

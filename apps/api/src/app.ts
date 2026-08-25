@@ -15,6 +15,7 @@ import { manageBookingRouter } from './modules/bookings/manageRouter';
 import { webhookRouter } from './modules/webhooks/router';
 import { adminRouter } from './modules/admin/router';
 import { partnerRouter } from './modules/partner/router';
+import { partnerApiRouter } from './modules/partnerApi/router';
 import { guideRouter } from './modules/guide/router';
 import { schedulingProvider } from './scheduling';
 import { emailProviderName } from './email';
@@ -58,6 +59,9 @@ export function createApp() {
   app.use('/api/booking', publicBookingRouter);
   app.use('/api/admin', adminRouter);
   app.use('/api/partner', partnerRouter);
+  // The partner-facing product. Versioned separately from everything above,
+  // because other companies build against it and its shape is a promise.
+  app.use('/api/v1', partnerApiRouter);
   app.use('/api/guide', guideRouter);
 
   app.use(notFoundHandler);

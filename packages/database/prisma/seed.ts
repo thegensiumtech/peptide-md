@@ -118,6 +118,47 @@ async function main() {
     })),
   });
 
+  // --- Sandbox doctor ------------------------------------------------------
+  //
+  // Where sandbox credentials book. Separate from the real doctor rather than
+  // filtered out of him, because the index that stops double booking is
+  // (doctorId, startsAt): on a different doctor a partner's test booking
+  // cannot collide with a real appointment even if every filter above it were
+  // removed. isActive is false so activeDoctor() can never select him, but
+  // availability still resolves when asked for by id, which is what the
+  // sandbox needs.
+  const sandboxDoctor = await prisma.doctor.upsert({
+    where: { gmcNumber: 'SANDBOX' },
+    update: {},
+    create: {
+      name: 'Sandbox Doctor',
+      credentials: 'Test fixture',
+      gmcNumber: 'SANDBOX',
+      headline: 'Not a real doctor. Bookings made here are discarded.',
+      bio: 'This record exists so partners can build and test an integration without consuming a real appointment.',
+      specialisms: ['Integration testing'],
+      languages: ['English'],
+      isActive: false,
+    },
+  });
+
+  await prisma.availabilityWindow.deleteMany({ where: { doctorId: sandboxDoctor.id } });
+  await prisma.availabilityWindow.createMany({
+    // Wide open, every weekday. A partner testing at 2am should not be blocked
+    // by our consulting hours.
+    data: (
+      [
+        Weekday.MONDAY,
+        Weekday.TUESDAY,
+        Weekday.WEDNESDAY,
+        Weekday.THURSDAY,
+        Weekday.FRIDAY,
+        Weekday.SATURDAY,
+        Weekday.SUNDAY,
+      ] as Weekday[]
+    ).map((day) => ({ doctorId: sandboxDoctor.id, day, startTime: '00:00', endTime: '23:40' })),
+  });
+
   await prisma.availabilityOverride.deleteMany({ where: { doctorId: doctor.id } });
   await prisma.availabilityOverride.createMany({
     data: [
@@ -213,14 +254,33 @@ async function main() {
     });
     partners.set(seed.slug, partner.id);
 
+    // The dev secret is derived from the slug so a verification script can
+    // reconstruct it without the seed having to hand it back.
+    const liveSecret = `${seed.slug}-dev-secret`;
     await prisma.partnerCredential.upsert({
       where: { clientId: seed.clientId },
       update: {},
       create: {
         partnerId: partner.id,
         clientId: seed.clientId,
-        secretHash: await bcrypt.hash(`${seed.slug}-dev-secret`, 10),
-        secretLastFour: seed.clientId.slice(-4),
+        secretHash: await bcrypt.hash(liveSecret, 10),
+        // The last four of the secret, which is what the portal shows to say
+        // which secret is in use. It was taking them from the client id, which
+        // told the reader nothing.
+        secretLastFour: liveSecret.slice(-4),
+      },
+    });
+
+    const sandboxSecret = `${seed.slug}-sandbox-secret`;
+    await prisma.partnerCredential.upsert({
+      where: { clientId: `${seed.clientId}_sandbox` },
+      update: {},
+      create: {
+        partnerId: partner.id,
+        clientId: `${seed.clientId}_sandbox`,
+        secretHash: await bcrypt.hash(sandboxSecret, 10),
+        secretLastFour: sandboxSecret.slice(-4),
+        isSandbox: true,
       },
     });
   }
