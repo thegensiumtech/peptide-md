@@ -20,7 +20,7 @@ export function GuideForm({ source = 'website' }: { source?: string }) {
   const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState<{ url: string; name: string } | null>(null);
+  const [done, setDone] = useState<{ url: string; name: string; emailed: boolean } | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,7 +54,11 @@ export function GuideForm({ source = 'website' }: { source?: string }) {
         setError(body.error ?? 'We could not send the guide. Try again in a moment.');
         return;
       }
-      setDone({ url: body.data.downloadUrl ?? '/guides/peptide-md-guide.pdf', name });
+      setDone({
+        url: body.data.downloadUrl ?? '/guides/peptide-md-guide.pdf',
+        name,
+        emailed: body.data.sent !== false,
+      });
     } catch {
       setError('We could not reach the server. Check your connection and try again.');
     } finally {
@@ -63,14 +67,20 @@ export function GuideForm({ source = 'website' }: { source?: string }) {
   }
 
   if (done) {
+    // The guide is handed over either way. Claiming an inbox delivery that the
+    // mail provider rejected just sends someone hunting through their spam
+    // folder for something that was never sent.
     return (
       <div className="rounded-lg border border-signal/25 bg-signal-tint px-6 py-8">
-        <p className="eyebrow text-signal">On its way</p>
+        <p className="eyebrow text-signal">{done.emailed ? 'On its way' : 'Ready to read'}</p>
         <h3 className="mt-3 font-display text-h3 font-medium text-ink">
-          Thanks{done.name ? `, ${done.name.split(' ')[0]}` : ''}, it is in your inbox.
+          Thanks{done.name ? `, ${done.name.split(' ')[0]}` : ''},{' '}
+          {done.emailed ? 'it is in your inbox.' : 'here is your guide.'}
         </h3>
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-          We have emailed you a copy. You can also read it right now.
+          {done.emailed
+            ? 'We have emailed you a copy. You can also read it right now.'
+            : 'We could not email your copy this time, so open it here and save it. Nothing else is needed from you.'}
         </p>
         <div className="mt-5 flex flex-wrap items-center gap-4">
           <Button onClick={() => window.open(done.url, '_blank')}>Open the guide</Button>

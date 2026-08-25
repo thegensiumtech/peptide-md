@@ -114,11 +114,18 @@ const provider: EmailProvider =
  * patient get their confirmation?" is answerable, and so a reminder cannot go
  * out twice.
  */
+/**
+ * Sends and records the attempt. Never throws: a failed email must not roll
+ * back a paid, confirmed booking.
+ *
+ * Returns whether it actually went out, so callers that are reporting to a
+ * user can say so honestly. Callers in the booking flow can keep ignoring it.
+ */
 export async function sendEmail(
   type: EmailType,
   email: OutgoingEmail,
   bookingId?: string
-): Promise<void> {
+): Promise<boolean> {
   const log = await prisma.emailLog.create({
     data: { bookingId: bookingId ?? null, type, recipient: email.to, subject: email.subject },
   });
@@ -129,15 +136,16 @@ export async function sendEmail(
       where: { id: log.id },
       data: { sentAt: new Date(), providerMessageId: messageId },
     });
+    return true;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown email failure';
     await prisma.emailLog.update({
       where: { id: log.id },
       data: { failedAt: new Date(), error: message },
     });
-    // A failed email must not roll back a paid, confirmed booking. It is
-    // recorded and can be resent from the admin panel.
+    // Recorded rather than thrown, and resendable from the admin panel.
     logger.error({ err: message, type, to: email.to }, 'Email send failed');
+    return false;
   }
 }
 

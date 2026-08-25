@@ -68,15 +68,21 @@ guideRouter.post(
     });
 
     const downloadUrl = `${config.WEB_URL}/guide/download/${downloadToken}`;
-    await sendEmail('GUIDE_DELIVERY', guideDelivery(record.name, email, downloadUrl));
-    await prisma.guideRequest.update({
-      where: { id: record.id },
-      data: { emailSentAt: new Date() },
-    });
+    const sent = await sendEmail('GUIDE_DELIVERY', guideDelivery(record.name, email, downloadUrl));
 
-    // Returned as well as emailed, so the browser can offer the download at
-    // once rather than making someone wait on an inbox.
-    return ok(res, { sent: true, downloadUrl });
+    // Stamped only on a real send. Previously this was set unconditionally, so
+    // the admin panel showed a guide as delivered when SES had rejected it.
+    if (sent) {
+      await prisma.guideRequest.update({
+        where: { id: record.id },
+        data: { emailSentAt: new Date() },
+      });
+    }
+
+    // The download link is returned either way, so the browser can offer the
+    // guide at once rather than making someone wait on an inbox, and so a
+    // failed send still leaves the person with what they asked for.
+    return ok(res, { sent, downloadUrl });
   })
 );
 
