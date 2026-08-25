@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Start everything needed to run Peptides MD locally.
+# Start everything needed to run Peptide MD locally.
 #
 #   ./dev.sh
 #
@@ -35,7 +35,7 @@ cleanup() {
 trap cleanup INT TERM
 
 say ""
-say "${BOLD}Peptides MD, local${OFF}"
+say "${BOLD}Peptide MD, local${OFF}"
 say ""
 
 # --- Prerequisites ----------------------------------------------------------
