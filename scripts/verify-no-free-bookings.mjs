@@ -159,7 +159,10 @@ console.log('\nTrying to book a £95 consultation without paying:\n');
     : leaked('No appointment exists from any attempt', `${confirmed} got through`);
 }
 
-await prisma.booking.deleteMany({ where: { id: { in: created } } });
+// Delete through the relation rather than the ids we happened to capture. An
+// attempt that is refused before its id comes back still leaves a booking row,
+// and deleting the patient first then fails on the foreign key.
+await prisma.booking.deleteMany({ where: { patient: { email: { startsWith: 'attack+' } } } });
 await prisma.patient.deleteMany({ where: { email: { startsWith: 'attack+' } } });
 await prisma.$disconnect();
 
