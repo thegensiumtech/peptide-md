@@ -1,6 +1,7 @@
 import { prisma, type EmailType } from '@peptide/database';
 import { config } from '../config';
 import { logger } from '../logger';
+import { isSuppressed } from './bounces';
 
 export interface OutgoingEmail {
   to: string;
@@ -126,6 +127,24 @@ export async function sendEmail(
   email: OutgoingEmail,
   bookingId?: string
 ): Promise<boolean> {
+  // Refuse before spending a send. An address that hard bounced or reported us
+  // as spam will not accept mail, and continuing to try is what costs a sender
+  // their access.
+  if (await isSuppressed(email.to)) {
+    await prisma.emailLog.create({
+      data: {
+        bookingId: bookingId ?? null,
+        type,
+        recipient: email.to,
+        subject: email.subject,
+        failedAt: new Date(),
+        error: 'Address is suppressed after an earlier hard bounce or complaint.',
+      },
+    });
+    logger.warn({ type, to: email.to }, 'Send skipped, address suppressed');
+    return false;
+  }
+
   const log = await prisma.emailLog.create({
     data: { bookingId: bookingId ?? null, type, recipient: email.to, subject: email.subject },
   });

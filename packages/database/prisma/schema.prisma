@@ -654,10 +654,50 @@ model EmailLog {
   failedAt  DateTime?
   error     String?
 
+  /// Set when SES tells us, minutes or hours later, that a message we handed
+  /// over never reached the person. `sentAt` only ever meant SES accepted it.
+  bouncedAt     DateTime?
+  complainedAt  DateTime?
+  /// 'Permanent' or 'Transient' for a bounce, 'abuse' and similar for a
+  /// complaint. Kept verbatim so the reason survives our interpretation of it.
+  deliveryDetail String?
+
   createdAt DateTime @default(now())
 
+  /// SES reports asynchronously and identifies the message by the id it gave
+  /// us at send time, so that lookup has to be cheap.
+  @@index([providerMessageId])
   @@index([bookingId, type])
   @@map("email_logs")
+}
+
+/// Addresses we must stop emailing.
+///
+/// AWS keeps its own account-level suppression list, but it is invisible to
+/// the application: without this we would keep queueing messages, logging them
+/// as sent, and showing the clinic a delivery that never happened. Repeatedly
+/// mailing addresses that hard bounce is also the fastest way to lose sending
+/// access altogether.
+model EmailSuppression {
+  id        String  @id @default(cuid())
+  /// Lowercased on write. Address comparison is case-insensitive in practice
+  /// and a duplicate here would silently stop suppressing.
+  email     String  @unique
+  reason    SuppressionReason
+  /// The provider's own wording, for anyone auditing why this was suppressed.
+  detail    String?
+  createdAt DateTime @default(now())
+
+  @@map("email_suppressions")
+}
+
+enum SuppressionReason {
+  /// The address does not exist, or the domain rejected us outright.
+  HARD_BOUNCE
+  /// The recipient pressed "this is spam". Never mail them again.
+  COMPLAINT
+  /// Set by an admin.
+  MANUAL
 }
 
 /// Who changed what. Prices, partner rates and cancellations are commercially

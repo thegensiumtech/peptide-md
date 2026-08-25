@@ -4,6 +4,8 @@ import { prisma } from '@peptide/database';
 import { logger } from '../../logger';
 import { constructWebhookEvent } from '../../payments/stripe';
 import { failBooking, recordSuccessfulPayment } from '../bookings/service';
+import { verifySnsMessage, type SnsMessage } from '../../email/sns';
+import { recordDeliveryEvent } from '../../email/bounces';
 
 export const webhookRouter = Router();
 
@@ -149,3 +151,45 @@ async function handleEvent(event: Stripe.Event): Promise<void> {
       logger.debug({ type: event.type }, 'Unhandled webhook type');
   }
 }
+
+/**
+ * SES bounce and complaint notifications, delivered by SNS.
+ *
+ * Public by necessity: Amazon has to be able to reach it. So nothing is acted
+ * on before the signature is checked, otherwise anyone who found the URL could
+ * suppress a patient's address and quietly cut off their appointment emails.
+ *
+ * Always answers 200 once the message is genuine. SNS retries on any other
+ * status, and a notification we cannot interpret is not worth being retried
+ * forever.
+ */
+webhookRouter.post('/ses', raw({ type: '*/*' }), async (req, res) => {
+  let message: SnsMessage;
+  try {
+    message = JSON.parse((req.body as Buffer).toString('utf8')) as SnsMessage;
+  } catch {
+    return res.status(400).json({ success: false, data: null, error: 'Malformed message.' });
+  }
+
+  if (!(await verifySnsMessage(message))) {
+    logger.warn({ type: message.Type }, 'Rejected an SNS message with an invalid signature');
+    return res.status(403).json({ success: false, data: null, error: 'Invalid signature.' });
+  }
+
+  // Confirming the subscription is what turns the topic on. It only arrives
+  // once, and only after the signature above has been checked, so a stranger
+  // cannot point our endpoint at a topic of theirs.
+  if (message.Type === 'SubscriptionConfirmation' && message.SubscribeURL) {
+    const confirmed = await fetch(message.SubscribeURL, { signal: AbortSignal.timeout(8_000) })
+      .then((r) => r.ok)
+      .catch(() => false);
+    logger.info({ confirmed, topic: message.TopicArn }, 'SNS subscription confirmation');
+    return res.json({ success: true, data: { confirmed }, error: null });
+  }
+
+  if (message.Type === 'Notification') {
+    await recordDeliveryEvent(message.Message);
+  }
+
+  return res.json({ success: true, data: { received: true }, error: null });
+});
