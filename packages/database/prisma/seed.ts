@@ -68,13 +68,15 @@ async function main() {
 
   // --- Doctor ------------------------------------------------------------
   const doctor = await prisma.doctor.upsert({
-    where: { gmcNumber: '7214883' },
+    where: { gmcNumber: '' },
     update: {},
     create: {
       name: 'Dr James Hartley',
       credentials: 'MBBS, MRCGP',
-      gmcNumber: '7214883',
-      photoUrl: '/doctor/james-hartley.jpg',
+      // Empty until Ross supplies it. The site omits the registration line
+      // rather than printing a number we do not hold.
+      gmcNumber: '',
+      photoUrl: '/doctor/peptide-md-doctor.jpg',
       headline: 'A doctor who will tell you when the answer is no.',
       bio: [
         'James Hartley has practised for eighteen years, the last six of them working almost entirely with patients who are using, or thinking about using, peptide therapies.',

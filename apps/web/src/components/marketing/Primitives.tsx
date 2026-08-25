@@ -43,7 +43,8 @@ export function PortraitFrame({
 }: {
   name: string;
   credentials: string;
-  gmcNumber: string;
+  /** Omitted from the caption when empty. See the note on the caption. */
+  gmcNumber?: string | null;
   photoUrl?: string | null;
   /** Set on the homepage hero, where this is the largest-contentful paint. */
   priority?: boolean;
@@ -85,8 +86,11 @@ export function PortraitFrame({
       </div>
       <figcaption className="absolute bottom-4 left-4 right-4 rounded border border-line bg-surface px-4 py-3">
         <p className="font-display text-base font-semibold text-ink">{name}</p>
+        {/* A registration number is a regulated claim about a real person, so
+            the caption prints one only when we actually hold it. Rendering
+            "GMC " with an empty value would read as a fact rather than a gap. */}
         <p className="mt-0.5 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
-          {credentials} · GMC {gmcNumber}
+          {gmcNumber ? `${credentials} · GMC ${gmcNumber}` : credentials}
         </p>
       </figcaption>
     </figure>
