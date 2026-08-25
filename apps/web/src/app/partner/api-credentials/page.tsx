@@ -22,7 +22,7 @@ export default async function PartnerCredentialsPage() {
       user={session}
       partner={partner}
       title="API credentials"
-      description="What your developers need to book into Dr Hartley’s diary from your own system."
+      description="What your developers need to book into Dr Jinks’s diary from your own system."
     >
       <CredentialsPanel partner={partner} />
     </PartnerShell>

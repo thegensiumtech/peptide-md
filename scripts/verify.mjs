@@ -118,7 +118,7 @@ async function crawl(label, paths, setup) {
 
 await crawl('public', PUBLIC);
 await crawl('admin', ADMIN, (p) => signIn(p, 'admin', 'ross@peptidemd.co.uk'));
-await crawl('doctor', DOCTOR, (p) => signIn(p, 'admin', 'james@peptidemd.co.uk'));
+await crawl('doctor', DOCTOR, (p) => signIn(p, 'admin', 'mark@peptidemd.co.uk'));
 await crawl('partner', PARTNER, (p) => signIn(p, 'partner', 'dana@newyoupeptides.com.au'));
 
 // --- 2. Patient booking journey ---------------------------------------------
@@ -189,7 +189,7 @@ await crawl('partner', PARTNER, (p) => signIn(p, 'partner', 'dana@newyoupeptides
     ? pass('Unauthenticated admin', 'redirected to login')
     : fail('Unauthenticated admin', page.url());
 
-  await signIn(page, 'admin', 'james@peptidemd.co.uk');
+  await signIn(page, 'admin', 'mark@peptidemd.co.uk');
   const nav = await page.locator('nav[aria-label=Admin]').innerText();
   !/Partners|Invoices|Settings/.test(nav)
     ? pass('Doctor nav', 'commercial items hidden')

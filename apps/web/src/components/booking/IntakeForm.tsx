@@ -224,7 +224,7 @@ export function IntakeForm() {
               <Checkbox
                 id="consentClinical"
                 name="consentClinical"
-                label="I consent to Dr Hartley recording and holding these answers as part of my clinical record."
+                label="I consent to Dr Jinks recording and holding these answers as part of my clinical record."
                 description="Kept in line with UK medical record-keeping guidance and never shared with partner companies."
               />
             </Field>

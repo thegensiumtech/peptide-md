@@ -52,7 +52,7 @@ async function main() {
       consultationPrice: 9500,
       consultationDuration: CONSULT_MINUTES,
       consultationSummary:
-        'A private video consultation with Dr Hartley about peptide therapy, what you are taking, what you are trying to achieve, and whether it is the right route for you.',
+        'A private video consultation with Dr Jinks about peptide therapy, what you are taking, what you are trying to achieve, and whether it is the right route for you.',
       consultationInclusions: [
         'Twenty minutes of the doctor’s time, one to one',
         'Review of anything you are currently taking',
@@ -71,7 +71,7 @@ async function main() {
     where: { gmcNumber: '' },
     update: {},
     create: {
-      name: 'Dr James Hartley',
+      name: 'Dr Mark Jinks',
       credentials: 'MBBS, MRCGP',
       // Empty until Ross supplies it. The site omits the registration line
       // rather than printing a number we do not hold.
@@ -79,7 +79,7 @@ async function main() {
       photoUrl: '/doctor/peptide-md-doctor.jpg',
       headline: 'A doctor who will tell you when the answer is no.',
       bio: [
-        'James Hartley has practised for eighteen years, the last six of them working almost entirely with patients who are using, or thinking about using, peptide therapies.',
+        'Mark Jinks has practised for eighteen years, the last six of them working almost entirely with patients who are using, or thinking about using, peptide therapies.',
         'He came to it the way most people do, patients arriving with a protocol they had found online, a box of vials, and nobody willing to talk to them about it. Most had been sold something. Almost none had been examined.',
         'The consultation is twenty minutes and it is deliberately plain. He will ask what you are taking, what you are trying to fix, and what your history is. Then he will tell you what he thinks, including when he thinks the honest answer is that you should not be taking anything at all.',
         'He has no products to sell and no affiliation with any supplier. That is the point of the service.',
@@ -228,7 +228,7 @@ async function main() {
   // --- Users -------------------------------------------------------------
   const users = [
     { email: 'ross@peptidemd.co.uk', name: 'Ross Calder', role: UserRole.ADMIN, partnerSlug: null, doctorId: null },
-    { email: 'james@peptidemd.co.uk', name: 'Dr James Hartley', role: UserRole.DOCTOR, partnerSlug: null, doctorId: doctor.id },
+    { email: 'mark@peptidemd.co.uk', name: 'Dr Mark Jinks', role: UserRole.DOCTOR, partnerSlug: null, doctorId: doctor.id },
     { email: 'dana@newyoupeptides.com.au', name: 'Dana Whitfield', role: UserRole.PARTNER, partnerSlug: 'new-you-peptides', doctorId: null },
     { email: 'marcus@fivepeptides.co.uk', name: 'Marcus Iles', role: UserRole.PARTNER, partnerSlug: 'five-peptides', doctorId: null },
   ];

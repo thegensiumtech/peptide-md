@@ -412,7 +412,7 @@ section('3. Admin, live data and RBAC');
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
 
-  await signIn(page, 'admin', 'james@peptidemd.co.uk');
+  await signIn(page, 'admin', 'mark@peptidemd.co.uk');
   pass('Doctor signed in through the shared admin door');
 
   const nav = await page.locator('nav[aria-label=Admin]').innerText();

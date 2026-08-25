@@ -46,7 +46,7 @@ const auth = (token) => ({ Authorization: `Bearer ${token}` });
 const adminToken = await login('ross@peptidemd.co.uk');
 adminToken ? pass('Admin login', 'bcrypt verified, JWT issued') : fail('Admin login');
 
-const doctorToken = await login('james@peptidemd.co.uk');
+const doctorToken = await login('mark@peptidemd.co.uk');
 doctorToken ? pass('Doctor login') : fail('Doctor login');
 
 {

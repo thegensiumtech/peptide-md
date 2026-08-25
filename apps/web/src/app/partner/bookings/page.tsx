@@ -40,7 +40,7 @@ export default async function PartnerBookingsPage() {
       user={session}
       partner={partner}
       title="Your bookings"
-      description={`Every appointment you have sent to Dr Hartley, and what you owe so far this month.`}
+      description={`Every appointment you have sent to Dr Jinks, and what you owe so far this month.`}
     >
       {/* The running total is the number this screen exists to answer. */}
       <div className="grid gap-4 sm:grid-cols-3">

@@ -350,7 +350,7 @@ publicBookingRouter.post(
           kind: 'CLINICAL_RECORD',
           granted: true,
           wording:
-            'I consent to Dr Hartley recording and holding these answers as part of my clinical record.',
+            'I consent to Dr Jinks recording and holding these answers as part of my clinical record.',
           ipAddress: req.ip ?? null,
           userAgent: req.headers['user-agent'] ?? null,
         },

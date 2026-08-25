@@ -31,7 +31,7 @@ page.on('pageerror', (e) => crashes.push(e.message.slice(0, 120)));
 
 // Signed in as the doctor, this is his screen, and it exercises the RBAC path.
 await page.goto(`${WEB}/admin/login`, { waitUntil: 'networkidle' });
-await page.fill('#email', 'james@peptidemd.co.uk');
+await page.fill('#email', 'mark@peptidemd.co.uk');
 await page.fill('#password', 'peptide-dev-2026');
 await Promise.all([
   page.waitForURL((u) => !u.pathname.endsWith('/login'), { timeout: 20000 }),

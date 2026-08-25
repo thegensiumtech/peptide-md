@@ -108,7 +108,7 @@ our side:
 The domain going live and the site being ready for the public are two separate
 things. These are outstanding at the time of writing:
 
-1. **The doctor is invented.** The site publishes "Dr James Hartley, MBBS
+1. **The doctor is invented.** The site publishes "Dr Mark Jinks, MBBS
    MRCGP, GMC 7214883" on `/the-doctor`, in the portrait frame on the home
    page, and in the page's meta description, which is the text Google shows in
    results. The name and the number are placeholders. GMC numbers are seven

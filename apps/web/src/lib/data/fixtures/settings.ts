@@ -6,7 +6,7 @@ export const platformSettings: PlatformSettings = {
     currency: 'GBP',
     durationMinutes: 20,
     summary:
-      'A private video consultation with Dr Hartley about peptide therapy, what you are taking, what you are trying to achieve, and whether it is the right route for you.',
+      'A private video consultation with Dr Jinks about peptide therapy, what you are taking, what you are trying to achieve, and whether it is the right route for you.',
     inclusions: [
       'Twenty minutes of the doctor’s time, one to one',
       'Review of anything you are currently taking',
