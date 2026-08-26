@@ -12,6 +12,15 @@ export interface OutgoingEmail {
   icsContent?: string;
   icsFilename?: string;
   /**
+   * A PDF attachment, currently the monthly partner invoice.
+   *
+   * Attached rather than linked because a partner's finance team forwards an
+   * invoice around and files it, and a link that needs a login is useless to
+   * whoever it lands with.
+   */
+  pdfContent?: Buffer;
+  pdfFilename?: string;
+  /**
    * One-click unsubscribe. Set on anything a recipient could reasonably regard
    * as marketing, so their mail client offers an unsubscribe button rather than
    * a spam button, which is the outcome that actually costs a sender.
@@ -103,6 +112,21 @@ class SesEmailProvider implements EmailProvider {
         `Content-Disposition: attachment; filename="${email.icsFilename ?? 'appointment.ics'}"`,
         '',
         Buffer.from(email.icsContent, 'utf8').toString('base64'),
+        ''
+      );
+    }
+
+    if (email.pdfContent) {
+      const filename = email.pdfFilename ?? 'document.pdf';
+      parts.push(
+        `--${boundary}`,
+        `Content-Type: application/pdf; name="${filename}"`,
+        'Content-Transfer-Encoding: base64',
+        `Content-Disposition: attachment; filename="${filename}"`,
+        '',
+        // Wrapped at 76 characters: base64 in MIME has a line-length limit and
+        // some servers reject or mangle a single very long line.
+        email.pdfContent.toString('base64').replace(/(.{76})/g, '$1\r\n'),
         ''
       );
     }

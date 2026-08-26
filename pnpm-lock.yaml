@@ -77,6 +77,9 @@ importers:
       pino-http:
         specifier: ^10.3.0
         version: 10.5.0
+      playwright-core:
+        specifier: ^1.62.1
+        version: 1.62.1
       stripe:
         specifier: ^17.4.0
         version: 17.7.0

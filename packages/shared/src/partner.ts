@@ -48,7 +48,11 @@ export interface Partner {
   createdAt: string;
 }
 
-export const INVOICE_STATUSES = ['draft', 'sent', 'paid', 'overdue'] as const;
+/**
+ * 'void' is for an invoice raised in error. It is kept rather than deleted so
+ * the numbering stays unbroken, which is what makes a sequence auditable.
+ */
+export const INVOICE_STATUSES = ['draft', 'sent', 'paid', 'overdue', 'void'] as const;
 export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
 
 export interface Invoice {

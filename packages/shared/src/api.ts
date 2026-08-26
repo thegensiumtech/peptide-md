@@ -21,6 +21,12 @@ export interface ApiFailure {
   success: false;
   data: null;
   error: string;
+  /**
+   * Machine-readable reason, e.g. 'SLOT_TAKEN'. The API has always sent this
+   * for expected failures; the type simply did not admit it. Partners branch on
+   * it, so it is part of the contract rather than a detail.
+   */
+  code?: string;
 }
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiFailure;

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { prisma, type Prisma } from '@peptide/database';
+import { prisma } from '@peptide/database';
+import { billableWhere, currentPeriod } from '../invoicing/billing';
 import { handle, notFound, ok } from '../../http/errors';
 import { partnerIdOf, requireAuth, requirePartner } from '../../http/middleware/auth';
 
@@ -17,16 +18,10 @@ export const partnerRouter = Router();
  */
 partnerRouter.use(requireAuth, requirePartner);
 
-function currentPeriod(): string {
-  return new Date().toISOString().slice(0, 7);
-}
+// Shared with the invoicing service on purpose: the running total shown here
+// and the invoice raised at month end must be the same question, or a partner
+// is told one number and billed another.
 
-/** A partner booking counts towards their invoice unless it was cancelled. */
-const billableWhere = (partnerId: string, period: string): Prisma.BookingWhereInput => ({
-  partnerId,
-  status: { not: 'CANCELLED' },
-  startsAt: { gte: new Date(`${period}-01T00:00:00.000Z`) },
-});
 
 partnerRouter.get(
   '/me',

@@ -108,6 +108,17 @@ ${body}
 </table></td></tr></table></body></html>`;
 }
 
+/**
+ * Escapes a value before it goes into email HTML.
+ *
+ * Names arrive from the intake form and the guide form, both of which are
+ * public. Mail clients do not run script, so this is not stored XSS, but an
+ * unescaped angle bracket still breaks the layout and a crafted name can be
+ * used to fake structure inside a message that looks like it came from us.
+ */
+const esc = (value: string): string =>
+  String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
 const p = (text: string) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.6;">${text}</p>`;
 
 const detailBlock = (rows: Array<[string, string]>) =>
@@ -174,7 +185,7 @@ export function doctorNotification(context: BookingEmailContext, doctorEmail: st
       'New consultation booked.',
       [
         detailBlock([
-          ['Patient', context.patientName],
+          ['Patient', esc(context.patientName)],
           ['Your time', when],
           ['Their time', patientLocal],
           ['Reference', context.reference],
@@ -342,7 +353,7 @@ export function guideDelivery(name: string, to: string, downloadUrl: string): Ou
     subject: 'Your peptide guide',
     text: `Hi ${first},\n\nHere is the guide: ${downloadUrl}\n\n${GUIDE.pages} pages, ${GUIDE.compounds} compounds assessed, and no dosing protocols, because that is a conversation rather than a download.\n\nIt is written by a doctor who has no products to sell, including the parts that say you probably should not take anything.\n\nIf you want that conversation properly, a consultation is twenty minutes and ninety-five pounds.\n\nPeptide MD\n\nUnsubscribe: ${optOut}`,
     html: shell(
-      `Here is your guide, ${first}.`,
+      `Here is your guide, ${esc(first)}.`,
       [
         p('It is written by a doctor with no products, no suppliers and no affiliate income, including the parts that say you probably should not take anything at all.'),
         detailBlock([
@@ -354,6 +365,66 @@ export function guideDelivery(name: string, to: string, downloadUrl: string): Ou
         p('No dosing protocols are published, because the right dose depends on you rather than on a table. If you would rather ask about your own situation, a consultation is twenty minutes with a GMC-registered doctor.'),
       ].join(''),
       `General information, not medical advice. Peptide MD does not supply, prescribe or dispense any compound. <a href="${optOut}" style="color:${EMAIL.muted};">Unsubscribe</a>.`
+    ),
+  };
+}
+
+export interface InvoiceEmailContext {
+  number: string;
+  partnerName: string;
+  billingEmail: string;
+  period: string;
+  appointmentCount: number;
+  ratePerAppointment: number;
+  totalAmount: number;
+  currency: string;
+  dueAt: Date | null;
+}
+
+const formatMoney = (minorUnits: number, currency: string): string =>
+  new Intl.NumberFormat('en-GB', { style: 'currency', currency }).format(minorUnits / 100);
+
+const formatPeriod = (period: string): string =>
+  new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
+    new Date(`${period}-01T00:00:00.000Z`)
+  );
+
+/**
+ * The monthly invoice.
+ *
+ * The PDF is attached rather than linked, because a finance team forwards an
+ * invoice around and files it, and a link behind a login is useless to
+ * whoever it reaches. The figures are repeated in the body so the email is
+ * still readable on a phone without opening the attachment.
+ */
+export function partnerInvoice(context: InvoiceEmailContext): OutgoingEmail {
+  const period = formatPeriod(context.period);
+  const total = formatMoney(context.totalAmount, context.currency);
+  const rate = formatMoney(context.ratePerAppointment, context.currency);
+  const due = context.dueAt
+    ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/London' }).format(context.dueAt)
+    : null;
+
+  return {
+    to: context.billingEmail,
+    subject: `Invoice ${context.number}, ${period}`,
+    text: `${context.partnerName},\n\nHere is your invoice for ${period}.\n\nInvoice: ${context.number}\nAppointments: ${context.appointmentCount}\nRate each: ${rate}\nTotal due: ${total}${due ? `\nDue: ${due}` : ''}\n\nThe PDF is attached, and it itemises every appointment behind the total.\n\nPeptide MD`,
+    html: shell(
+      `Invoice for ${period}.`,
+      [
+        p(
+          `${esc(context.partnerName)} sent ${context.appointmentCount} appointment${context.appointmentCount === 1 ? '' : 's'} to Dr Jinks in ${esc(period)}. The invoice is attached, itemised by appointment.`
+        ),
+        detailBlock([
+          ['Invoice', context.number],
+          ['Appointments', String(context.appointmentCount)],
+          ['Rate each', rate],
+          ['Total due', total],
+          ...(due ? ([['Due', due]] as Array<[string, string]>) : []),
+        ]),
+        p('Any query about a specific appointment, reply to this email and we will look it up.'),
+      ].join(''),
+      'Peptide MD provides private medical consultations. We do not supply, prescribe or dispense any compound.'
     ),
   };
 }

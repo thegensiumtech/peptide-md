@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { prisma, type Prisma } from '@peptide/database';
 import { conflict, forbidden, handle, notFound, ok } from '../../http/errors';
 import { requireAuth, requireRole } from '../../http/middleware/auth';
+import { adminPartnersRouter } from './partners';
+import { adminInvoicesRouter } from './invoices';
 import {
   approveRefund,
   cancelBooking,
@@ -16,6 +18,13 @@ import { cacheDelete } from '../../lib/redis';
 export const adminRouter = Router();
 
 adminRouter.use(requireAuth, requireRole('ADMIN', 'DOCTOR'));
+
+// Commercial surfaces, mounted as their own routers because both are admin
+// only. The doctor reaches everything else here; rates, credentials and
+// invoices are not his business and the boundary is clearer as a separate
+// mount than as a per-route guard someone can forget.
+adminRouter.use('/partners', adminPartnersRouter);
+adminRouter.use('/invoices', adminInvoicesRouter);
 
 /** The doctor sees his own diary; the administrator sees the business. */
 const isDoctor = (role: string) => role === 'DOCTOR';
