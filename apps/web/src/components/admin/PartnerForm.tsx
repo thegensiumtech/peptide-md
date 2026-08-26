@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Partner, PartnerIntegration } from '@peptide/shared';
 import { cn } from '@/lib/cn';
@@ -12,6 +13,7 @@ import { Badge } from '@/components/ui/Badge';
 import { SavedNotice } from './SavedNotice';
 
 const VIEW_TZ = 'Europe/London';
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 /**
  * Add and edit share one form. The only difference is that an existing partner
@@ -28,7 +30,19 @@ export function PartnerForm({
 }) {
   const isNew = partner === null;
 
+  const router = useRouter();
   const [saved, setSaved] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  /**
+   * Secrets are returned exactly once, on create and on rotate. Held in state
+   * so they stay on screen until the admin navigates away; there is no route
+   * that can show them again.
+   */
+  const [issued, setIssued] = useState<Array<{ label: string; clientId: string; secret: string }>>(
+    []
+  );
+  const [createdId, setCreatedId] = useState<string | null>(null);
   const [rate, setRate] = useState((partner?.ratePerAppointment ?? defaultRate) / 100);
   const [integration, setIntegration] = useState<PartnerIntegration>(
     partner?.integration ?? 'embed'
@@ -40,9 +54,70 @@ export function PartnerForm({
 
   return (
     <form
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault();
-        setSaved(true);
+        const form = new FormData(event.currentTarget);
+        setBusy(true);
+        setError(null);
+
+        // Rate and rate limit are entered in the units a person thinks in,
+        // pounds and requests, and stored in the units the API works in.
+        const body = {
+          name: String(form.get('name') ?? '').trim(),
+          ...(isNew ? { slug: String(form.get('slug') ?? '').trim() || undefined } : {}),
+          integration,
+          status: (String(form.get('status') ?? 'active') as 'active' | 'suspended') ?? 'active',
+          ratePerAppointment: Math.round(Number(form.get('rate') ?? 0) * 100),
+          contactName: String(form.get('contactName') ?? '').trim(),
+          contactEmail: String(form.get('contactEmail') ?? '').trim(),
+          billingEmail: String(form.get('billingEmail') ?? '').trim(),
+          rateLimitPerMinute: Number(form.get('rateLimitPerMinute') ?? defaultRateLimit),
+          branding: {
+            primaryColor: primary,
+            accentColor: accent,
+            fontFamily: String(form.get('fontFamily') ?? 'Inter').trim() || 'Inter',
+            displayName: displayName.trim(),
+          },
+        };
+
+        try {
+          const response = await fetch(
+            isNew ? `${API}/api/admin/partners` : `${API}/api/admin/partners/${partner.id}`,
+            {
+              method: isNew ? 'POST' : 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify(body),
+            }
+          );
+          const payload = await response.json();
+
+          if (!response.ok || !payload.success) {
+            setError(payload.error ?? 'That did not save. Check the fields and try again.');
+            return;
+          }
+
+          if (isNew && payload.data.secrets) {
+            setIssued([
+              { label: 'Live', ...payload.data.secrets.live },
+              { label: 'Sandbox', ...payload.data.secrets.sandbox },
+            ]);
+          }
+
+          setSaved(true);
+          router.refresh();
+
+          // Deliberately does NOT navigate on create. The secrets below are
+          // returned exactly once and live in this component's state, so
+          // pushing to the detail page would unmount them before anyone read
+          // them, and the only way back would be to rotate. The admin gets a
+          // link instead and leaves when they are ready.
+          if (isNew) setCreatedId(payload.data.partner.id);
+        } catch {
+          setError('We could not reach the server. Try again.');
+        } finally {
+          setBusy(false);
+        }
       }}
       className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]"
     >
@@ -70,11 +145,12 @@ export function PartnerForm({
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
               <Field label="Contact name" htmlFor="contact-name">
-                <Input id="contact-name" defaultValue={partner?.contactName} />
+                <Input id="contact-name" name="contactName" defaultValue={partner?.contactName} required />
               </Field>
               <Field label="Contact email" htmlFor="contact-email">
                 <Input
                   id="contact-email"
+                  name="contactEmail"
                   type="email"
                   defaultValue={partner?.contactEmail}
                   className="font-mono"
@@ -88,6 +164,7 @@ export function PartnerForm({
             >
               <Input
                 id="billing-email"
+                name="billingEmail"
                 type="email"
                 defaultValue={partner?.billingEmail}
                 className="font-mono"
@@ -95,7 +172,7 @@ export function PartnerForm({
             </Field>
             {!isNew ? (
               <Field label="Status" htmlFor="status" hint="A suspended partner cannot take bookings.">
-                <Select id="status" defaultValue={partner.status}>
+                <Select id="status" name="status" defaultValue={partner.status}>
                   <option value="active">Active</option>
                   <option value="suspended">Suspended</option>
                 </Select>
@@ -119,6 +196,7 @@ export function PartnerForm({
               >
                 <Input
                   id="rate"
+                  name="rate"
                   type="number"
                   min={0}
                   step="0.01"
@@ -134,6 +212,7 @@ export function PartnerForm({
               >
                 <Input
                   id="rate-limit"
+                  name="rateLimitPerMinute"
                   type="number"
                   min={1}
                   defaultValue={partner?.rateLimitPerMinute ?? defaultRateLimit}
@@ -247,7 +326,7 @@ export function PartnerForm({
               </Field>
             </div>
             <Field label="Font family" htmlFor="font">
-              <Input id="font" defaultValue={partner?.branding.fontFamily ?? 'Inter'} />
+              <Input id="font" name="fontFamily" defaultValue={partner?.branding.fontFamily ?? 'Inter'} />
             </Field>
 
             {/* Preview so the admin sees the partner's theme, not a guess at it. */}
@@ -298,9 +377,46 @@ export function PartnerForm({
               message={isNew ? 'Partner created and credentials issued.' : 'Partner saved.'}
               onDismiss={() => setSaved(false)}
             />
-            <Button type="submit" size="lg" className="w-full">
-              {isNew ? 'Create partner' : 'Save changes'}
-            </Button>
+            {error ? (
+              <p
+                role="alert"
+                className="mb-4 rounded border border-danger/25 bg-danger-tint px-4 py-3 text-micro leading-relaxed text-danger"
+              >
+                {error}
+              </p>
+            ) : null}
+            {issued.length ? (
+              <div className="mb-4 grid gap-3 rounded border border-accent/30 bg-accent-tint px-4 py-4">
+                <p className="text-micro font-semibold leading-relaxed text-ink">
+                  Copy these now. They are not stored and cannot be shown again.
+                </p>
+                {issued.map((credential) => (
+                  <div key={credential.clientId} className="grid gap-1">
+                    <span className="font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
+                      {credential.label}
+                    </span>
+                    <code className="block break-all rounded border border-line bg-surface px-3 py-2 font-mono text-micro text-ink">
+                      {credential.clientId}
+                    </code>
+                    <code className="block break-all rounded border border-line bg-surface px-3 py-2 font-mono text-micro text-ink">
+                      {credential.secret}
+                    </code>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            {createdId ? (
+              <Link
+                href={`/admin/partners/${createdId}`}
+                className="flex min-h-11 w-full items-center justify-center rounded bg-accent px-5 text-sm font-medium text-paper transition-colors hover:bg-ink"
+              >
+                Done, open the partner
+              </Link>
+            ) : (
+              <Button type="submit" size="lg" className="w-full" disabled={busy}>
+                {busy ? 'Saving…' : isNew ? 'Create partner' : 'Save changes'}
+              </Button>
+            )}
             <Link
               href="/admin/partners"
               className="mt-4 block text-center text-micro text-muted underline decoration-line underline-offset-4 transition-colors hover:text-ink"
@@ -361,9 +477,38 @@ export function PartnerForm({
                   type="button"
                   variant="secondary"
                   size="sm"
-                  onClick={() => setRotated(true)}
+                  disabled={busy}
+                  onClick={async () => {
+                    setBusy(true);
+                    setError(null);
+                    try {
+                      const response = await fetch(
+                        `${API}/api/admin/partners/${partner.id}/credentials/rotate`,
+                        {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          credentials: 'include',
+                          body: JSON.stringify({ sandbox: false }),
+                        }
+                      );
+                      const payload = await response.json();
+                      if (!response.ok || !payload.success) {
+                        setError(payload.error ?? 'The secret could not be rotated.');
+                        return;
+                      }
+                      setIssued([
+                        { label: 'Live', clientId: payload.data.clientId, secret: payload.data.secret },
+                      ]);
+                      setRotated(true);
+                      router.refresh();
+                    } catch {
+                      setError('We could not reach the server. Try again.');
+                    } finally {
+                      setBusy(false);
+                    }
+                  }}
                 >
-                  Rotate secret
+                  {busy ? 'Rotating…' : 'Rotate secret'}
                 </Button>
               </CardBody>
             </Card>

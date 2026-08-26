@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getInvoices, getPartners } from '@/lib/data/client';
+import { getInvoices, getPartners } from '@/lib/api/admin';
 import { requirePermission, requireSession } from '@/lib/auth/session';
 import { formatDate, formatMoney, formatPeriod } from '@/lib/format';
 import { AdminShell } from '@/components/admin/AdminShell';
@@ -30,12 +30,11 @@ export default async function InvoicesPage({
   ]);
   if (!invoicesRes.success || !partnersRes.success) throw new Error('Invoices unavailable');
 
-  const invoices = invoicesRes.data;
+  const invoices = invoicesRes.data.invoices;
   const drafts = invoices.filter((i) => i.status === 'draft');
   const issued = invoices.filter((i) => i.status !== 'draft');
-  const outstanding = issued
-    .filter((i) => i.status === 'sent' || i.status === 'overdue')
-    .reduce((sum, i) => sum + i.totalAmount, 0);
+  // Computed by the API over every invoice, not just the page we are showing.
+  const outstanding = invoicesRes.data.outstanding;
 
   const filteredPartner = searchParams.partner
     ? partnersRes.data.find((p) => p.id === searchParams.partner)

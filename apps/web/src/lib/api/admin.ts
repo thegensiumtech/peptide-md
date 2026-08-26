@@ -5,6 +5,10 @@ import type {
   BookingFilters,
   DashboardSummary,
   DoctorProfile,
+  Invoice,
+  Partner,
+  PartnerIntegration,
+  PartnerStatus,
   PlatformSettings,
   VolumeBySource,
 } from '@peptide/shared';
@@ -118,5 +122,133 @@ export async function getDoctorWithAvailability(): Promise<ApiResponse<DoctorRes
 export async function getSettings(): Promise<ApiResponse<PlatformSettings>> {
   const result = await apiFetch<PlatformSettings>('/api/admin/settings');
   if (!result.success || !result.data) return fail(result.error ?? 'Settings unavailable');
+  return ok(result.data);
+}
+
+/* -------------------------------------------------------------------------
+ * Partners and invoices
+ *
+ * These screens read fixtures until now. The function names match what
+ * @/lib/data/client exported so the pages change an import rather than their
+ * shape, which is the same approach the booking screens took.
+ * ---------------------------------------------------------------------- */
+
+/** Volume is returned alongside each partner, so the list is one request. */
+export interface AdminPartner extends Partner {
+  volume?: { appointmentCount: number; runningTotal: number };
+  credentialList: Array<{
+    id: string;
+    clientId: string;
+    secretLastFour: string;
+    isSandbox: boolean;
+    createdAt: string;
+    lastUsedAt: string | null;
+    expiresAt: string | null;
+    revokedAt: string | null;
+  }>;
+}
+
+interface PartnerRecord {
+  id: string;
+  name: string;
+  slug: string;
+  status: PartnerStatus;
+  integration: PartnerIntegration;
+  ratePerAppointment: number;
+  currency: string;
+  contactName: string;
+  contactEmail: string;
+  billingEmail: string;
+  branding: Partner['branding'];
+  rateLimitPerMinute: number;
+  createdAt: string;
+  credentials: AdminPartner['credentialList'];
+  volume?: { appointmentCount: number; runningTotal: number };
+}
+
+/**
+ * The API returns every credential; the shared Partner type carries one.
+ *
+ * The newest live credential is the one a screen means when it says "the
+ * client id", so that is what fills the singular field, with the full list
+ * kept alongside for the screens that manage rotation.
+ */
+function toPartner(record: PartnerRecord): AdminPartner {
+  const live = record.credentials.find((c) => !c.isSandbox && !c.revokedAt) ?? record.credentials[0];
+  return {
+    id: record.id,
+    name: record.name,
+    slug: record.slug,
+    status: record.status,
+    integration: record.integration,
+    ratePerAppointment: record.ratePerAppointment,
+    currency: record.currency,
+    contactName: record.contactName,
+    contactEmail: record.contactEmail,
+    billingEmail: record.billingEmail,
+    branding: record.branding,
+    rateLimitPerMinute: record.rateLimitPerMinute,
+    createdAt: record.createdAt,
+    credentials: {
+      clientId: live?.clientId ?? '',
+      secretLastFour: live?.secretLastFour ?? '',
+      createdAt: live?.createdAt ?? record.createdAt,
+      lastRotatedAt: live?.expiresAt ?? null,
+      lastUsedAt: live?.lastUsedAt ?? null,
+    },
+    volume: record.volume,
+    credentialList: record.credentials,
+  };
+}
+
+export async function getPartners(): Promise<ApiResponse<AdminPartner[]>> {
+  const result = await apiFetch<{ period: string; partners: PartnerRecord[] }>(
+    '/api/admin/partners'
+  );
+  if (!result.success || !result.data) return fail(result.error ?? 'Partners unavailable');
+  return ok(result.data.partners.map(toPartner));
+}
+
+export async function getPartner(id: string): Promise<ApiResponse<AdminPartner>> {
+  const result = await apiFetch<{ period: string; partner: PartnerRecord }>(
+    `/api/admin/partners/${encodeURIComponent(id)}`
+  );
+  if (!result.success || !result.data) return fail(result.error ?? 'Partner unavailable');
+  return ok(toPartner(result.data.partner));
+}
+
+export interface AdminInvoice extends Invoice {
+  sentAt: string | null;
+}
+
+export async function getInvoices(filters: {
+  partnerId?: string;
+  status?: string;
+} = {}): Promise<ApiResponse<{ invoices: AdminInvoice[]; outstanding: number }>> {
+  const result = await apiFetch<{ outstanding: number; invoices: AdminInvoice[] }>(
+    `/api/admin/invoices${query({ partnerId: filters.partnerId, status: filters.status })}`
+  );
+  if (!result.success || !result.data) return fail(result.error ?? 'Invoices unavailable');
+  return ok({ invoices: result.data.invoices, outstanding: result.data.outstanding });
+}
+
+export interface InvoiceAppointment {
+  id: string;
+  reference: string;
+  startsAt: string;
+  status: string;
+  patientName: string;
+  amount: number;
+}
+
+export async function getInvoice(id: string): Promise<
+  ApiResponse<{ invoice: AdminInvoice; appointments: InvoiceAppointment[]; billingEmail: string }>
+> {
+  const result = await apiFetch<{
+    invoice: AdminInvoice;
+    appointments: InvoiceAppointment[];
+    billingEmail: string;
+  }>(`/api/admin/invoices/${encodeURIComponent(id)}`);
+  if (!result.success || !result.data) return fail(result.error ?? 'Invoice unavailable');
   return ok(result.data);
 }

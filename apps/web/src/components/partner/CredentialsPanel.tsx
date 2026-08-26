@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardBody, CardHeader, DataRow } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+
 const VIEW_TZ = 'Europe/London';
 
 const ENDPOINTS = [
@@ -20,6 +22,8 @@ const ENDPOINTS = [
 export function CredentialsPanel({ partner }: { partner: Partner }) {
   const [copied, setCopied] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [newSecret, setNewSecret] = useState<string | null>(null);
 
   async function copy(label: string, value: string) {
@@ -95,15 +99,42 @@ export function CredentialsPanel({ partner }: { partner: Partner }) {
                     Rotating issues a new secret immediately. Your current secret keeps working for
                     24 hours so you can deploy the change without downtime.
                   </p>
+                  {error ? (
+                    <p
+                      role="alert"
+                      className="rounded border border-danger/25 bg-danger-tint px-4 py-3 text-micro leading-relaxed text-danger"
+                    >
+                      {error}
+                    </p>
+                  ) : null}
                   <div className="flex flex-wrap gap-2">
                     <Button
                       size="sm"
-                      onClick={() => {
-                        setConfirming(false);
-                        setNewSecret('pmd_sk_live_9f4b21c7e83a5d06b17f2c94ae5310d8');
+                      disabled={busy}
+                      onClick={async () => {
+                        setBusy(true);
+                        setError(null);
+                        try {
+                          const response = await fetch(`${API}/api/partner/credentials/rotate`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                          });
+                          const payload = await response.json();
+                          if (!response.ok || !payload.success) {
+                            setError(payload.error ?? 'The secret could not be rotated.');
+                            return;
+                          }
+                          setConfirming(false);
+                          setNewSecret(payload.data.secret);
+                        } catch {
+                          setError('We could not reach the server. Try again.');
+                        } finally {
+                          setBusy(false);
+                        }
                       }}
                     >
-                      Rotate the secret
+                      {busy ? 'Rotating…' : 'Rotate the secret'}
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => setConfirming(false)}>
                       Cancel

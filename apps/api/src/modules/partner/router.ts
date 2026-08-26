@@ -191,3 +191,39 @@ partnerRouter.post(
     });
   })
 );
+
+/**
+ * GET /api/partner/invoices/:id/pdf
+ *
+ * The partner's own copy. Scoped to the token's partner before anything is
+ * rendered, so an invoice id belonging to someone else is a 404 rather than a
+ * download. Ids are guessable enough that this has to be checked here and not
+ * left to the screen that links to it.
+ */
+partnerRouter.get(
+  '/invoices/:id/pdf',
+  handle(async (req, res) => {
+    const partnerId = partnerIdOf(req);
+    const invoice = await prisma.invoice.findUnique({
+      where: { id: String(req.params.id) },
+      select: { id: true, partnerId: true, status: true },
+    });
+
+    if (!invoice || invoice.partnerId !== partnerId) {
+      throw notFound('That invoice could not be found.');
+    }
+    // A draft has not been raised yet. Letting a partner download one would be
+    // showing them a figure we have not committed to.
+    if (invoice.status === 'DRAFT') {
+      throw notFound('That invoice has not been issued yet.');
+    }
+
+    const { renderInvoicePdf } = await import('../invoicing/pdf');
+    const document = await renderInvoicePdf(invoice.id);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${document.filename}"`);
+    res.send(document.pdf);
+    return undefined;
+  })
+);

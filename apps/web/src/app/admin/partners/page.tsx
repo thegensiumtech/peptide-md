@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getAllPartnerVolumes, getPartners } from '@/lib/data/client';
+import { getPartners } from '@/lib/api/admin';
 import { requirePermission, requireSession } from '@/lib/auth/session';
 import { CURRENT_PERIOD } from '@/lib/clock';
 import { formatMoney, formatPeriod } from '@/lib/format';
@@ -20,13 +20,28 @@ export default async function PartnersPage() {
   const session = await requireSession('admin', '/admin/partners');
   requirePermission(session, 'partners.manage');
 
-  const [partnersRes, volumesRes] = await Promise.all([getPartners(), getAllPartnerVolumes()]);
-  if (!partnersRes.success || !volumesRes.success) throw new Error('Partners unavailable');
+  const partnersRes = await getPartners();
+  if (!partnersRes.success) throw new Error('Partners unavailable');
 
   const partners = partnersRes.data;
-  const volumeByPartner = Object.fromEntries(volumesRes.data.map((v) => [v.partnerId, v]));
 
-  const monthTotal = volumesRes.data.reduce((sum, v) => sum + v.runningTotal, 0);
+  // Volume comes back with each partner, so the list is one request rather
+  // than one per row.
+  const volumeByPartner = Object.fromEntries(
+    partners.map((partner) => [
+      partner.id,
+      {
+        partnerId: partner.id,
+        partnerName: partner.name,
+        appointmentCount: partner.volume?.appointmentCount ?? 0,
+        ratePerAppointment: partner.ratePerAppointment,
+        runningTotal: partner.volume?.runningTotal ?? 0,
+        currency: partner.currency,
+      },
+    ])
+  );
+
+  const monthTotal = partners.reduce((sum, p) => sum + (p.volume?.runningTotal ?? 0), 0);
 
   return (
     <AdminShell

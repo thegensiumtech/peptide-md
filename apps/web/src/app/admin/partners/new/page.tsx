@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getSettings } from '@/lib/data/client';
+import { getSettings } from '@/lib/api/admin';
 import { requirePermission, requireSession } from '@/lib/auth/session';
 import { AdminShell } from '@/components/admin/AdminShell';
 import { PartnerForm } from '@/components/admin/PartnerForm';

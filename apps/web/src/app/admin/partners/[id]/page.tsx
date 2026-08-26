@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getPartner, getPartnerVolume, getSettings } from '@/lib/data/client';
+import { getPartner, getSettings } from '@/lib/api/admin';
 import { requirePermission, requireSession } from '@/lib/auth/session';
 import { CURRENT_PERIOD } from '@/lib/clock';
 import { formatMoney, formatPeriod } from '@/lib/format';
@@ -17,17 +17,24 @@ export default async function EditPartnerPage({ params }: { params: { id: string
   const session = await requireSession('admin', `/admin/partners/${params.id}`);
   requirePermission(session, 'partners.manage');
 
-  const [partnerRes, settingsRes, volumeRes] = await Promise.all([
-    getPartner(params.id),
-    getSettings(),
-    getPartnerVolume(params.id),
-  ]);
+  const [partnerRes, settingsRes] = await Promise.all([getPartner(params.id), getSettings()]);
 
   if (!partnerRes.success) notFound();
   if (!settingsRes.success) throw new Error('Settings unavailable');
 
   const partner = partnerRes.data;
-  const volume = volumeRes.success ? volumeRes.data : null;
+  // Returned with the partner rather than fetched separately.
+  const volume = partner.volume
+    ? {
+        partnerId: partner.id,
+        partnerName: partner.name,
+        period: '',
+        appointmentCount: partner.volume.appointmentCount,
+        ratePerAppointment: partner.ratePerAppointment,
+        runningTotal: partner.volume.runningTotal,
+        currency: partner.currency,
+      }
+    : null;
 
   return (
     <AdminShell

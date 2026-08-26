@@ -114,6 +114,9 @@ adminInvoicesRouter.get(
 
     return ok(res, {
       invoice: serialise(invoice),
+      // Named on the send confirmation, so an admin sees the address the
+      // invoice is actually going to rather than the company name.
+      billingEmail: invoice.partner.billingEmail,
       // The evidence for the total. An admin approving an invoice should be
       // able to see what they are approving without leaving the screen.
       appointments: invoice.lines.map((line) => ({

@@ -115,7 +115,7 @@ export default async function PartnerInvoicesPage() {
                     </span>
                   </Td>
                   <Td>
-                    <PartnerInvoiceRow status={invoice.status} number={invoice.number} statusOnly />
+                    <PartnerInvoiceRow invoiceId={invoice.id} status={invoice.status} number={invoice.number} statusOnly />
                   </Td>
                   <Td>
                     <span className="font-mono text-micro text-muted">
@@ -123,7 +123,7 @@ export default async function PartnerInvoicesPage() {
                     </span>
                   </Td>
                   <Td align="right">
-                    <PartnerInvoiceRow status={invoice.status} number={invoice.number} />
+                    <PartnerInvoiceRow invoiceId={invoice.id} status={invoice.status} number={invoice.number} />
                   </Td>
                 </Tr>
               ))}

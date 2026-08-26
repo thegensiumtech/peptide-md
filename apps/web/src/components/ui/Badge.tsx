@@ -62,6 +62,9 @@ const INVOICE_STATUS_META: Record<InvoiceStatus, { label: string; tone: Tone }> 
   sent: { label: 'Sent', tone: 'neutral' },
   paid: { label: 'Paid', tone: 'signal' },
   overdue: { label: 'Overdue', tone: 'danger' },
+  // Raised in error and cancelled. Kept rather than deleted so the numbering
+  // stays unbroken, which is what makes the sequence auditable.
+  void: { label: 'Void', tone: 'neutral' },
 };
 
 export function InvoiceStatusBadge({ status }: { status: InvoiceStatus }) {

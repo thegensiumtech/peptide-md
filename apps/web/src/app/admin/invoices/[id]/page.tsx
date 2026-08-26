@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getInvoice, getInvoiceBookings } from '@/lib/data/client';
+import { getInvoice } from '@/lib/api/admin';
 import { requirePermission, requireSession } from '@/lib/auth/session';
 import { formatDate, formatMoney, formatPeriod, formatTime, timezoneLabel } from '@/lib/format';
 import { AdminShell } from '@/components/admin/AdminShell';
@@ -24,10 +24,12 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
 
   const invoiceRes = await getInvoice(params.id);
   if (!invoiceRes.success) notFound();
-  const invoice = invoiceRes.data;
+  const invoice = invoiceRes.data.invoice;
 
-  const bookingsRes = await getInvoiceBookings(invoice.id);
-  const bookings = bookingsRes.success ? bookingsRes.data : [];
+  // The appointments come back with the invoice: they are the evidence for the
+  // total, so an admin approving it should not need a second request to see
+  // what they are approving.
+  const bookings = invoiceRes.data.appointments;
 
   return (
     <AdminShell
@@ -163,10 +165,11 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
           </Card>
 
           <InvoiceActions
+            invoiceId={invoice.id}
             number={invoice.number}
             status={invoice.status}
             partnerName={invoice.partnerName}
-            hasPdf={Boolean(invoice.pdfUrl)}
+            billingEmail={invoiceRes.data.billingEmail}
           />
         </div>
       </div>
