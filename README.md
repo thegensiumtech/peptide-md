@@ -155,6 +155,7 @@ node scripts/verify-no-free-bookings.mjs #  7, payment bypass attempts
 node scripts/verify-diary.mjs            #  8, the doctor's diary
 node scripts/verify-partner-api.mjs      # 31, credentials, tenancy, sandbox, rate limit
 node scripts/verify-invoicing.mjs        # 15, arithmetic, idempotency, captured rates
+node scripts/verify-widget.mjs           # 21, framing, isolation, attribution
 node scripts/verify-bounces.mjs          #  5, SES bounce and complaint handling
 node scripts/verify-no-em-dashes.mjs     #     copy lint, source and database
 ```

@@ -16,6 +16,7 @@ import { webhookRouter } from './modules/webhooks/router';
 import { adminRouter } from './modules/admin/router';
 import { partnerRouter } from './modules/partner/router';
 import { partnerApiRouter } from './modules/partnerApi/router';
+import { embedRouter } from './modules/partnerApi/embed';
 import { guideRouter } from './modules/guide/router';
 import { schedulingProvider } from './scheduling';
 import { emailProviderName } from './email';
@@ -62,6 +63,9 @@ export function createApp() {
   // The partner-facing product. Versioned separately from everything above,
   // because other companies build against it and its shape is a promise.
   app.use('/api/v1', partnerApiRouter);
+  // The widget's own API. Authenticated by public client id rather than a
+  // secret, because it runs in a patient's browser. See the file header.
+  app.use('/api/embed', embedRouter);
   app.use('/api/guide', guideRouter);
 
   app.use(notFoundHandler);
