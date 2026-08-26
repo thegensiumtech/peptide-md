@@ -4,6 +4,7 @@ import { logger } from './logger';
 import { connectRedis } from './lib/redis';
 import { releaseExpiredHolds, sendDueReminders } from './modules/bookings/service';
 import { purgeExpiredAccessCodes } from './modules/bookings/accessCodes';
+import { startMonthlyInvoicing } from './modules/invoicing/scheduler';
 
 async function main() {
   assertProductionReadiness((message) => logger.warn(message));
@@ -31,10 +32,16 @@ async function main() {
     sendDueReminders().catch((error) => logger.error({ err: error }, 'Reminder sweep failed'));
   }, 15 * 60_000);
 
+  // Hourly, and once at boot. Asks whether the month just finished has been
+  // invoiced rather than counting down to the 1st, so a restart or an outage
+  // over month end cannot silently skip a month's billing.
+  const invoicing = startMonthlyInvoicing();
+
   const shutdown = (signal: string) => {
     logger.info({ signal }, 'Shutting down');
     clearInterval(sweep);
     clearInterval(reminders);
+    clearInterval(invoicing);
     server.close(() => process.exit(0));
     // Do not let a hung connection block the deploy indefinitely.
     setTimeout(() => process.exit(1), 10_000).unref();

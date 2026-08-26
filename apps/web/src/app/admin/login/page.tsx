@@ -16,6 +16,17 @@ export const metadata: Metadata = {
  * here and are separated by role afterwards, the doctor lands on the same
  * dashboard route but sees his own diary rather than the commercial view.
  */
+/**
+ * Demo accounts are development only.
+ *
+ * This panel listed real administrator email addresses on the live site, under
+ * the heading "Any password is accepted", which stopped being true the moment
+ * the API took over authentication. Handing an attacker a list of valid
+ * usernames is a gift on its own; pairing it with an invitation to guess is
+ * worse. It renders only when the build is not production.
+ */
+const showDemoAccounts = process.env.NODE_ENV !== 'production';
+
 export default async function AdminLoginPage({
   searchParams,
 }: {
@@ -32,7 +43,7 @@ export default async function AdminLoginPage({
       title="Sign in."
       lede="For Peptide MD administrators and the doctor. Your role decides what you see once you are in."
       crossLink={{ href: '/partner/login', label: 'Are you a partner? Sign in to the partner portal →' }}
-      aside={<DemoAccounts accounts={staffAccounts} />}
+      aside={showDemoAccounts ? <DemoAccounts accounts={staffAccounts} /> : null}
     >
       <LoginForm action={signInAdmin} next={searchParams.next} submitLabel="Sign in" />
     </AuthScreen>

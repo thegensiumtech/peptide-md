@@ -69,9 +69,10 @@ export function DemoAccounts({
 }) {
   return (
     <div className="rounded-lg border border-line bg-surface p-6">
-      <p className="eyebrow">Static build · demo accounts</p>
+      <p className="eyebrow">Development · seeded accounts</p>
       <p className="mt-3 text-micro leading-relaxed text-muted">
-        Any password is accepted. Real authentication is JWT with bcrypt in the API.
+        Seeded by the database, all using the same development password. Authentication
+        is real: JWT with bcrypt, verified by the API.
       </p>
       <ul className="mt-5 divide-y divide-line border-t border-line">
         {accounts.map((account) => (
