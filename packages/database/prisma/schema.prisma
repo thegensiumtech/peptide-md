@@ -86,6 +86,10 @@ model Doctor {
   photoUrl    String?
   headline    String
   bio         String
+  /// His own words, shown as a pull quote on the public page. Nullable because
+  /// a doctor without one should render nothing rather than something invented
+  /// on his behalf, which is what was there before.
+  quote       String?
   specialisms String[]
   languages   String[]
   timezone    String  @default("Europe/London")

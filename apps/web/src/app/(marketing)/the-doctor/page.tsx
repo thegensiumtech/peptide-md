@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { cn } from '@/lib/cn';
 import { getConsultation } from '@/lib/api/public';
 import { formatMoney } from '@/lib/format';
 import { CtaBand, PortraitFrame, RequisitionCard } from '@/components/marketing/Primitives';
@@ -62,25 +63,39 @@ export default async function DoctorPage() {
             </div>
 
             <div className="mt-12 border-t border-line pt-8">
-              <p className="eyebrow">What he sees most</p>
+              <p className="eyebrow">Main areas</p>
               <ul className="mt-5 grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2">
-                {doctor.specialisms.map((specialism) => (
-                  <li key={specialism} className="bg-surface px-5 py-4 text-sm text-ink-soft">
+                {doctor.specialisms.map((specialism, index) => (
+                  <li
+                    key={specialism}
+                    className={cn(
+                      'bg-surface px-5 py-4 text-sm text-ink-soft',
+                      // An odd count would otherwise leave the last cell of the
+                      // two-column grid empty, showing the divider colour as a
+                      // grey hole. The final item spans instead.
+                      index === doctor.specialisms.length - 1 &&
+                        doctor.specialisms.length % 2 === 1 &&
+                        'sm:col-span-2'
+                    )}
+                  >
                     {specialism}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <blockquote className="mt-12 border-l-2 border-accent pl-6">
-              <p className="font-display text-h3 leading-snug text-ink">
-                “Half of what I do is telling people that the thing they have been sold will not
-                fix the thing they actually have.”
-              </p>
-              <footer className="mt-4 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
-                {doctor.name}
-              </footer>
-            </blockquote>
+            {/* His own words. The line that used to sit here was written for
+                him and attributed to him, which is not a quote. */}
+            {doctor.quote ? (
+              <blockquote className="mt-12 border-l-2 border-accent pl-6">
+                <p className="font-display text-h3 leading-snug text-ink">
+                  &ldquo;{doctor.quote}&rdquo;
+                </p>
+                <footer className="mt-4 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
+                  {doctor.name}
+                </footer>
+              </blockquote>
+            ) : null}
           </div>
         </div>
       </section>

@@ -15,6 +15,9 @@ export interface DoctorProfile {
   photoUrl: string | null;
   headline: string;
   bio: string;
+  /** His own words, shown as a pull quote. Null renders nothing rather than
+   *  something written on his behalf. */
+  quote: string | null;
   specialisms: string[];
   languages: string[];
   timezone: string;

@@ -6,6 +6,7 @@ export const doctorProfile: DoctorProfile = {
   credentials: 'MBBS, MRCGP',
   gmcNumber: '7214883',
   photoUrl: null,
+  quote: 'Why be well when you can be great?',
   headline: 'A doctor who will tell you when the answer is no.',
   bio: [
     'Mark Jinks has practised for eighteen years, the last six of them working almost entirely with patients who are using, or thinking about using, peptide therapies.',

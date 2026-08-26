@@ -73,22 +73,22 @@ async function main() {
     create: {
       name: 'Dr Mark Jinks',
       credentials: 'MBBS, MRCGP',
-      // Empty until Ross supplies it. The site omits the registration line
-      // rather than printing a number we do not hold.
-      gmcNumber: '',
+      gmcNumber: '7408409',
       photoUrl: '/doctor/peptide-md-doctor.jpg',
+      quote: 'Why be well when you can be great?',
       headline: 'A doctor who will tell you when the answer is no.',
       bio: [
-        'Mark Jinks has practised for eighteen years, the last six of them working almost entirely with patients who are using, or thinking about using, peptide therapies.',
-        'He came to it the way most people do, patients arriving with a protocol they had found online, a box of vials, and nobody willing to talk to them about it. Most had been sold something. Almost none had been examined.',
-        'The consultation is twenty minutes and it is deliberately plain. He will ask what you are taking, what you are trying to fix, and what your history is. Then he will tell you what he thinks, including when he thinks the honest answer is that you should not be taking anything at all.',
-        'He has no products to sell and no affiliation with any supplier. That is the point of the service.',
+        'I\'ve been practising medicine for 13 years. My training began in surgery, focused on orthopaedics, before I moved into general practice, where I\'ve worked for the last six years alongside completing a Master\'s in Sports and Exercise Medicine. Since then my work has spanned sports medicine, longevity and functional medicine, including training with the Institute for Functional Medicine and A4M, health screening with Bupa, NHS work in general practice and complex elderly care, and Medical Director roles for a medical wellness business and a longevity clinic in the Harley Street medical district. I\'ve also worked in sport at elite level, particularly rugby and hockey, building on my own background as a high-performance athlete.',
+        'I first came across peptides several years ago through my performance and longevity work. What began as reading and research became formal training with US physicians and institutions specialising in peptide therapeutics, and I\'ve continued building my knowledge and clinical experience since. I was drawn to them for the same reason I was drawn to this field in general: I want to work at the front edge of what\'s possible for health and performance, and to do it properly.',
+        'Patients can expect a thorough consultation with genuine attention to detail. I take time to listen and understand the full picture: your current health, your goals and concerns, your medical history and lifestyle. From there I draw on experience across general practice, sports medicine, and performance and longevity medicine to build a detailed plan, starting with the foundations and extending to supplements and more advanced therapies where they\'re right for you.',
+        'Patient safety sits at the front of everything I offer. I\'m open-minded about innovative therapies, but every recommendation is individual: a careful review of your background, an honest conversation about the evidence, risks and benefits, and appropriate screening, investigations and follow-up. If I don\'t think something is safe or suitable for you, I\'ll say so and I won\'t recommend it.',
       ].join('\n\n'),
       specialisms: [
-        'Peptide therapy review',
-        'Injury and post-surgical recovery',
-        'Metabolic and weight management',
-        'Sleep and recovery',
+        'Sports and performance medicine',
+        'Longevity and preventative health',
+        'General practice',
+        "Men's and women's health screening",
+        'Musculoskeletal medicine',
       ],
       languages: ['English'],
       timezone: 'Europe/London',

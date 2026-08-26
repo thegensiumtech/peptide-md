@@ -361,6 +361,7 @@ adminRouter.get(
       photoUrl: doctor.photoUrl,
       headline: doctor.headline,
       bio: doctor.bio,
+      quote: doctor.quote,
       specialisms: doctor.specialisms,
       languages: doctor.languages,
       timezone: doctor.timezone,

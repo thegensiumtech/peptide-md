@@ -39,6 +39,7 @@ publicBookingRouter.get(
         gmcNumber: doctor.gmcNumber,
         headline: doctor.headline,
         bio: doctor.bio,
+        quote: doctor.quote,
         specialisms: doctor.specialisms,
         languages: doctor.languages,
         photoUrl: doctor.photoUrl,
