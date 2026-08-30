@@ -72,7 +72,9 @@ async function main() {
     update: {},
     create: {
       name: 'Dr Mark Jinks',
-      credentials: 'MBBS, MRCGP',
+      // Empty until the clinic supplies post-nominals. The page omits the
+      // qualifications row rather than printing a guess.
+      credentials: '',
       gmcNumber: '7408409',
       photoUrl: '/doctor/peptide-md-doctor.jpg',
       quote: 'Why be well when you can be great?',

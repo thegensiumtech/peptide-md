@@ -1,0 +1,13 @@
+-- "MBBS, MRCGP" was never supplied by the clinic.
+--
+-- It came from the original placeholder profile, alongside the invented name
+-- and the invented GMC number, both of which have already been replaced with
+-- the real ones. Post-nominals are the same kind of claim as a registration
+-- number: a regulated professional qualification, printed on a public medical
+-- site, that a patient may rely on. Ours were a guess that happened to be
+-- plausible.
+--
+-- The clinic has since sent what they consider his credentials, and it is his
+-- GMC number, his main areas and his languages. No post-nominals, so none are
+-- shown. The page now omits the qualifications row rather than filling it.
+UPDATE "doctors" SET "credentials" = '' WHERE "gmcNumber" = '7408409';

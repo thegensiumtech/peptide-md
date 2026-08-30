@@ -38,7 +38,11 @@ export default async function DoctorPage() {
                 ...(doctor.gmcNumber
                   ? [{ label: 'Registration', value: `GMC ${doctor.gmcNumber}` }]
                   : []),
-                { label: 'Qualifications', value: doctor.credentials },
+                // Dropped when the clinic has not supplied post-nominals, rather
+                // than printing a row with nothing in it.
+                ...(doctor.credentials
+                  ? [{ label: 'Qualifications', value: doctor.credentials }]
+                  : []),
                 { label: 'Languages', value: doctor.languages.join(', ') },
                 { label: 'Consultation', value: `${consultation.durationMinutes} min · video` },
                 {
@@ -51,14 +55,15 @@ export default async function DoctorPage() {
           </div>
 
           <div className="max-w-prose">
+            {/* One size for the whole bio.
+                The first paragraph used to render at heading size as a
+                standfirst. That device suits a short editorial opener; this is
+                four paragraphs of the doctor speaking in the first person, and
+                setting the longest of them larger than the rest just read as
+                inconsistent. */}
             <div className="space-y-6 text-lead leading-relaxed text-ink-soft">
-              {paragraphs.map((paragraph, index) => (
-                <p
-                  key={paragraph.slice(0, 32)}
-                  className={index === 0 ? 'text-h3 leading-snug text-ink' : undefined}
-                >
-                  {paragraph}
-                </p>
+              {paragraphs.map((paragraph) => (
+                <p key={paragraph.slice(0, 32)}>{paragraph}</p>
               ))}
             </div>
 

@@ -3,7 +3,7 @@ import type { Availability, DoctorProfile } from '@peptide/shared';
 export const doctorProfile: DoctorProfile = {
   id: 'doc_hartley',
   name: 'Dr Mark Jinks',
-  credentials: 'MBBS, MRCGP',
+  credentials: '',
   gmcNumber: '7214883',
   photoUrl: null,
   quote: 'Why be well when you can be great?',

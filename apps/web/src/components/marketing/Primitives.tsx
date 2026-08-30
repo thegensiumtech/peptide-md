@@ -42,6 +42,7 @@ export function PortraitFrame({
   className,
 }: {
   name: string;
+  /** Post-nominals. Empty when the clinic has not supplied any. */
   credentials: string;
   /** Omitted from the caption when empty. See the note on the caption. */
   gmcNumber?: string | null;
@@ -62,7 +63,7 @@ export function PortraitFrame({
         {photoUrl ? (
           <Image
             src={photoUrl}
-            alt={`${name}, ${credentials}`}
+            alt={credentials ? `${name}, ${credentials}` : name}
             width={1000}
             height={1250}
             priority={priority}
@@ -86,12 +87,16 @@ export function PortraitFrame({
       </div>
       <figcaption className="absolute bottom-4 left-4 right-4 rounded border border-line bg-surface px-4 py-3">
         <p className="font-display text-base font-semibold text-ink">{name}</p>
-        {/* A registration number is a regulated claim about a real person, so
-            the caption prints one only when we actually hold it. Rendering
-            "GMC " with an empty value would read as a fact rather than a gap. */}
-        <p className="mt-0.5 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
-          {gmcNumber ? `${credentials} · GMC ${gmcNumber}` : credentials}
-        </p>
+        {/* Both halves are optional and neither is invented.
+            A registration number is a regulated claim about a real person, and
+            post-nominals are the same kind of claim, so each prints only when
+            the clinic has actually given it to us. Joining them unconditionally
+            produced a stray separator when one was missing. */}
+        {credentials || gmcNumber ? (
+          <p className="mt-0.5 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
+            {[credentials, gmcNumber ? `GMC ${gmcNumber}` : null].filter(Boolean).join(' · ')}
+          </p>
+        ) : null}
       </figcaption>
     </figure>
   );
