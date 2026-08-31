@@ -53,6 +53,9 @@ apps/web/                  the application, public site, booking, admin, partner
   src/middleware.ts        route guards
 packages/shared/           domain types, the contract the API will implement
 docs/screen-map.md         every screen, route, journey and access rule
+docs/architecture.md       services, data model, scheduling, deployment
+docs/operations.md         running it, deploying it, and what breaks
+docs/partner-api.md        the partner API reference, sendable to a partner
 proposal/                  the scope document and diagrams (git-ignored)
 ```
 
@@ -155,10 +158,17 @@ node scripts/verify-no-free-bookings.mjs #  7, payment bypass attempts
 node scripts/verify-diary.mjs            #  8, the doctor's diary
 node scripts/verify-partner-api.mjs      # 31, credentials, tenancy, sandbox, rate limit
 node scripts/verify-invoicing.mjs        # 15, arithmetic, idempotency, captured rates
+node scripts/verify-reporting.mjs        # 24, reports reconcile with invoices, credential pairs
 node scripts/verify-widget.mjs           # 21, framing, isolation, attribution
 node scripts/verify-bounces.mjs          #  5, SES bounce and complaint handling
 node scripts/verify-no-em-dashes.mjs     #     copy lint, source and database
+node scripts/verify.mjs                  # 22, routes, access control, responsive
 ```
+
+Run them with a production build up, not `pnpm dev`. Running the whole set back
+to back trips the per-minute rate limiter, and the suites that then fail report
+`Too many requests`, which reads like a regression and is not. Leave a minute
+between runs, or run the partner suites separately.
 
 ## Still outstanding
 

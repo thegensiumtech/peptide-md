@@ -27,6 +27,7 @@ flowchart TB
     ADM[Admin panel]
     POR[Partner portal]
     MAN[Patient self-service<br/>/manage]
+    WID[Embeddable widget<br/>/embed, iframe]
   end
 
   subgraph api [Express, apps/api]
@@ -35,7 +36,11 @@ flowchart TB
     SCH[Scheduling port]
     PAY[Payments]
     MAIL[Email + .ics]
-    PRT[Partner API]
+    PRT[Partner portal API<br/>/api/partner]
+    V1[Partner Booking API<br/>/api/v1, HTTP Basic]
+    EMB[Widget API<br/>/api/embed/:clientId]
+    INV[Invoicing<br/>generate, PDF, send]
+    REP[Reporting<br/>by source, partner, period]
   end
 
   subgraph ext [External]
@@ -49,25 +54,37 @@ flowchart TB
   end
 
   P --> MKT --> BOOK
-  PP -.partner site.-> PRT
+  PP -.partner site.-> WID
+  PP -.partner's own front end.-> V1
   A --> ADM
   PS --> POR
   P --> MAN
 
   BOOK --> BK
-  ADM --> AUTH & BK
+  ADM --> AUTH & BK & INV & REP
   POR --> PRT
   MAN --> BK
+  WID --> EMB
 
+  V1 & EMB --> BK
   BK --> SCH
   SCH --> PG
   BK --> PAY --> STRIPE
   BK --> MAIL --> SES
+  INV --> MAIL
   STRIPE -.webhook.-> PAY
 
-  AUTH & BK & PRT --> PG
+  AUTH & BK & PRT & INV & REP --> PG
   BK --> RD
+  V1 -.rate limit + credential cache.-> RD
 ```
+
+**The two partner entry points are different products.** `/api/v1` is for a
+partner with a development team, authenticated with HTTP Basic against a
+credential pair they hold. `/api/embed/:clientId` is for a partner without one;
+it is authenticated by the public client id alone, because it runs in the
+patient's browser where nothing can be kept secret. The widget is therefore
+write-only, heavily rate limited, and exposes no partner data.
 
 **Why the API is separate from Next.js.** The partner API is a public product, other companies build against it, it is versioned, and it is rate limited per
 partner. That is a different lifecycle from the website, so it is a different
@@ -293,15 +310,34 @@ ChunkLoadError. `scripts/e2e.mjs` detects this and fails fast with that message.
 
 ## 9. Deployment
 
-| Component | Target |
+This table described an intended topology. What is actually running is simpler,
+and the difference matters enough to record: both applications sit on **one
+Ubuntu host behind nginx**, which routes `/api/*` to Express on 4000 and
+everything else to Next.js on 3000.
+
+| Component | Actually running on |
 |---|---|
-| `apps/web` | Vercel |
-| `apps/api` | AWS EC2 / ECS |
-| Database | AWS RDS PostgreSQL |
-| Cache | AWS ElastiCache Redis |
-| Email | AWS SES |
-| Files | AWS S3 (invoice PDFs) |
-| Monitoring | Sentry + CloudWatch |
+| `apps/web` | Next.js on the host, port 3000, proxied by nginx |
+| `apps/api` | Express on the same host, port 4000, proxied at `/api` |
+| Database | PostgreSQL |
+| Cache | Redis, optional; absence degrades rather than breaks |
+| Email | AWS SES, `eu-west-2` |
+| Invoice PDFs | Rendered on demand by Playwright, never written to disk |
+
+The single origin is load-bearing, not incidental. Because the API answers on
+the same host as the site, the partner API's public base is
+`https://peptidemd.co.uk` with no `api.` subdomain, and the browser makes no
+cross-origin request in normal use. The one deliberate exception is the
+embedded widget, which runs on a partner's domain and is the reason CORS and
+the framing headers exist at all.
+
+Invoice PDFs are generated per request and streamed through an authenticated,
+tenant-scoped endpoint rather than written to object storage. Nothing lands in
+a bucket that could be guessed at. It also means the API host needs Chromium;
+see [operations.md](operations.md) §3.
+
+Day to day running, deployment steps and the failure modes this platform has
+actually had are in [operations.md](operations.md).
 
 `assertProductionReadiness` refuses to boot in production with a placeholder
 webhook secret, a development JWT secret, or a provider named without its

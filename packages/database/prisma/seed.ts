@@ -68,7 +68,11 @@ async function main() {
 
   // --- Doctor ------------------------------------------------------------
   const doctor = await prisma.doctor.upsert({
-    where: { gmcNumber: '' },
+    // Keyed on the real GMC number. It used to key on the empty string that
+    // stood in before the clinic supplied one, which matched nothing once the
+    // real number was set: the upsert then tried to create a second Dr Jinks
+    // and died on the unique constraint, so the seed could not be re-run.
+    where: { gmcNumber: '7408409' },
     update: {},
     create: {
       name: 'Dr Mark Jinks',
@@ -261,7 +265,10 @@ async function main() {
     const liveSecret = `${seed.slug}-dev-secret`;
     await prisma.partnerCredential.upsert({
       where: { clientId: seed.clientId },
-      update: {},
+      // Backfilled rather than left alone. Rows created before the last-four
+      // was corrected still carry the client id's ending, so the portal tells
+      // the partner their secret ends in four characters it does not.
+      update: { secretLastFour: liveSecret.slice(-4) },
       create: {
         partnerId: partner.id,
         clientId: seed.clientId,
@@ -276,7 +283,7 @@ async function main() {
     const sandboxSecret = `${seed.slug}-sandbox-secret`;
     await prisma.partnerCredential.upsert({
       where: { clientId: `${seed.clientId}_sandbox` },
-      update: {},
+      update: { secretLastFour: sandboxSecret.slice(-4) },
       create: {
         partnerId: partner.id,
         clientId: `${seed.clientId}_sandbox`,

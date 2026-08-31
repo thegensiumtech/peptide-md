@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { can } from '@peptide/shared';
-import { getAllPartnerVolumes } from '@/lib/data/client';
-import { getDashboard, getUpcomingBookings } from '@/lib/api/admin';
+
+import { getDashboard, getPartners, getUpcomingBookings } from '@/lib/api/admin';
 import { requireSession } from '@/lib/auth/session';
 import { CURRENT_PERIOD } from '@/lib/clock';
 import { formatDate, formatMoney, formatPeriod, formatRelativeDay, formatTime } from '@/lib/format';
@@ -28,17 +28,32 @@ export default async function AdminDashboardPage() {
   const [dashboardRes, upcomingRes, volumesRes] = await Promise.all([
     getDashboard(),
     getUpcomingBookings({ limit: 8 }),
-    getAllPartnerVolumes(),
+    // Partner volumes are an admin-only read, and the doctor's dashboard never
+    // renders them. Asking regardless returned 403 for the doctor and took the
+    // whole page down with it.
+    isDoctor ? Promise.resolve(null) : getPartners(),
   ]);
 
-  if (!dashboardRes.success || !upcomingRes.success || !volumesRes.success) {
+  if (!dashboardRes.success || !upcomingRes.success || (volumesRes && !volumesRes.success)) {
     throw new Error('Dashboard data unavailable');
   }
 
   const summary = dashboardRes.data;
   const upcoming = upcomingRes.data;
   // Only partners who actually sent something this month belong on the tile row.
-  const activeVolumes = volumesRes.data.filter((v) => v.appointmentCount > 0);
+  // Volume arrives with each partner from the API. It used to come from
+  // fixtures, so the dashboard's billable figures were invented.
+  const activeVolumes = (volumesRes?.success ? volumesRes.data : [])
+    .filter((partner) => (partner.volume?.appointmentCount ?? 0) > 0)
+    .map((partner) => ({
+      partnerId: partner.id,
+      partnerName: partner.name,
+      period: '',
+      appointmentCount: partner.volume?.appointmentCount ?? 0,
+      ratePerAppointment: partner.ratePerAppointment,
+      runningTotal: partner.volume?.runningTotal ?? 0,
+      currency: partner.currency,
+    }));
 
   return (
     <AdminShell

@@ -8,6 +8,7 @@ const ITEMS = [
   { href: '/partner/bookings', label: 'Bookings' },
   { href: '/partner/invoices', label: 'Invoices' },
   { href: '/partner/api-credentials', label: 'API credentials' },
+  { href: '/partner/api-docs', label: 'API docs' },
 ];
 
 export function PartnerNav() {

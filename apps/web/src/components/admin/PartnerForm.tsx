@@ -284,9 +284,11 @@ export function PartnerForm({
             >
               <Input
                 id="display-name"
+                name="displayName"
                 value={displayName}
                 onChange={(event) => setDisplayName(event.target.value)}
                 placeholder="New You Clinic"
+                required
               />
             </Field>
             <div className="grid gap-5 sm:grid-cols-2">

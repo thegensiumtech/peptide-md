@@ -31,6 +31,8 @@ export const partners: Partner[] = [
       lastRotatedAt: null,
       lastUsedAt: '2026-08-09T07:41:00.000Z',
     },
+    // Fixtures are a design-time stand in; no sandbox pair is modelled.
+    sandboxCredentials: null,
     rateLimitPerMinute: 120,
     createdAt: '2026-08-02T09:14:00.000Z',
   },
@@ -59,6 +61,8 @@ export const partners: Partner[] = [
       lastRotatedAt: '2026-08-08T16:02:00.000Z',
       lastUsedAt: '2026-08-09T06:12:00.000Z',
     },
+    // Fixtures are a design-time stand in; no sandbox pair is modelled.
+    sandboxCredentials: null,
     rateLimitPerMinute: 60,
     createdAt: '2026-08-04T11:30:00.000Z',
   },
@@ -87,6 +91,8 @@ export const partners: Partner[] = [
       lastRotatedAt: null,
       lastUsedAt: '2026-08-01T10:22:00.000Z',
     },
+    // Fixtures are a design-time stand in; no sandbox pair is modelled.
+    sandboxCredentials: null,
     rateLimitPerMinute: 60,
     createdAt: '2026-07-28T13:05:00.000Z',
   },

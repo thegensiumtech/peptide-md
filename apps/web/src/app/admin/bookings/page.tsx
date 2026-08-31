@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { BookingChannel, BookingStatus } from '@peptide/shared';
-import { getPartners } from '@/lib/data/client';
-import { getBookings } from '@/lib/api/admin';
+import { getBookings, getPartners } from '@/lib/api/admin';
 import { requireSession } from '@/lib/auth/session';
 import { formatDate, formatMoney, formatTime, timezoneLabel } from '@/lib/format';
 import { AdminShell } from '@/components/admin/AdminShell';
@@ -42,14 +41,22 @@ export default async function BookingsPage({ searchParams }: { searchParams: Sea
       search: searchParams.q,
       limit: 100,
     }),
-    getPartners(),
+    // Admin-only, and the doctor gets no partner filter to populate. Fetching
+    // it for them returned 403 and threw the whole page away.
+    isDoctor ? Promise.resolve(null) : getPartners(),
   ]);
 
-  if (!bookingsRes.success || !partnersRes.success) throw new Error('Bookings unavailable');
+  if (!bookingsRes.success || (partnersRes && !partnersRes.success)) {
+    throw new Error('Bookings unavailable');
+  }
 
   const bookings = bookingsRes.data;
-  const partners = partnersRes.data;
-  const partnerNames = Object.fromEntries(partners.map((p) => [p.id, p.name]));
+  const partners = partnersRes?.success ? partnersRes.data : [];
+  // The name comes with each booking rather than from a lookup built here.
+  // A map keyed on partner ids has to agree with the ids on the bookings, and
+  // when this page read partners from fixtures it did not: the fixture ids
+  // were nothing like the real ones, so every partner booking fell back to the
+  // word "Partner" and the filter matched no rows at all.
 
   // Carried into each row link so returning from a detail screen lands back on
   // the same filtered view.
@@ -134,7 +141,7 @@ export default async function BookingsPage({ searchParams }: { searchParams: Sea
                     <Td>
                       <ChannelBadge
                         channel={booking.channel}
-                        partnerName={booking.partnerId ? partnerNames[booking.partnerId] : null}
+                        partnerName={booking.partnerName}
                       />
                     </Td>
                   ) : null}
@@ -145,7 +152,7 @@ export default async function BookingsPage({ searchParams }: { searchParams: Sea
                     <Td align="right">
                       <span className="font-mono text-sm text-ink">
                         {booking.amountPaid === null
-                          ? ', '
+                          ? '–'
                           : formatMoney(booking.amountPaid, booking.currency)}
                       </span>
                     </Td>

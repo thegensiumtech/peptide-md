@@ -11,6 +11,7 @@ import type {
   PartnerStatus,
   PlatformSettings,
   VolumeBySource,
+  VolumeReport,
 } from '@peptide/shared';
 import { fail, ok } from '@peptide/shared';
 import { apiFetch, query } from './server';
@@ -90,8 +91,9 @@ export async function getDashboard(): Promise<ApiResponse<DashboardSummary>> {
 
   return ok({
     ...result.data,
-    // The trend endpoint is part of the Milestone 2 reporting work; until then
-    // the chart shows the current period only rather than inventing history.
+    // The API sends six months. The fallback stays for an older API that does
+    // not, so the chart degrades to the current period instead of throwing on
+    // an undefined array.
     volumeTrend: result.data.volumeTrend ?? [result.data.monthVolume],
   });
 }
@@ -175,6 +177,7 @@ interface PartnerRecord {
  */
 function toPartner(record: PartnerRecord): AdminPartner {
   const live = record.credentials.find((c) => !c.isSandbox && !c.revokedAt) ?? record.credentials[0];
+  const sandbox = record.credentials.find((c) => c.isSandbox && !c.revokedAt) ?? null;
   return {
     id: record.id,
     name: record.name,
@@ -196,6 +199,14 @@ function toPartner(record: PartnerRecord): AdminPartner {
       lastRotatedAt: live?.expiresAt ?? null,
       lastUsedAt: live?.lastUsedAt ?? null,
     },
+    sandboxCredentials: sandbox
+      ? {
+          clientId: sandbox.clientId,
+          secretLastFour: sandbox.secretLastFour,
+          createdAt: sandbox.createdAt,
+          lastUsedAt: sandbox.lastUsedAt ?? null,
+        }
+      : null,
     volume: record.volume,
     credentialList: record.credentials,
   };
@@ -250,5 +261,22 @@ export async function getInvoice(id: string): Promise<
     billingEmail: string;
   }>(`/api/admin/invoices/${encodeURIComponent(id)}`);
   if (!result.success || !result.data) return fail(result.error ?? 'Invoice unavailable');
+  return ok(result.data);
+}
+
+
+/**
+ * Volume by source, by partner and by period.
+ *
+ * The window is passed through untouched rather than defaulted here: the API
+ * owns what "recent" means, so the screen and any other caller agree without
+ * having to keep two definitions in step.
+ */
+export async function getVolumeReport(params: {
+  from?: string;
+  to?: string;
+}): Promise<ApiResponse<VolumeReport>> {
+  const result = await apiFetch<VolumeReport>(`/api/admin/reports${query(params)}`);
+  if (!result.success || !result.data) return fail(result.error ?? 'Report unavailable');
   return ok(result.data);
 }

@@ -39,6 +39,7 @@ const GROUPS: NavGroup[] = [
     items: [
       { href: '/admin/partners', label: 'Partners', permissions: ['partners.manage'] },
       { href: '/admin/invoices', label: 'Invoices', permissions: ['invoices.manage'] },
+      { href: '/admin/reports', label: 'Reports', permissions: ['invoices.manage'] },
       { href: '/admin/leads', label: 'Guide downloads', permissions: ['settings.manage'] },
     ],
   },

@@ -1,20 +1,30 @@
 /**
  * End-to-end verification.
  *
- * Builds nothing and assumes `pnpm build` has run. Starts its own server on its
- * own port and shuts it down afterwards, that isolation is deliberate: serving
- * a freshly rebuilt .next from an already-running server makes the HTML
- * reference the previous build's chunk hashes, which surfaces in the browser as
- * "Application error: a client-side exception has occurred".
+ * Builds nothing and assumes `pnpm build` has run and the app is up.
+ *
+ * This used to start its own server on port 3100 to isolate itself from a
+ * stale build. That traded one problem for two. The API's CORS allowlist is a
+ * single origin, so every client-side fetch from a page served on 3100 was
+ * blocked, and two `next start` processes sharing one .next directory served
+ * mismatched chunk hashes anyway. Both showed up as a wall of unrelated
+ * failures on screens that were perfectly fine.
+ *
+ * So it now points at the running server like every other suite, and guards
+ * against the stale build directly instead.
  *
  *   pnpm verify
+ *   BASE_URL=https://peptidemd.co.uk node scripts/verify.mjs
  */
 import { chromium } from '@playwright/test';
-import { spawn } from 'node:child_process';
-import { setTimeout as sleep } from 'node:timers/promises';
+import { config } from 'dotenv';
+import { resolve } from 'node:path';
+import { PrismaClient } from '@prisma/client';
 
-const PORT = 3100;
-const BASE = `http://localhost:${PORT}`;
+config({ path: resolve(import.meta.dirname, '../.env.local') });
+
+const BASE = process.env.BASE_URL ?? 'http://localhost:3000';
+const prisma = new PrismaClient();
 
 const results = [];
 const pass = (name, detail = '') => results.push({ ok: true, name, detail });
@@ -27,59 +37,88 @@ const PUBLIC = [
   '/privacy', '/terms', '/medical-disclaimer', '/admin/login', '/partner/login',
 ];
 
+/**
+ * Detail routes are resolved from the database, not hardcoded.
+ *
+ * These used to be fixture ids (`bkg_pmd_4871`, `ptr_newyou`,
+ * `inv_2026_08_newyou`). Those screens read live data now, so every one of
+ * them was a guaranteed 404 dressed up as a route check: the crawl proved the
+ * not-found page renders cleanly and nothing else.
+ */
+const [sampleBookings, samplePartners, sampleInvoices] = await Promise.all([
+  prisma.booking.findMany({ take: 2, select: { id: true }, orderBy: { createdAt: 'desc' } }),
+  prisma.partner.findMany({ take: 3, select: { id: true }, orderBy: { name: 'asc' } }),
+  prisma.invoice.findMany({ take: 3, select: { id: true }, orderBy: { period: 'desc' } }),
+]);
+
 const ADMIN = [
-  '/admin', '/admin/bookings', '/admin/bookings/bkg_pmd_4871',
-  '/admin/bookings/bkg_pmd_4872', '/admin/doctor-profile', '/admin/availability',
-  '/admin/settings', '/admin/partners', '/admin/partners/new',
-  '/admin/partners/ptr_newyou', '/admin/partners/ptr_fivepeptides',
-  '/admin/partners/ptr_apexlabs', '/admin/invoices',
-  '/admin/invoices/inv_2026_08_newyou', '/admin/invoices/inv_2026_07_newyou',
-  '/admin/invoices/inv_2026_06_fivepeptides', '/admin/no-access',
+  '/admin', '/admin/bookings', '/admin/doctor-profile', '/admin/availability',
+  '/admin/settings', '/admin/partners', '/admin/partners/new', '/admin/invoices',
+  '/admin/leads', '/admin/no-access',
+  ...sampleBookings.map((b) => `/admin/bookings/${b.id}`),
+  ...samplePartners.map((p) => `/admin/partners/${p.id}`),
+  ...sampleInvoices.map((i) => `/admin/invoices/${i.id}`),
 ];
 
-const DOCTOR = ['/admin', '/admin/bookings', '/admin/bookings/bkg_pmd_4871', '/admin/availability', '/admin/doctor-profile'];
+const DOCTOR = [
+  '/admin', '/admin/bookings', '/admin/availability', '/admin/doctor-profile',
+  ...sampleBookings.slice(0, 1).map((b) => `/admin/bookings/${b.id}`),
+];
 const PARTNER = ['/partner', '/partner/bookings', '/partner/invoices', '/partner/api-credentials'];
 
 // --- Server ------------------------------------------------------------------
 
-const server = spawn('pnpm', ['--filter', '@peptide/web', 'exec', 'next', 'start', '--port', String(PORT)], {
-  stdio: 'ignore',
-  detached: true,
-});
+const reachable = await fetch(BASE)
+  .then((r) => r.ok)
+  .catch(() => false);
 
-async function waitForServer() {
-  for (let i = 0; i < 60; i += 1) {
-    try {
-      const res = await fetch(BASE);
-      if (res.ok) return true;
-    } catch {
-      // not listening yet
-    }
-    await sleep(500);
-  }
-  return false;
-}
-
-function stopServer() {
-  try {
-    process.kill(-server.pid, 'SIGTERM');
-  } catch {
-    // already gone
-  }
-}
-
-if (!(await waitForServer())) {
-  stopServer();
-  console.error(`Server never came up on ${PORT}. Run "pnpm build" first.`);
+if (!reachable) {
+  console.error(`Nothing is serving ${BASE}. Run "pnpm build" then "pnpm start".`);
+  await prisma.$disconnect();
   process.exit(1);
 }
 
 const browser = await chromium.launch();
 
+/**
+ * Stale build guard, same reasoning as scripts/e2e.mjs.
+ *
+ * Running `pnpm build` while `next start` is up rewrites the chunk hashes on
+ * disk while the server keeps serving HTML pointing at the old ones. Every page
+ * then dies with a ChunkLoadError, which reads like a hundred unrelated bugs.
+ */
+{
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  const broken = [];
+  page.on('response', (r) => {
+    if (r.status() >= 400 && r.url().includes('/_next/static/')) broken.push(r.url().split('/').pop());
+  });
+  await page.goto(BASE, { waitUntil: 'networkidle' });
+  await ctx.close();
+
+  if (broken.length > 0) {
+    console.error(
+      `\nStale build: the server is serving HTML referencing ${broken.length} chunk(s) ` +
+        `no longer on disk (e.g. ${broken[0]}).\nA build ran while the server was up. Restart it:\n\n` +
+        '  pkill -f next-server && pnpm --filter @peptide/web start\n'
+    );
+    await browser.close();
+    await prisma.$disconnect();
+    process.exit(1);
+  }
+}
+
+// The seeded development password. This used to be any string at all, because
+// the login accepted anything outside production; that shortcut was removed
+// when it turned out to be reachable on the live site, so the real password is
+// needed here. It matches DEV_PASSWORD in packages/database/prisma/seed.ts.
+const PASSWORD = 'peptide-dev-2026';
+
 async function signIn(page, area, email) {
   await page.goto(`${BASE}/${area}/login`, { waitUntil: 'networkidle' });
   await page.fill('#email', email);
-  await page.fill('#password', 'x');
+  await page.fill('#password', PASSWORD);
   await Promise.all([
     page.waitForURL((u) => !u.pathname.endsWith('/login'), { timeout: 15000 }),
     page.click('button[type=submit]'),
@@ -121,60 +160,52 @@ await crawl('admin', ADMIN, (p) => signIn(p, 'admin', 'ross@peptidemd.co.uk'));
 await crawl('doctor', DOCTOR, (p) => signIn(p, 'admin', 'mark@peptidemd.co.uk'));
 await crawl('partner', PARTNER, (p) => signIn(p, 'partner', 'dana@newyoupeptides.com.au'));
 
-// --- 2. Patient booking journey ---------------------------------------------
+// --- 2. The booking flow's entry conditions ---------------------------------
 
+/**
+ * Not the whole paid journey.
+ *
+ * This used to click "Card declined" and "Payment succeeds" on a mock payment
+ * screen, then walk through slot, intake and confirmation. Those buttons went
+ * when Stripe Checkout was wired in for real, so the block was testing a UI
+ * that no longer exists and failing on the first click.
+ *
+ * The real journey now leaves our origin for Stripe's hosted page, which needs
+ * a test card typed into somebody else's form. scripts/e2e.mjs does exactly
+ * that and asserts the booking, payment intent and confirmation afterwards.
+ * Duplicating it here would make this suite slow and flaky for no extra cover,
+ * so what stays is the part e2e cannot cheaply repeat: that the flow refuses to
+ * start in the wrong place.
+ */
 {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
 
-  await page.goto(`${BASE}/book/intake`, { waitUntil: 'networkidle' });
-  await page.waitForURL(/\/book\/payment/, { timeout: 6000 }).then(
-    () => pass('Booking guard', 'deep link with no payment → /book/payment'),
-    () => fail('Booking guard', `landed on ${page.url()}`)
-  );
+  // The calendar is never reachable before payment. This is the rule the whole
+  // scheduling design rests on, so it is worth asserting on every run.
+  for (const deepLink of ['/book/intake', '/book/slot']) {
+    await page.goto(`${BASE}${deepLink}`, { waitUntil: 'networkidle' });
+    await page.waitForURL(/\/book\/payment/, { timeout: 6000 }).then(
+      () => pass('Booking guard', `${deepLink} with no payment → /book/payment`),
+      () => fail('Booking guard', `${deepLink} landed on ${page.url()}`)
+    );
+  }
 
   await page.goto(`${BASE}/book/payment`, { waitUntil: 'networkidle' });
-  await page.click('text=Card declined');
-  await page.waitForSelector('text=Your card was declined', { timeout: 6000 }).then(
-    () => pass('Payment failure', 'no slot consumed'),
-    () => fail('Payment failure')
-  );
 
-  await page.click('text=Payment succeeds');
-  await page.waitForURL(/\/book\/slot/, { timeout: 10000 });
-  await page.waitForTimeout(400);
+  const payButton = page.locator('button:has-text("Pay ")');
+  (await payButton.count()) > 0
+    ? pass('Payment screen offers the Stripe handoff')
+    : fail('Payment screen', 'no pay button rendered');
 
-  const slots = page.locator('button:not([disabled])').filter({ hasText: /^\d{2}:\d{2}$/ });
-  const count = await slots.count();
-  count > 0 ? pass('Slot grid', `${count} times offered`) : fail('Slot grid', 'none offered');
+  const body = await page.locator('main').innerText();
+  /Stripe/.test(body) && !/card number/i.test(body)
+    ? pass('Card details are never collected on our own page')
+    : fail('Payment screen', 'the page looks like it takes card details itself');
 
-  await slots.first().click();
-  await page.click('text=Hold this time');
-  await page.waitForURL(/\/book\/intake/, { timeout: 10000 });
-
-  await page.click('button:has-text("Confirm my appointment")');
-  await page.waitForTimeout(300);
-  page.url().includes('/book/intake')
-    ? pass('Intake validation', 'empty submit blocked')
-    : fail('Intake validation', 'empty submit went through');
-
-  await page.fill('#name', 'Aaron Beckett');
-  await page.fill('#email', 'a.beckett@example.com');
-  await page.fill('#phone', '+44 7700 900142');
-  await page.fill('#concern', 'Considering BPC-157 for a recurring achilles injury.');
-  await page.fill('#compounds', 'None currently');
-  await page.fill('#history', 'No regular medication');
-  await page.check('#consentClinical');
-  await page.check('#consentTerms');
-  await page.click('button:has-text("Confirm my appointment")');
-  await page.waitForURL(/\/book\/confirmed/, { timeout: 10000 });
-
-  const heading = await page.locator('h1').innerText();
-  heading.includes('Aaron') ? pass('Confirmation', 'terminal and personalised') : fail('Confirmation', heading);
-
-  errors.length === 0 ? pass('Booking journey', 'no runtime errors') : fail('Booking journey', errors[0]);
+  errors.length === 0 ? pass('Booking entry', 'no runtime errors') : fail('Booking entry', errors[0]);
   await ctx.close();
 }
 
@@ -247,7 +278,7 @@ for (const width of [320, 375, 768, 1024, 1440]) {
 }
 
 await browser.close();
-stopServer();
+await prisma.$disconnect();
 
 // --- Report ------------------------------------------------------------------
 

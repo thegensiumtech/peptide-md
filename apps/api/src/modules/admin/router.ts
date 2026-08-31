@@ -5,6 +5,7 @@ import { conflict, forbidden, handle, notFound, ok } from '../../http/errors';
 import { requireAuth, requireRole } from '../../http/middleware/auth';
 import { adminPartnersRouter } from './partners';
 import { adminInvoicesRouter } from './invoices';
+import { adminReportsRouter } from './reports';
 import {
   approveRefund,
   cancelBooking,
@@ -25,6 +26,7 @@ adminRouter.use(requireAuth, requireRole('ADMIN', 'DOCTOR'));
 // mount than as a per-route guard someone can forget.
 adminRouter.use('/partners', adminPartnersRouter);
 adminRouter.use('/invoices', adminInvoicesRouter);
+adminRouter.use('/reports', adminReportsRouter);
 
 /** The doctor sees his own diary; the administrator sees the business. */
 const isDoctor = (role: string) => role === 'DOCTOR';
@@ -311,14 +313,48 @@ adminRouter.get(
     const period = now.toISOString().slice(0, 7);
     const monthStart = new Date(`${period}-01T00:00:00.000Z`);
 
-    const [upcomingCount, monthBookings, partners] = await Promise.all([
+    // Six months back from this one, inclusive, so the chart's own heading is
+    // true. It used to render a single bar under "Last six months" because the
+    // trend was never sent and the client fell back to the current period.
+    const trendPeriods: string[] = [];
+    {
+      let [year, month] = period.split('-').map(Number) as [number, number];
+      for (let i = 0; i < 6; i += 1) {
+        trendPeriods.unshift(`${year}-${String(month).padStart(2, '0')}`);
+        month -= 1;
+        if (month === 0) {
+          month = 12;
+          year -= 1;
+        }
+      }
+    }
+    const trendStart = new Date(`${trendPeriods[0]}-01T00:00:00.000Z`);
+
+    const [upcomingCount, monthBookings, partners, trendBookings] = await Promise.all([
       prisma.booking.count({ where: { status: 'CONFIRMED', startsAt: { gte: now } } }),
       prisma.booking.findMany({
         where: { startsAt: { gte: monthStart }, status: { not: 'CANCELLED' } },
         select: { channel: true, partnerId: true, amountPaid: true, paymentStatus: true },
       }),
       prisma.partner.findMany({ select: { id: true, name: true, ratePerAppointment: true } }),
+      prisma.booking.findMany({
+        where: {
+          startsAt: { gte: trendStart },
+          status: { not: 'CANCELLED' },
+          // Sandbox traffic is a partner testing their integration. It must
+          // never appear in a figure anyone reads as business volume.
+          isSandbox: false,
+        },
+        select: { channel: true, startsAt: true },
+      }),
     ]);
+
+    const volumeTrend = trendPeriods.map((p) => {
+      const inPeriod = trendBookings.filter((b) => b.startsAt.toISOString().slice(0, 7) === p);
+      const directCount = inPeriod.filter((b) => b.channel === 'DIRECT').length;
+      const partnerCount = inPeriod.filter((b) => b.channel === 'PARTNER').length;
+      return { period: p, direct: directCount, partner: partnerCount, total: directCount + partnerCount };
+    });
 
     const direct = monthBookings.filter((b) => b.channel === 'DIRECT').length;
     const partner = monthBookings.filter((b) => b.channel === 'PARTNER').length;
@@ -335,6 +371,7 @@ adminRouter.get(
     return ok(res, {
       upcomingCount,
       monthVolume: { period, direct, partner, total: direct + partner },
+      volumeTrend,
       billableThisMonth: isDoctor(req.user!.role) ? 0 : billableThisMonth,
       directRevenueThisMonth: isDoctor(req.user!.role) ? 0 : directRevenueThisMonth,
       currency: 'GBP',

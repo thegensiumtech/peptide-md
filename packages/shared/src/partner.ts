@@ -29,6 +29,21 @@ export interface PartnerCredentials {
   lastUsedAt: string | null;
 }
 
+/**
+ * The sandbox pair, which books a separate diary from the doctor's.
+ *
+ * Kept as its own type rather than reusing PartnerCredentials so the two can
+ * never be passed to each other by accident: handing a partner the sandbox id
+ * as their live one is silent, and only shows up as appointments that were
+ * never really made.
+ */
+export interface PartnerSandboxCredentials {
+  clientId: string;
+  secretLastFour: string;
+  createdAt: string;
+  lastUsedAt: string | null;
+}
+
 export interface Partner {
   id: string;
   name: string;
@@ -43,6 +58,8 @@ export interface Partner {
   billingEmail: string;
   branding: PartnerBranding;
   credentials: PartnerCredentials;
+  /** Null until a sandbox credential has been issued for this partner. */
+  sandboxCredentials: PartnerSandboxCredentials | null;
   /** Requests per minute allowed against the partner API. */
   rateLimitPerMinute: number;
   createdAt: string;

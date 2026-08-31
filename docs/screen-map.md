@@ -43,11 +43,14 @@ Anchor date for all static data: **9 August 2026** (`src/lib/clock.ts`).
 | 18 | Booking detail | `/admin/bookings/[id]` | ✅ | ✅ clinical only |
 | 19 | Doctor profile | `/admin/doctor-profile` | ✅ | ✅ |
 | 20 | Settings | `/admin/settings` | ✅ | ⛔ 403 |
-|, | **Doctor availability** | `/admin/availability` | ✅ | ✅ |
+| + | **Doctor availability** | `/admin/availability` | ✅ | ✅ |
 | 21 | Partner list | `/admin/partners` | ✅ | ⛔ 403 |
 | 22 | Add / edit partner | `/admin/partners/new`, `/admin/partners/[id]` | ✅ | ⛔ 403 |
 | 23 | Invoice list | `/admin/invoices` | ✅ | ⛔ 403 |
 | 24 | Invoice detail | `/admin/invoices/[id]` | ✅ | ⛔ 403 |
+| + | **Reports** | `/admin/reports` | ✅ | ⛔ 403 |
+| + | **Guide downloads** | `/admin/leads` | ✅ | ⛔ 403 |
+| + | No access | `/admin/no-access` | ✅ | ✅ |
 
 > **The one addition beyond the 28.** The scope hands weekly availability to the
 > scheduling core's own interface, but it also says the doctor "manages his own
@@ -63,12 +66,31 @@ Anchor date for all static data: **9 August 2026** (`src/lib/clock.ts`).
 | 26 | Bookings view | `/partner/bookings` | Carries the running month total |
 | 27 | Invoices view | `/partner/invoices` | History + PDF download |
 | 28 | API credentials | `/partner/api-credentials` | View, rotate |
+| + | **API documentation** | `/partner/api-docs` | Every endpoint, plus this partner's own live and sandbox client ids |
 
 `/partner` redirects to `/partner/bookings`. The running total lives on the
 bookings view rather than on a separate dashboard, which keeps the portal to the
 four screens the scope lists while still showing everything the scope requires:
 appointments sent with status, running month total, invoice history with PDFs,
 and API credentials with rotation.
+
+### Not in the numbered set
+
+Routes that exist because something has to serve them, rather than because the
+scope counted them as screens.
+
+| Screen | Route | Who reaches it |
+|---|---|---|
+| Embedded booking widget | `/embed/[clientId]` | A patient on a partner's site, inside an iframe |
+| Widget loader script | `/v1/widget.js` | The partner's page, cross-origin |
+| Free guide landing and download | `/guide` | Anyone, from the marketing site |
+| Email unsubscribe | `/unsubscribe` | A recipient, from any email footer |
+| Patient self-service | `/manage/*` | A patient holding a one-time access code |
+
+`/embed` is the only route on the platform that is allowed to be framed. Every
+other route sends `frame-ancestors 'none'` and `X-Frame-Options: DENY`. The
+negative lookahead in `next.config.mjs` is what keeps those two rules from
+colliding, and it has silently broken the widget once already.
 
 ---
 

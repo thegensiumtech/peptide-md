@@ -32,10 +32,15 @@ partnerRouter.get(
     const partner = await prisma.partner.findUnique({
       where: { id: partnerId },
       include: {
+        // Every live credential, newest first. Deliberately not `take: 1` on
+        // the whole set: a partner has a live pair and a sandbox pair, the
+        // sandbox one is issued second and so is newer, and taking the newest
+        // handed every partner their sandbox client id labelled as their
+        // credential. Integrating against that books the sandbox doctor, which
+        // looks like it works and never creates a real appointment.
         credentials: {
           where: { revokedAt: null },
           orderBy: { createdAt: 'desc' },
-          take: 1,
         },
       },
     });
@@ -45,7 +50,8 @@ partnerRouter.get(
       where: billableWhere(partnerId, period),
     });
 
-    const credential = partner.credentials[0] ?? null;
+    const credential = partner.credentials.find((c) => !c.isSandbox) ?? null;
+    const sandboxCredential = partner.credentials.find((c) => c.isSandbox) ?? null;
 
     return ok(res, {
       id: partner.id,
@@ -74,6 +80,17 @@ partnerRouter.get(
             createdAt: credential.createdAt.toISOString(),
             lastRotatedAt: credential.expiresAt?.toISOString() ?? null,
             lastUsedAt: credential.lastUsedAt?.toISOString() ?? null,
+          }
+        : null,
+      // The sandbox pair, so a partner can build against a diary that is not
+      // the doctor's. The scope asks for these to be handed over as part of
+      // the API documentation.
+      sandboxCredentials: sandboxCredential
+        ? {
+            clientId: sandboxCredential.clientId,
+            secretLastFour: sandboxCredential.secretLastFour,
+            createdAt: sandboxCredential.createdAt.toISOString(),
+            lastUsedAt: sandboxCredential.lastUsedAt?.toISOString() ?? null,
           }
         : null,
       volume: {

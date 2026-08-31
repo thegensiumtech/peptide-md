@@ -42,6 +42,12 @@ interface PartnerMeResponse {
     lastRotatedAt: string | null;
     lastUsedAt: string | null;
   } | null;
+  sandboxCredentials: {
+    clientId: string;
+    secretLastFour: string;
+    createdAt: string;
+    lastUsedAt: string | null;
+  } | null;
   volume: PartnerVolume & { period: string };
 }
 
@@ -96,6 +102,17 @@ export function toPartner(record: PartnerMeResponse): Partner {
       lastRotatedAt: record.credentials?.lastRotatedAt ?? null,
       lastUsedAt: record.credentials?.lastUsedAt ?? null,
     },
+    // Separate from `credentials` deliberately. /me used to return whichever
+    // credential was newest, which is the sandbox one, so every partner was
+    // shown a sandbox client id as though it were their live credential.
+    sandboxCredentials: record.sandboxCredentials
+      ? {
+          clientId: record.sandboxCredentials.clientId,
+          secretLastFour: record.sandboxCredentials.secretLastFour,
+          createdAt: record.sandboxCredentials.createdAt,
+          lastUsedAt: record.sandboxCredentials.lastUsedAt ?? null,
+        }
+      : null,
     rateLimitPerMinute: record.rateLimitPerMinute,
     createdAt: record.credentials?.createdAt ?? new Date().toISOString(),
   };

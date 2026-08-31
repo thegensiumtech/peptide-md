@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getPartner } from '@/lib/data/client';
-import { getBooking } from '@/lib/api/admin';
+
+import { getBooking, getPartner } from '@/lib/api/admin';
 import { requireSession } from '@/lib/auth/session';
 import {
   formatDate,

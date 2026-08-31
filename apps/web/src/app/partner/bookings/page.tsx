@@ -65,7 +65,7 @@ export default async function PartnerBookingsPage() {
 
       <div className="mt-8 flex flex-wrap items-baseline justify-between gap-4">
         <p className="font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
-          {bookings.length} appointment{bookings.length === 1 ? '' : 's'} · {upcoming} upcoming
+          {bookings.length} appointment{bookings.length === 1 ? '' : 's'} Â· {upcoming} upcoming
         </p>
         <p className="font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
           Times in {timezoneLabel(VIEW_TZ)}
@@ -120,7 +120,7 @@ export default async function PartnerBookingsPage() {
                   <Td align="right">
                     <span className="font-mono text-sm text-ink">
                       {booking.status === 'cancelled'
-                        ? ', '
+                        ? '–'
                         : formatMoney(partner.ratePerAppointment, partner.currency)}
                     </span>
                   </Td>
@@ -137,7 +137,7 @@ export default async function PartnerBookingsPage() {
           against ours.
         </p>
         <p className="rounded border border-line bg-surface px-5 py-4 text-micro leading-relaxed text-muted">
-          You see the patient’s name and the appointment status. What the patient discussed with
+          You see the patientâs name and the appointment status. What the patient discussed with
           the doctor is confidential and is never shown here.
         </p>
       </div>

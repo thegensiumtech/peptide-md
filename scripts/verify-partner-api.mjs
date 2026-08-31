@@ -57,6 +57,25 @@ const newYouAuth = basic(NEWYOU.id, NEWYOU.secret);
 const fiveAuth = basic(FIVE.id, FIVE.secret);
 const sandboxAuth = basic(SANDBOX.id, SANDBOX.secret);
 
+/**
+ * Start from a known credential state.
+ *
+ * This suite deliberately expires and revokes credentials to prove the checks
+ * work, and restores them afterwards. A run that dies in the middle, or is
+ * interrupted, leaves one of them expired for good, and every later run then
+ * fails somewhere unrelated to the change being tested. That is exactly what
+ * happened: the sandbox credential sat expired for days and showed up as
+ * "sandbox offers no availability", which points at the diary rather than at
+ * the credential.
+ *
+ * Resetting at the start rather than only at the end makes the suite
+ * self-healing.
+ */
+await prisma.partnerCredential.updateMany({
+  where: { clientId: { in: [NEWYOU.id, FIVE.id, SANDBOX.id, SUSPENDED.id] } },
+  data: { revokedAt: null, expiresAt: null },
+});
+
 // --- Authentication ---------------------------------------------------------
 
 {

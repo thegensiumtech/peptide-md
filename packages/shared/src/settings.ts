@@ -54,3 +54,41 @@ export interface DashboardSummary {
   directRevenueThisMonth: number;
   volumeTrend: VolumeBySource[];
 }
+
+// --- Reporting ---------------------------------------------------------------
+
+/**
+ * Volume for one partner in one period.
+ *
+ * Separate from PartnerVolume, which is the live running total behind this
+ * month's invoice. This one is historic and settled: the rate is whatever the
+ * invoice for that period captured, so a rate change today never restates it.
+ */
+export interface PartnerPeriodVolume {
+  partnerId: string;
+  partnerName: string;
+  period: string;
+  appointmentCount: number;
+  /** Minor units. Null where the period has no invoice and no rate to apply. */
+  billableAmount: number | null;
+}
+
+/** Everything the reporting screen draws, for one requested window. */
+export interface VolumeReport {
+  from: string;
+  to: string;
+  /** One entry per period in the window, oldest first, gaps filled with zeroes. */
+  bySource: VolumeBySource[];
+  /** One entry per partner per period, partners with no volume omitted. */
+  byPartner: PartnerPeriodVolume[];
+  totals: {
+    direct: number;
+    partner: number;
+    total: number;
+    /** Minor units billable to partners across the whole window. */
+    billableAmount: number;
+    /** Minor units taken directly through Stripe across the whole window. */
+    directRevenue: number;
+  };
+  currency: string;
+}
