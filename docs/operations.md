@@ -303,7 +303,7 @@ check, and `verify-scheduling.mjs` reproduces the contention deliberately.
 
 ## 8. Handover checklist
 
-- [ ] Chromium installed on the API host
+- [x] Chromium installed on the API host (playwright 1.62.1, verified by rendering a live invoice PDF, 2026-09-01)
 - [ ] `NEXT_PUBLIC_API_URL` set to the public origin, and the app rebuilt after
 - [ ] SES in production access, out of the sandbox, with DKIM, SPF and DMARC passing
 - [ ] Stripe live keys and a live webhook endpoint with its own signing secret
