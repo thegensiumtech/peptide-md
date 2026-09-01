@@ -77,21 +77,32 @@ pnpm --filter @peptide/api dev        # port 4000
 
 Nothing about this is clever, which is deliberate.
 
+Production is a single Ubuntu host (`100.29.81.212`, EC2 `i-0aa800f9a82695cda`,
+`us-east-1`). Reach it over SSH as `ubuntu` with the `balmoral-staging-key`
+keypair; the security group allows port 22 only from a small allowlist of IPs,
+so a new machine needs its address added first. The repo lives at
+`~/app` on the `staging` branch, both apps run under systemd as `peptide-api`
+and `peptide-web`, and nginx fronts them.
+
 ```bash
-# on the server, in the repo
-git pull
+# on the server, in ~/app
+git fetch origin
+git merge --ff-only origin/main            # or the branch being deployed
 pnpm install --frozen-lockfile
+pnpm --filter @peptide/database exec prisma generate      # if the schema changed
 pnpm --filter @peptide/database exec prisma migrate deploy
-pnpm build
-# then restart both processes, in whatever supervises them on this host
+sudo systemctl restart peptide-api         # API runs tsx on source, no build
+pnpm --filter @peptide/web build           # AFTER the API restart, see below
+sudo systemctl restart peptide-web
 ```
 
-The restart step is deliberately not spelled out here: this document was
-written without shell access to the production host, and naming a systemd unit
-or a pm2 process that may not exist would be worse than leaving it open. Fill in
-the real command once, at handover, and it never needs thinking about again.
-Both processes must be restarted, and the web one **after** the build, for the
-reason two paragraphs down.
+The order is not arbitrary and cost a wasted build the first time. The API runs
+`tsx` directly on the TypeScript source, so restarting it is the whole of its
+deploy. The web app is statically prerendered and fetches from the API **at
+build time**, so any page whose data shape changed must be built *after* the
+API is already serving the new shape. Build it first and a new field silently
+comes back empty on the live page while every existing field looks fine, which
+is the most confusing version of this to debug.
 
 Four things to know before you run that.
 
@@ -136,7 +147,7 @@ carry on, so the platform runs before those accounts exist.
 
 | Variable | Notes |
 |---|---|
-| `DATABASE_URL` | No quotes. See above. |
+| `DATABASE_URL` | No quotes. See above. The API reads all of these from `~/app/.env.local` (resolved from `apps/api/src` as `../../../.env.local`), the web app from `apps/web/.env.local`. |
 | `REDIS_URL` | Optional. Absent means per-process rate limiting. |
 | `JWT_SECRET` | Must not be the development value in production. |
 | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | Live keys and the live endpoint's signing secret. |
