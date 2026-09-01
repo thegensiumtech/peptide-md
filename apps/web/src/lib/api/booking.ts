@@ -93,7 +93,7 @@ export const startCheckout = (patientEmail: string) =>
   );
 
 export const verifyPayment = (bookingId: string, sessionId: string) =>
-  request<{ paymentStatus: string; alreadyConfirmed: boolean }>('/api/booking/verify-payment', {
+  request<{ paymentStatus: string; alreadyConfirmed: boolean; country: string | null }>('/api/booking/verify-payment', {
     method: 'POST',
     body: { bookingId, sessionId },
   });

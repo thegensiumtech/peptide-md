@@ -33,6 +33,11 @@ export async function createCheckoutSession(request: CheckoutRequest): Promise<S
     mode: 'payment',
     customer_email: request.patientEmail,
     client_reference_id: request.bookingId,
+    // Collected so the booking screens can default the patient's time zone and
+    // phone dialling code to their own country. Stripe already asks for a
+    // billing address on the card step, so this adds no friction; we only read
+    // the country back, never store the address.
+    billing_address_collection: 'required',
     line_items: [
       {
         quantity: 1,

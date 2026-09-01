@@ -8,6 +8,7 @@ import { formatDate, formatTime, formatWeekday, timezoneLabel } from '@/lib/form
 import { Button } from '@/components/ui/Button';
 import { Checkbox, Field, Input, Textarea } from '@/components/ui/Field';
 import { submitIntake } from '@/lib/api/booking';
+import { PhoneField } from './PhoneField';
 import { useBooking } from './BookingContext';
 
 type FieldName =
@@ -50,7 +51,12 @@ export function IntakeForm() {
     if (!email) next.email = 'We send your confirmation and joining link here.';
     else if (!isValidEmail(email)) next.email = 'That email address is not valid.';
 
+    // The dialling code is always present, so a genuine number needs a handful
+    // of digits beyond it. Counting digits rather than characters ignores the
+    // '+', the code and any spacing.
+    const phoneDigits = read('phone').replace(/[^\d]/g, '');
     if (!read('phone')) next.phone = 'Used only if we cannot reach you by email on the day.';
+    else if (phoneDigits.length < 8) next.phone = 'That number looks too short. Include the area code.';
 
     if (read('concern').length < 10) {
       next.concern = 'A sentence or two is enough, it is what the doctor reads first.';
@@ -146,6 +152,9 @@ export function IntakeForm() {
                   name="email"
                   type="email"
                   autoComplete="email"
+                  // Prefilled with the address given at payment, so it is not
+                  // asked for twice. Still editable in case of a typo.
+                  defaultValue={state.patientEmail ?? ''}
                   aria-invalid={Boolean(errors.email)}
                 />
               </Field>
@@ -157,13 +166,10 @@ export function IntakeForm() {
               error={errors.phone}
               hint="Only used if we cannot reach you by email on the day."
             >
-              <Input
+              <PhoneField
                 id="phone"
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                aria-invalid={Boolean(errors.phone)}
-                className="font-mono"
+                defaultCountry={state.patientCountry}
+                invalid={Boolean(errors.phone)}
               />
             </Field>
           </fieldset>

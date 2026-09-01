@@ -27,6 +27,12 @@ export interface BookingState {
   patientName: string | null;
   /** Shown on confirmation so a typo is visible before the email is missed. */
   patientEmail: string | null;
+  /**
+   * ISO 3166 alpha-2 from the Stripe billing address, or null. Seeds the
+   * default time zone on the slot screen and the phone dialling code on intake,
+   * both of which the patient can still change.
+   */
+  patientCountry: string | null;
   doctorName: string | null;
 }
 
@@ -42,6 +48,7 @@ const EMPTY: BookingState = {
   bookingReference: null,
   patientName: null,
   patientEmail: null,
+  patientCountry: null,
   doctorName: null,
 };
 

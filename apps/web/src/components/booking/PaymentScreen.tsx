@@ -70,6 +70,9 @@ export function PaymentScreen({
       bookingId: result.data.bookingId,
       bookingReference: result.data.reference,
       paymentReference: result.data.sessionId,
+      // Carried forward so the intake form three steps later is prefilled with
+      // the address they already gave, rather than asking for it twice.
+      patientEmail: trimmed,
     });
 
     // Leaves the app entirely; the patient returns to /book/slot.

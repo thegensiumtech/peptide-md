@@ -20,6 +20,7 @@ import {
   verifyPayment,
   type AvailabilityPayload,
 } from '@/lib/api/booking';
+import { timezoneForCountry } from '@peptide/shared';
 import { useBooking } from './BookingContext';
 
 /**
@@ -49,6 +50,9 @@ export function SlotPicker() {
   const [availability, setAvailability] = useState<AvailabilityPayload | null>(null);
   const [timezone, setTimezone] = useState(state.timezone);
   const [detectedZone, setDetectedZone] = useState<string | null>(null);
+  // Set once the patient picks a zone from the dropdown. After that, neither
+  // browser detection nor the country default overrides their choice.
+  const [zonePickedByPatient, setZonePickedByPatient] = useState(false);
   const [activeDate, setActiveDate] = useState<string>('');
   const [selected, setSelected] = useState<string | null>(state.slot?.startsAt ?? null);
   const [holding, setHolding] = useState(false);
@@ -62,16 +66,25 @@ export function SlotPicker() {
     const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
     if (!detected) return;
     setDetectedZone(detected);
-    setTimezone((current) => (current === 'Europe/London' ? detected : current));
-  }, []);
+    // Browser detection is the fallback, below the patient's own country. It
+    // only fills the London default and never overrides a chosen or
+    // country-derived zone.
+    setTimezone((current) =>
+      !zonePickedByPatient && current === 'Europe/London' ? detected : current
+    );
+  }, [zonePickedByPatient]);
 
-  const zones = useMemo(
-    () =>
-      detectedZone && !BASE_ZONES.includes(detectedZone as (typeof BASE_ZONES)[number])
-        ? [detectedZone, ...BASE_ZONES]
-        : [...BASE_ZONES],
-    [detectedZone]
-  );
+  // The offered zones: the base set, plus the browser's own zone and the
+  // currently selected zone if either sits outside it. Without the selected
+  // one, a zone defaulted from the patient's country would have no matching
+  // <option> and the select would look empty.
+  const zones = useMemo(() => {
+    const set = [...BASE_ZONES] as string[];
+    for (const extra of [detectedZone, timezone]) {
+      if (extra && !set.includes(extra)) set.unshift(extra);
+    }
+    return set;
+  }, [detectedZone, timezone]);
 
   const loadAvailability = useCallback(async () => {
     const result = await getAvailability(21);
@@ -126,7 +139,15 @@ export function SlotPicker() {
           return;
         }
 
-        update({ bookingId, paid: true });
+        update({ bookingId, paid: true, patientCountry: result.data.country ?? null });
+        // Default the zone to the patient's own country, once, and only while
+        // they have not already chosen one. They can still change it below.
+        const countryZone = timezoneForCountry(result.data.country);
+        if (countryZone) {
+          // The patient has not seen the calendar yet, let alone the zone
+          // dropdown, so their country wins over whatever the browser detected.
+          setTimezone((current) => (zonePickedByPatient ? current : countryZone));
+        }
         // Drop the Stripe parameters so a refresh does not re-verify.
         router.replace('/book/slot');
         await loadAvailability();
@@ -279,7 +300,10 @@ export function SlotPicker() {
             <Select
               id="timezone"
               value={timezone}
-              onChange={(event) => setTimezone(event.target.value)}
+              onChange={(event) => {
+                setZonePickedByPatient(true);
+                setTimezone(event.target.value);
+              }}
               className="min-w-56"
             >
               {zones.map((zone) => (

@@ -194,13 +194,13 @@ publicBookingRouter.post(
     const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
     if (!booking) throw notFound('That booking could not be found.');
 
-    // Already settled by the webhook, nothing to do.
-    if (booking.paymentStatus === 'PAID') {
-      return ok(res, { paymentStatus: 'paid', alreadyConfirmed: true });
-    }
-
     const { stripe } = await import('../../payments/stripe');
 
+    // The session is retrieved even when the webhook has already settled the
+    // booking, because it carries the patient's billing country, which the
+    // slot and intake screens use to default the time zone and phone code to
+    // the patient's own country. One retrieve per return is cheap.
+    //
     // An unknown or malformed session id is someone probing, not a server
     // fault. Stripe throws on it, so it is caught and answered as a plain
     // refusal rather than surfacing a 500 with internal detail attached.
@@ -217,8 +217,19 @@ publicBookingRouter.post(
       throw badRequest('That payment does not belong to this booking.', 'PAYMENT_MISMATCH');
     }
 
+    // ISO 3166 alpha-2, or null if the address was not captured (an older
+    // session, or a payment method that skipped it). Null degrades to browser
+    // detection on the client, never to an error.
+    const country = session.customer_details?.address?.country ?? null;
+
+    // Already settled by the webhook. Still return the country so the screens
+    // can default correctly.
+    if (booking.paymentStatus === 'PAID') {
+      return ok(res, { paymentStatus: 'paid', alreadyConfirmed: true, country });
+    }
+
     if (session.payment_status !== 'paid') {
-      return ok(res, { paymentStatus: session.payment_status, alreadyConfirmed: false });
+      return ok(res, { paymentStatus: session.payment_status, alreadyConfirmed: false, country });
     }
 
     await prisma.booking.update({
@@ -234,7 +245,7 @@ publicBookingRouter.post(
       currency: (session.currency ?? 'gbp').toUpperCase(),
     });
 
-    return ok(res, { paymentStatus: 'paid', alreadyConfirmed: false });
+    return ok(res, { paymentStatus: 'paid', alreadyConfirmed: false, country });
   })
 );
 

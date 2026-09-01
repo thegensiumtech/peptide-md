@@ -51,9 +51,16 @@ const browser = await chromium.launch({ headless: !headed, slowMo: headed ? 120 
 /** Fails the run if a screen throws in the browser rather than handling it. */
 function watchForCrashes(page, label) {
   const crashes = [];
-  page.on('pageerror', (error) => crashes.push(`${label}: ${error.message.slice(0, 140)}`));
+  // Errors thrown on Stripe's own hosted checkout page are not ours to fix and
+  // not on our origin. Their address autocomplete throws handleGetPredictions
+  // in a headless browser that has no Google Places script; a real patient's
+  // browser never sees it. Only count errors from our own pages.
+  const isOurs = () => !/checkout\.stripe\.com|js\.stripe\.com/.test(page.url());
+  page.on('pageerror', (error) => {
+    if (isOurs()) crashes.push(`${label}: ${error.message.slice(0, 140)}`);
+  });
   page.on('console', (message) => {
-    if (message.type() === 'error' && !message.text().includes('favicon')) {
+    if (message.type() === 'error' && isOurs() && !message.text().includes('favicon')) {
       crashes.push(`${label}: ${message.text().slice(0, 140)}`);
     }
   });
@@ -163,11 +170,24 @@ let bookingReference = null;
     // Stripe's own page. Test card 4242 4242 4242 4242.
     await page.waitForSelector('#cardNumber', { timeout: 45000 });
     await page.fill('#cardNumber', '4242424242424242');
-    await page.fill('#cardExpiry', '12 / 30');
+    await page.fill('#cardExpiry', '12 / 34');
     await page.fill('#cardCvc', '123');
     await page.fill('#billingName', 'E2E Patient');
-    const postcode = page.locator('#billingPostalCode');
-    if (await postcode.count()) await postcode.fill('SW1A 1AA');
+
+    // Billing address is collected now, so the booking screens can default the
+    // patient's time zone and phone code to their country. Fill whatever fields
+    // Stripe shows for the chosen country, defensively.
+    const country = page.locator('#billingCountry');
+    if (await country.count()) await country.selectOption('GB').catch(() => {});
+    await page.waitForTimeout(500);
+    for (const [sel, val] of [
+      ['#billingAddressLine1', '10 Downing Street'],
+      ['#billingLocality', 'London'],
+      ['#billingPostalCode', 'SW1A 2AA'],
+    ]) {
+      const f = page.locator(sel);
+      if (await f.count()) await f.fill(val).catch(() => {});
+    }
 
     await page.click('button[data-testid="hosted-payment-submit-button"]');
 
@@ -211,7 +231,9 @@ let bookingReference = null;
 
     await page.fill('#name', 'E2E Patient');
     await page.fill('#email', 'bad-email');
-    await page.fill('#phone', '+44 7700 900000');
+    // #phone is the national-number field now; the +44 is a fixed prefix. A
+    // real user types only the local part, so the test does too.
+    await page.fill('#phone', '7700900000');
     await page.fill('#concern', 'End-to-end verification of the booking journey.');
     await page.fill('#compounds', 'None');
     await page.fill('#history', 'None');
