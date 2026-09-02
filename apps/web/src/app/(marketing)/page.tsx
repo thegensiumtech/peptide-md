@@ -33,8 +33,27 @@ export default async function HomePage() {
       <section className="shell pt-16 sm:pt-24">
         <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-16">
           <div className="animate-rise-in">
-            <p className="eyebrow">Private consultation · UK registered</p>
-            <h1 className="mt-6 font-display text-hero font-medium tracking-[-0.02em] text-ink">
+            <p className="eyebrow">An impartial medical opinion</p>
+
+            {/* The doctor's line, brought right to the top at the client's
+                request. It opens the page as the ethos, above the headline,
+                with the impartial-opinion promise set in the eyebrow. Sized
+                below the H1 so it reads as his voice, not a second headline. */}
+            {doctor.quote ? (
+              <figure className="mt-5">
+                <blockquote>
+                  <p className="font-display font-medium italic leading-[1.06] text-accent text-[clamp(1.75rem,1.2rem+2.2vw,3rem)]">
+                    &ldquo;{doctor.quote}&rdquo;
+                  </p>
+                </blockquote>
+                <figcaption className="mt-3 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
+                  {doctor.name}
+                  {doctor.gmcNumber ? ` · GMC ${doctor.gmcNumber}` : ''}
+                </figcaption>
+              </figure>
+            ) : null}
+
+            <h1 className="mt-8 font-display text-hero font-medium tracking-[-0.02em] text-ink">
               Ask a doctor who has{' '}
               <em className="not-italic text-accent">nothing to sell you.</em>
             </h1>
@@ -90,32 +109,6 @@ export default async function HomePage() {
             className="mx-auto w-full max-w-sm lg:sticky lg:top-24"
           />
         </div>
-      </section>
-
-      {/* ---------- Impartial opinion, in his own words ---------- */}
-      {/* The doctor's line, brought up front at the client's request. It sits
-          high on the page as a statement of intent rather than a sign-off, and
-          carries the one promise the whole site rests on: an impartial opinion. */}
-      <section className="shell mt-section">
-        <figure className="mx-auto max-w-4xl text-center">
-          <p className="eyebrow">An impartial medical opinion</p>
-          {doctor.quote ? (
-            <blockquote className="mt-6">
-              <p className="font-display font-medium leading-[1.02] tracking-tight text-accent text-[clamp(2rem,1.4rem+2.6vw,4rem)]">
-                &ldquo;{doctor.quote}&rdquo;
-              </p>
-            </blockquote>
-          ) : null}
-          <figcaption className="mt-6 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
-            {doctor.name}
-            {doctor.gmcNumber ? ` · GMC ${doctor.gmcNumber}` : ''}
-          </figcaption>
-          <p className="mx-auto mt-8 max-w-xl text-lead text-ink-soft">
-            That is the point of a consultation here: a straight, impartial medical opinion on what
-            you are taking and where you are trying to get to, from a doctor with no stake in the
-            answer.
-          </p>
-        </figure>
       </section>
 
       {/* ---------- The problem ---------- */}
