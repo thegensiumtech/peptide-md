@@ -33,14 +33,11 @@ export default async function HomePage() {
       <section className="shell pt-16 sm:pt-24">
         <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-16">
           <div className="animate-rise-in">
-            <p className="eyebrow">An impartial medical opinion</p>
-
-            {/* The doctor's line, brought right to the top at the client's
-                request. It opens the page as the ethos, above the headline,
-                with the impartial-opinion promise set in the eyebrow. Sized
-                below the H1 so it reads as his voice, not a second headline. */}
+            {/* The doctor's line opens the page, at the client's request. It
+                sits above the headline as the ethos, sized below the H1 so it
+                reads as his voice rather than a second headline. */}
             {doctor.quote ? (
-              <figure className="mt-5">
+              <figure>
                 <blockquote>
                   <p className="font-display font-medium italic leading-[1.06] text-accent text-[clamp(1.75rem,1.2rem+2.2vw,3rem)]">
                     &ldquo;{doctor.quote}&rdquo;
