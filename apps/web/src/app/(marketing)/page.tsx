@@ -92,6 +92,32 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ---------- Impartial opinion, in his own words ---------- */}
+      {/* The doctor's line, brought up front at the client's request. It sits
+          high on the page as a statement of intent rather than a sign-off, and
+          carries the one promise the whole site rests on: an impartial opinion. */}
+      <section className="shell mt-section">
+        <figure className="mx-auto max-w-4xl text-center">
+          <p className="eyebrow">An impartial medical opinion</p>
+          {doctor.quote ? (
+            <blockquote className="mt-6">
+              <p className="font-display font-medium leading-[1.02] tracking-tight text-accent text-[clamp(2rem,1.4rem+2.6vw,4rem)]">
+                &ldquo;{doctor.quote}&rdquo;
+              </p>
+            </blockquote>
+          ) : null}
+          <figcaption className="mt-6 font-mono text-eyebrow uppercase tracking-[0.14em] text-muted">
+            {doctor.name}
+            {doctor.gmcNumber ? ` · GMC ${doctor.gmcNumber}` : ''}
+          </figcaption>
+          <p className="mx-auto mt-8 max-w-xl text-lead text-ink-soft">
+            That is the point of a consultation here: a straight, impartial medical opinion on what
+            you are taking and where you are trying to get to, from a doctor with no stake in the
+            answer.
+          </p>
+        </figure>
+      </section>
+
       {/* ---------- The problem ---------- */}
       <section className="shell mt-section">
         <div className="rule" />
