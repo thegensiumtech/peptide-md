@@ -18,6 +18,7 @@ import { partnerRouter } from './modules/partner/router';
 import { partnerApiRouter } from './modules/partnerApi/router';
 import { embedRouter } from './modules/partnerApi/embed';
 import { guideRouter } from './modules/guide/router';
+import { docsRouter } from './modules/docs/router';
 import { schedulingProvider } from './scheduling';
 import { emailProviderName } from './email';
 
@@ -53,6 +54,8 @@ export function createApp() {
     })
   );
 
+  // Public, token-addressed documentation. No session, by design.
+  app.use('/api/docs', docsRouter);
   app.use('/api/auth', authRouter);
   // Mounted before the booking router so patient self-service keeps its own,
   // tighter rate limit rather than sharing the booking flow's.

@@ -6,6 +6,7 @@ import { CURRENT_PERIOD } from '@/lib/clock';
 import { formatMoney, formatPeriod } from '@/lib/format';
 import { AdminShell } from '@/components/admin/AdminShell';
 import { PartnerForm } from '@/components/admin/PartnerForm';
+import { DocsLinkPanel } from '@/components/admin/DocsLinkPanel';
 import { Badge } from '@/components/ui/Badge';
 
 export const metadata: Metadata = {
@@ -61,6 +62,8 @@ export default async function EditPartnerPage({ params }: { params: { id: string
         defaultRate={settingsRes.data.partnerDefaults.defaultRatePerAppointment}
         defaultRateLimit={settingsRes.data.partnerDefaults.defaultRateLimitPerMinute}
       />
+
+      <DocsLinkPanel partnerId={partner.id} />
     </AdminShell>
   );
 }

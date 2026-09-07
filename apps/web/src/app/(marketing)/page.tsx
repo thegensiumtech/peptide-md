@@ -51,18 +51,19 @@ export default async function HomePage() {
             ) : null}
 
             <h1 className="mt-8 font-display text-hero font-medium tracking-[-0.02em] text-ink">
-              Ask a doctor who has{' '}
-              <em className="not-italic text-accent">nothing to sell you.</em>
+              Peptides without the{' '}
+              <em className="not-italic text-accent">guesswork.</em>
             </h1>
             <p className="mt-7 max-w-xl text-lead text-ink-soft">
-              Everyone in this market is selling a compound. {doctor.name} is selling twenty
-              minutes of his time. Tell him what you are taking and what you are trying to fix,
-              and he will tell you what he actually thinks.
+              Book a private consultation with a licensed physician before you start. Get an
+              informed opinion from a qualified expert, and an honest read on what is right for
+              your goals, not what is trending on Instagram.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <ButtonLink href="/book" size="lg">
-                Book a consultation
+                Book your consultation ·{' '}
+                {formatMoney(consultation.priceAmount, consultation.currency)}
               </ButtonLink>
               <Link
                 href="/the-doctor"
@@ -71,6 +72,13 @@ export default async function HomePage() {
                 Meet {doctor.name.split(' ').slice(-1)[0]}
               </Link>
             </div>
+
+            {/* The trust line the client asked for, kept singular: there is one
+                doctor on this service, and a plural claim on a medical site
+                would be a factual overstatement. */}
+            <p className="mt-5 text-sm leading-relaxed text-muted">
+              Licensed physician. Private and confidential. No obligation, no upsell.
+            </p>
 
             <div className="mt-12 max-w-md">
               <RequisitionCard
@@ -114,13 +122,13 @@ export default async function HomePage() {
         <div className="grid gap-10 pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-20">
           <SectionHeading
             eyebrow="Why this exists"
-            title="Most people taking peptides have never been examined."
+            title="Most people trying peptides are guessing."
           />
           <div className="max-w-prose space-y-6 text-lead text-ink-soft">
             <p>
-              They arrive with a protocol found on a forum, a box of vials from a supplier, and
-              nobody willing to look at it with them. The supplier will not, they are not a
-              clinician. The GP often will not, it is outside what they see.
+              They are piecing together advice from forums, influencers, and product pages
+              written to sell, not to inform. No bloodwork review. No understanding of
+              interactions. No idea what &ldquo;correct&rdquo; even looks like for their body.
             </p>
             <p>
               That gap is where people get hurt: interactions nobody checked, doses nobody
@@ -139,11 +147,11 @@ export default async function HomePage() {
         <div className="shell">
           <SectionHeading
             eyebrow="The sequence"
-            title="Four steps, and you are in the diary."
+            title="Three steps, and you are in the diary."
             lede="Payment comes first, so the calendar only ever shows times that are genuinely yours to take."
           />
 
-          <ol className="mt-12 grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-12 grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
             {STEPS.map((step, index) => (
               <li key={step.title} className="bg-surface p-6">
                 <div className="flex items-center gap-2">
@@ -302,21 +310,28 @@ export default async function HomePage() {
   );
 }
 
+/**
+ * Three steps, as the client asked for.
+ *
+ * His first step folds paying, picking a time and the intake form together.
+ * The body still says the fee comes first, because it does: the calendar is
+ * only reachable once payment clears, and the copy should not imply otherwise.
+ *
+ * "Protocol" is deliberately written as a recommendation rather than a
+ * prescription. Peptide MD does not prescribe or dispense, and the rest of the
+ * page says so plainly.
+ */
 const STEPS = [
   {
-    title: 'Pay',
-    body: 'A single fee, taken through Stripe. Nothing is held in the diary until the payment clears.',
+    title: 'Book your slot',
+    body: 'A single fee through Stripe, then pick from the doctor’s genuinely free times in your own time zone. A short intake form covers what you are taking and what you want to discuss.',
   },
   {
-    title: 'Choose a time',
-    body: 'The doctor’s genuinely free times, shown in your own time zone. Pick one and it is locked to you.',
+    title: 'Meet your doctor',
+    body: 'Twenty minutes by video call, one to one, with a doctor who works in this area every week.',
   },
   {
-    title: 'Tell him why',
-    body: 'A short form covering what you are taking and what you want to discuss, so no time is spent on basics.',
-  },
-  {
-    title: 'Talk',
-    body: 'Twenty minutes over video, then a written summary by email within a day.',
+    title: 'Leave with a plan',
+    body: 'A clear recommendation and next steps, written up by email within a day, plus the option to book a follow-up.',
   },
 ];

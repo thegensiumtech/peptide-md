@@ -53,11 +53,13 @@ async function main() {
       consultationDuration: CONSULT_MINUTES,
       consultationSummary:
         'A private video consultation with Dr Jinks about peptide therapy, what you are taking, what you are trying to achieve, and whether it is the right route for you.',
+      // The client's own wording. His copy used em dashes; this project does
+      // not use them anywhere and verify-no-em-dashes.mjs enforces that against
+      // the database as well as the source, so they became commas.
       consultationInclusions: [
-        'Twenty minutes of the doctor’s time, one to one',
-        'Review of anything you are currently taking',
-        'A written summary emailed within 24 hours',
-        'A straight answer, including when that answer is no',
+        'A 1:1 session with a doctor who actually understands peptide therapy, not a generic telehealth GP',
+        'A clear, honest breakdown of pros, cons, and risks for your specific goals',
+        'A personalised recommendation you can actually act on',
       ],
       deliveryNote:
         'The consultation is held over video. Your joining link is in the confirmation email and again in the reminder.',

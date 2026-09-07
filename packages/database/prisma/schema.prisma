@@ -207,8 +207,42 @@ model Partner {
   credentials PartnerCredential[]
   bookings    Booking[]
   invoices    Invoice[]
+  docsLinks   DocsShareLink[]
 
   @@map("partners")
+}
+
+/// A read-only link to the partner API documentation that an admin can hand to
+/// a partner's development team.
+///
+/// It carries no secret. The page it opens shows the sandbox client id and
+/// nothing else identifying, so it is safe to email to an outside developer,
+/// and it can be revoked the moment that stops being true.
+model DocsShareLink {
+  id        String  @id @default(cuid())
+  /// The opaque value in the URL. Long and random, never guessable.
+  token     String  @unique
+  partnerId String
+  partner   Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  /// Free text so an admin can tell two links apart, e.g. "New You dev team".
+  label     String  @default("")
+  /// User id of the admin who created it, for the audit trail.
+  createdBy String
+
+  /// Null means it never expires. Set to close a link automatically.
+  expiresAt DateTime?
+  /// Set to kill a link immediately, rather than deleting the record and
+  /// losing the fact that it once existed.
+  revokedAt DateTime?
+
+  viewCount    Int       @default(0)
+  lastViewedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([partnerId])
+  @@map("docs_share_links")
 }
 
 /// API credentials. The secret is stored hashed; the raw value is shown once,

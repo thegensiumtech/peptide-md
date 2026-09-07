@@ -154,3 +154,76 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Print.
+
+   The partner API reference is meant to be saved as a PDF and forwarded to a
+   development team, so the printed output has to read as a document rather
+   than a screenshot. Interactive controls go, backgrounds flatten to save ink,
+   long code samples are allowed to run to their full height instead of
+   scrolling inside a box the reader cannot scroll on paper, and sections are
+   kept off page breaks where it matters.
+--------------------------------------------------------------------------- */
+@media print {
+  /* Anything that cannot be used on paper. */
+  .print\:hidden,
+  nav,
+  button {
+    display: none !important;
+  }
+
+  :root {
+    --color-paper: #fff;
+    --color-paper-deep: #fff;
+    --color-surface: #fff;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* A scroll box on screen is a truncated box on paper. */
+  pre,
+  .overflow-auto,
+  .overflow-x-auto,
+  .max-h-96,
+  .max-h-80 {
+    max-height: none !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+  }
+
+  /* Keep a heading with the text it introduces. */
+  h1,
+  h2,
+  h3 {
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
+
+  section,
+  article,
+  li,
+  tr {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  /* Borders survive "background graphics off", which is the common default. */
+  .border,
+  .border-line,
+  table,
+  th,
+  td {
+    border-color: #d4d4d8 !important;
+  }
+
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.75em;
+    color: #555;
+  }
+}

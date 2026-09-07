@@ -6,6 +6,7 @@ import { requireAuth, requireRole } from '../../http/middleware/auth';
 import { adminPartnersRouter } from './partners';
 import { adminInvoicesRouter } from './invoices';
 import { adminReportsRouter } from './reports';
+import { adminDocsLinksRouter } from './docsLinks';
 import {
   approveRefund,
   cancelBooking,
@@ -27,6 +28,9 @@ adminRouter.use(requireAuth, requireRole('ADMIN', 'DOCTOR'));
 adminRouter.use('/partners', adminPartnersRouter);
 adminRouter.use('/invoices', adminInvoicesRouter);
 adminRouter.use('/reports', adminReportsRouter);
+// Mounted at the admin root: its routes carry their own full paths so both
+// /partners/:id/docs-links and /docs-links/:id/revoke read naturally.
+adminRouter.use(adminDocsLinksRouter);
 
 /** The doctor sees his own diary; the administrator sees the business. */
 const isDoctor = (role: string) => role === 'DOCTOR';
