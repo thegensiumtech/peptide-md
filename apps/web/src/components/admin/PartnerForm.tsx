@@ -52,6 +52,49 @@ export function PartnerForm({
   const [displayName, setDisplayName] = useState(partner?.branding.displayName ?? '');
   const [rotated, setRotated] = useState(false);
 
+  /**
+   * Issue a fresh secret for one of the two credential pairs.
+   *
+   * Shared by both buttons rather than duplicated, because the only difference
+   * between rotating live and issuing sandbox is the flag and the label. The
+   * secret comes back once and is never retrievable again, so it is put
+   * straight into `issued` for the admin to copy.
+   */
+  async function rotateSecret(sandbox: boolean) {
+    if (!partner) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `${API}/api/admin/partners/${partner.id}/credentials/rotate`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ sandbox }),
+        }
+      );
+      const payload = await response.json();
+      if (!response.ok || !payload.success) {
+        setError(payload.error ?? 'That secret could not be issued.');
+        return;
+      }
+      setIssued([
+        {
+          label: sandbox ? 'Sandbox' : 'Live',
+          clientId: payload.data.clientId,
+          secret: payload.data.secret,
+        },
+      ]);
+      setRotated(true);
+      router.refresh();
+    } catch {
+      setError('We could not reach the server. Try again.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <form
       onSubmit={async (event) => {
@@ -470,48 +513,43 @@ export function PartnerForm({
                     role="status"
                     className="rounded border border-accent/25 bg-accent-tint px-4 py-3 text-micro leading-relaxed text-ink"
                   >
-                    New secret issued. Copy it now, it cannot be shown again. The old secret stops
-                    working in 24 hours.
+                    Secret issued. Copy it now, it cannot be shown again. Where this replaced an
+                    existing secret, the old one keeps working for 24 hours so a deploy can catch
+                    up.
                   </p>
                 ) : null}
 
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  disabled={busy}
-                  onClick={async () => {
-                    setBusy(true);
-                    setError(null);
-                    try {
-                      const response = await fetch(
-                        `${API}/api/admin/partners/${partner.id}/credentials/rotate`,
-                        {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          credentials: 'include',
-                          body: JSON.stringify({ sandbox: false }),
-                        }
-                      );
-                      const payload = await response.json();
-                      if (!response.ok || !payload.success) {
-                        setError(payload.error ?? 'The secret could not be rotated.');
-                        return;
-                      }
-                      setIssued([
-                        { label: 'Live', clientId: payload.data.clientId, secret: payload.data.secret },
-                      ]);
-                      setRotated(true);
-                      router.refresh();
-                    } catch {
-                      setError('We could not reach the server. Try again.');
-                    } finally {
-                      setBusy(false);
-                    }
-                  }}
-                >
-                  {busy ? 'Rotating…' : 'Rotate secret'}
-                </Button>
+                {/* Two credentials, two buttons.
+                    The sandbox pair is what a partner's developers build
+                    against, and it can be missing entirely on a partner created
+                    before sandbox credentials existed. This is the only place
+                    it can be issued, so it needs its own control rather than
+                    being an argument nobody can reach. */}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    disabled={busy}
+                    onClick={() => rotateSecret(false)}
+                  >
+                    {busy ? 'Working…' : 'Rotate live secret'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    disabled={busy}
+                    onClick={() => rotateSecret(true)}
+                  >
+                    {busy ? 'Working…' : 'Issue sandbox secret'}
+                  </Button>
+                </div>
+                <p className="mt-3 text-micro leading-relaxed text-muted">
+                  The sandbox pair books a separate practice diary. Issue it for a partner whose
+                  developers need somewhere safe to build, and send it to them alongside a shared
+                  documentation link.
+                </p>
               </CardBody>
             </Card>
 
