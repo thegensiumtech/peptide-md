@@ -646,9 +646,9 @@ model InvoiceLine {
 model PlatformSettings {
   id String @id @default("singleton")
 
-  consultationPrice     Int    @default(9500)
+  consultationPrice     Int    @default(19500)
   consultationCurrency  String @default("GBP")
-  consultationDuration  Int    @default(20)
+  consultationDuration  Int    @default(30)
   consultationSummary   String @default("")
   consultationInclusions String[]
   deliveryNote          String @default("")

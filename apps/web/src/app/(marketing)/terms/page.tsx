@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
-import { LegalDocument, type LegalSection } from '@/components/marketing/LegalDocument';
+import {
+  LEGAL_PAGES_LIVE_DATE,
+  LegalDocument,
+  type LegalSection,
+} from '@/components/marketing/LegalDocument';
 
 export const metadata: Metadata = {
   title: 'Terms of service',
@@ -19,7 +23,7 @@ const sections: LegalSection[] = [
     heading: 'What we provide',
     paragraphs: [
       'A private consultation with a GMC-registered doctor, held over video, of the duration shown at the time of booking.',
-      'The consultation is an independent clinical opinion. It does not create an ongoing doctor–patient relationship, and it does not replace your GP or any specialist already involved in your care.',
+      'The consultation is an independent clinical opinion and a single episode of care. It does not establish ongoing care, and it does not replace your GP or any specialist already involved in your treatment. Responsibility for your continuing care remains with them.',
     ],
   },
   {
@@ -82,7 +86,7 @@ export default function TermsPage() {
       eyebrow="Legal"
       title="Terms of service"
       lede="What you are buying, what you are not, and what happens if something needs to change."
-      lastUpdated="31 July 2026"
+      lastUpdated={LEGAL_PAGES_LIVE_DATE}
       sections={sections}
     />
   );

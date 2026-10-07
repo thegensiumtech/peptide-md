@@ -4,11 +4,13 @@ import rateLimit from 'express-rate-limit';
 import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { prisma } from '@peptide/database';
-import { handle, notFound, ok } from '../../http/errors';
+import { GUIDE_DOWNLOAD_ENABLED } from '@peptide/shared';
+import { AppError, handle, notFound, ok } from '../../http/errors';
 import { config } from '../../config';
 import { sendEmail } from '../../email';
 import { guideDelivery } from '../../email/templates';
 import { isValidUnsubscribeToken } from '../../email/unsubscribe';
+import { getSettings } from '../bookings/service';
 
 export const guideRouter = Router();
 
@@ -34,6 +36,16 @@ const request = z.object({
   website: z.string().optional(),
 });
 
+/**
+ * Refused while the guide is switched off (see GUIDE_DOWNLOAD_ENABLED).
+ *
+ * Enforced here rather than only by hiding the form, so nobody is sent the
+ * guide before legal review by posting to the endpoint directly or by using a
+ * download link issued earlier.
+ */
+const guideUnavailable = () =>
+  new AppError(503, 'The guide is not available yet.', 'GUIDE_UNAVAILABLE');
+
 const CONSENT_WORDING =
   'I would like Peptide MD to email me occasionally about peptide therapy and the consultation service. I can unsubscribe at any time.';
 
@@ -49,6 +61,8 @@ guideRouter.post(
   '/request',
   limiter,
   handle(async (req, res) => {
+    if (!GUIDE_DOWNLOAD_ENABLED) throw guideUnavailable();
+
     const input = request.parse(req.body);
 
     // Silently accept and discard, so a bot learns nothing from the response.
@@ -70,7 +84,15 @@ guideRouter.post(
     });
 
     const downloadUrl = `${config.WEB_URL}/guide/download/${downloadToken}`;
-    const sent = await sendEmail('GUIDE_DELIVERY', guideDelivery(record.name, email, downloadUrl));
+    const settings = await getSettings();
+    const sent = await sendEmail(
+      'GUIDE_DELIVERY',
+      guideDelivery(record.name, email, downloadUrl, {
+        durationMinutes: settings.consultationDuration,
+        priceAmount: settings.consultationPrice,
+        currency: settings.consultationCurrency,
+      })
+    );
 
     // Stamped only on a real send. Previously this was set unconditionally, so
     // the admin panel showed a guide as delivered when SES had rejected it.
@@ -92,6 +114,8 @@ guideRouter.post(
 guideRouter.get(
   '/download/:token',
   handle(async (req, res) => {
+    if (!GUIDE_DOWNLOAD_ENABLED) throw guideUnavailable();
+
     const record = await prisma.guideRequest.findUnique({
       where: { downloadToken: req.params.token! },
     });

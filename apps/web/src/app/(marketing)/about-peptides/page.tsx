@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { CtaBand, SectionHeading } from '@/components/marketing/Primitives';
+import { CtaBand } from '@/components/marketing/CtaBand';
+import { SectionHeading } from '@/components/marketing/Primitives';
 import { PageIntro } from '@/components/marketing/PageIntro';
 
 export const metadata: Metadata = {
@@ -100,7 +101,9 @@ export default function AboutPeptidesPage() {
       <div className="mt-section">
         <CtaBand
           title="Bring your questions to someone qualified to answer them."
-          body="Twenty minutes with a doctor who works in this area every week, and who has no interest in what you decide to buy."
+          body={({ duration }) =>
+            `${duration} with a doctor who works in this area every week, and who has no interest in what you decide to buy.`
+          }
         />
       </div>
     </>
@@ -139,7 +142,7 @@ const SECTIONS = [
     title: 'What the law says in the UK',
     body: [
       'Most of these compounds are not licensed medicines in the UK. Many are sold as "research chemicals not for human consumption", wording that exists to move legal responsibility onto the buyer, not because the seller believes it.',
-      'That status is why a consultation is a consultation and nothing more. The doctor can review what you are doing, assess your history and give you a clinical opinion. He cannot supply anything, and he will not pretend otherwise.',
+      'That status is why a consultation is a consultation and nothing more. The doctor can review what you are doing, assess your history and give you a clinical opinion. This service does not supply or prescribe anything, and he will not pretend otherwise.',
     ],
   },
 ];

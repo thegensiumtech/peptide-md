@@ -14,6 +14,7 @@ const LEGAL_LINKS = [
   { href: '/privacy', label: 'Privacy policy' },
   { href: '/terms', label: 'Terms of service' },
   { href: '/medical-disclaimer', label: 'Medical disclaimer' },
+  { href: '/complaints', label: 'Complaints' },
 ];
 
 export function SiteFooter() {

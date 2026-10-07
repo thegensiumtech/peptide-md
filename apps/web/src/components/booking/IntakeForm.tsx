@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { minutesInWords } from '@peptide/shared';
 import { isValidEmail } from '@/lib/validation';
 import { formatDate, formatTime, formatWeekday, timezoneLabel } from '@/lib/format';
 import { Button } from '@/components/ui/Button';
@@ -30,7 +31,7 @@ type Errors = Partial<Record<FieldName, string>>;
  * explicitly and separately, one box for the clinical record, one for the
  * terms, rather than bundled into a single catch-all tick.
  */
-export function IntakeForm() {
+export function IntakeForm({ durationMinutes }: { durationMinutes: number }) {
   const { state, update } = useBooking();
   const router = useRouter();
   const [errors, setErrors] = useState<Errors>({});
@@ -135,8 +136,8 @@ export function IntakeForm() {
           Tell the doctor what this is about.
         </h1>
         <p className="mt-6 max-w-xl text-lead leading-relaxed text-ink-soft">
-          He reads this before the call, so the twenty minutes start at the useful part rather than
-          at the basics. Two minutes now buys you most of a consultation.
+          He reads this before the call, so the {minutesInWords(durationMinutes)} start at the
+          useful part rather than at the basics. Two minutes now buys you most of a consultation.
         </p>
 
         <form onSubmit={handleSubmit} noValidate className="mt-10 grid gap-6">

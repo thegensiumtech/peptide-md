@@ -84,7 +84,7 @@ doctorToken ? pass('Doctor login') : fail('Doctor login');
 
 {
   const { body } = await api('/api/booking/consultation');
-  body.data?.priceAmount === 9500 && body.data?.durationMinutes === 20
+  body.data?.priceAmount === 19500 && body.data?.durationMinutes === 30
     ? pass('Consultation endpoint', `£${body.data.priceAmount / 100}, ${body.data.durationMinutes} min`)
     : fail('Consultation endpoint', JSON.stringify(body.data));
 }

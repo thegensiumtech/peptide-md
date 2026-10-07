@@ -54,7 +54,7 @@ export const OPENING: GuideSection[] = [
     heading: 'Why this guide exists',
     body: [
       'Almost everything written about peptides is written by someone selling them. That is not a conspiracy, it is economics: the guides are marketing, the forums are seeded by suppliers, and the influencers have affiliate links.',
-      'This one is written for a clinic that sells twenty minutes of a physician’s time and nothing else. No products, no supplier relationships, no affiliate income. That is the only reason it can afford to tell you when the honest answer is to do nothing.',
+      'This one is written for a clinic that sells thirty minutes of a physician’s time and nothing else. No products, no supplier relationships, no affiliate income. That is the only reason it can afford to tell you when the honest answer is to do nothing.',
       'You will notice one thing missing: doses. Every other guide prints protocols. We do not, and the reason matters, a dose that is right for a 34-year-old man with no other medication may be actively dangerous for someone on a GLP-1, an SSRI, or with undiagnosed thyroid disease. A printed protocol cannot know which you are.',
     ],
     callout: {
@@ -444,7 +444,7 @@ export const CLOSING: GuideSection[] = [
   {
     heading: 'What we do',
     body: [
-      'Peptide MD is a twenty-minute private consultation with a GMC-registered doctor experienced in this area. You describe what you are taking or considering, and what you are trying to fix. He tells you what he thinks.',
+      'Peptide MD is a thirty-minute private consultation with a GMC-registered doctor experienced in this area. You describe what you are taking or considering, and what you are trying to fix. He tells you what he thinks.',
       'We do not sell, supply or prescribe any peptide, and we have no relationship with any supplier. If the honest answer is that you should not be taking anything, that is the answer you get.',
       'If you have already started something and want a second opinion, that is a perfectly good reason to book.',
     ],

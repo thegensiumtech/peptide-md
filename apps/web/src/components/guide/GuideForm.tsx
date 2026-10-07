@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { GUIDE_DOWNLOAD_ENABLED } from '@peptide/shared';
 import { isValidEmail } from '@/lib/validation';
 import { Button } from '@/components/ui/Button';
 import { Checkbox, Field, Input } from '@/components/ui/Field';
@@ -17,6 +18,37 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
  * separately and left unchecked.
  */
 export function GuideForm({ source = 'website' }: { source?: string }) {
+  if (!GUIDE_DOWNLOAD_ENABLED) return <GuideUnavailable />;
+  return <GuideRequestForm source={source} />;
+}
+
+/**
+ * Shown in place of the form while the guide is switched off for legal review.
+ * The page around it stays as built; nothing here collects an address, because
+ * there is nothing yet to send in exchange for one.
+ */
+function GuideUnavailable() {
+  return (
+    <div className="rounded-lg border border-line bg-paper-deep px-6 py-8">
+      <p className="eyebrow">Coming soon</p>
+      <h3 className="mt-3 font-display text-h3 font-medium text-ink">
+        The guide is in final review.
+      </h3>
+      <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+        It will be available to download here shortly. If you would rather not wait, the doctor
+        can answer your questions directly.
+      </p>
+      <Link
+        href="/book"
+        className="link-cta mt-5 inline-block text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
+      >
+        Book a consultation
+      </Link>
+    </div>
+  );
+}
+
+function GuideRequestForm({ source }: { source: string }) {
   const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);

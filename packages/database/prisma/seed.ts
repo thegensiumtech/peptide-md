@@ -30,7 +30,8 @@ const prisma = new PrismaClient();
 /** Every seeded account shares this password. Development only. */
 const DEV_PASSWORD = 'peptide-dev-2026';
 
-const CONSULT_MINUTES = 20;
+const CONSULT_MINUTES = 30;
+const CONSULT_PRICE = 19500;
 
 function at(date: string, time: string): Date {
   return new Date(`${date}T${time}:00.000Z`);
@@ -49,7 +50,7 @@ async function main() {
     update: {},
     create: {
       id: 'singleton',
-      consultationPrice: 9500,
+      consultationPrice: CONSULT_PRICE,
       consultationDuration: CONSULT_MINUTES,
       consultationSummary:
         'A private video consultation with Dr Jinks about peptide therapy, what you are taking, what you are trying to achieve, and whether it is the right route for you.',
@@ -57,7 +58,7 @@ async function main() {
       // not use them anywhere and verify-no-em-dashes.mjs enforces that against
       // the database as well as the source, so they became commas.
       consultationInclusions: [
-        'A 1:1 session with a doctor who actually understands peptide therapy, not a generic telehealth GP',
+        'A 1:1 session with a doctor who works in peptide therapy every week',
         'A clear, honest breakdown of pros, cons, and risks for your specific goals',
         'A personalised recommendation you can actually act on',
       ],
@@ -78,9 +79,8 @@ async function main() {
     update: {},
     create: {
       name: 'Dr Mark Jinks',
-      // Empty until the clinic supplies post-nominals. The page omits the
-      // qualifications row rather than printing a guess.
-      credentials: '',
+      // As supplied by Dr Jinks on 5 October 2026.
+      credentials: 'MBChB · MRCGP · MSc Sports and Exercise Medicine',
       gmcNumber: '7408409',
       photoUrl: '/doctor/peptide-md-doctor.jpg',
       quote: 'Why be well when you can be great?',
@@ -395,7 +395,7 @@ async function main() {
         patientTimezone: seed.tz,
         // Partner bookings are paid on the partner's own site, so Peptide MD
         // holds no payment against them, only the billable count.
-        amountPaid: !partnerId && seed.payment === PaymentStatus.PAID ? 9500 : null,
+        amountPaid: !partnerId && seed.payment === PaymentStatus.PAID ? CONSULT_PRICE : null,
         cancelledAt: seed.status === BookingStatus.CANCELLED ? at(seed.date, '07:30') : null,
         cancellationReason:
           seed.status === BookingStatus.CANCELLED

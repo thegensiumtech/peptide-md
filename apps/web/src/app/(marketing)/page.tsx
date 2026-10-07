@@ -1,31 +1,33 @@
 import { GuideForm } from '@/components/guide/GuideForm';
 import Image from 'next/image';
 import Link from 'next/link';
-import { GUIDE, GUIDE_COVER_PATH } from '@peptide/shared';
-import { getAvailableDays } from '@/lib/data/client';
-import { getConsultation } from '@/lib/api/public';
+import { GUIDE, GUIDE_COVER_PATH, minutesInWords } from '@peptide/shared';
+import { getConsultation, getNextAvailableSlot } from '@/lib/api/public';
 import { formatDate, formatMoney, formatTime, timezoneLabel } from '@/lib/format';
 import { ButtonLink } from '@/components/ui/Button';
 import {
   ChainMotif,
-  CtaBand,
   PortraitFrame,
   RequisitionCard,
   SectionHeading,
 } from '@/components/marketing/Primitives';
+import { CtaBand } from '@/components/marketing/CtaBand';
 
 const VIEWER_TZ = 'Europe/London';
 
 export default async function HomePage() {
-  const [consultationRes, daysRes] = await Promise.all([getConsultation(), getAvailableDays()]);
+  const [consultationRes, nextSlot] = await Promise.all([
+    getConsultation(),
+    getNextAvailableSlot(),
+  ]);
 
-  if (!consultationRes.success || !daysRes.success) {
+  if (!consultationRes.success) {
     throw new Error('Homepage data unavailable');
   }
 
   const consultation = consultationRes.data;
   const doctor = consultation.doctor;
-  const nextSlot = daysRes.data[0]?.slots.find((s) => s.available) ?? null;
+  const steps = homepageSteps(consultation.durationMinutes);
 
   return (
     <>
@@ -55,9 +57,9 @@ export default async function HomePage() {
               <em className="not-italic text-accent">guesswork.</em>
             </h1>
             <p className="mt-7 max-w-xl text-lead text-ink-soft">
-              Book a private consultation with a licensed physician before you start. Get an
+              Book a private consultation with a GMC-registered doctor before you start. Get an
               informed opinion from a qualified expert, and an honest read on what is right for
-              your goals, not what is trending on Instagram.
+              your goals, rather than what is trending on Instagram.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -69,15 +71,16 @@ export default async function HomePage() {
                 href="/the-doctor"
                 className="link-cta text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-accent"
               >
-                Meet {doctor.name.split(' ').slice(-1)[0]}
+                Meet {shortName(doctor.name)}
               </Link>
             </div>
 
             {/* The trust line the client asked for, kept singular: there is one
                 doctor on this service, and a plural claim on a medical site
-                would be a factual overstatement. */}
+                would be a factual overstatement. "GMC-registered" rather than
+                "licensed physician", which is American usage. */}
             <p className="mt-5 text-sm leading-relaxed text-muted">
-              Licensed physician. Private and confidential. No obligation, no upsell.
+              GMC-registered doctor. Private and confidential. No obligation, no upsell.
             </p>
 
             <div className="mt-12 max-w-md">
@@ -86,12 +89,17 @@ export default async function HomePage() {
                   { label: 'Consultation', value: 'Peptide therapy review' },
                   { label: 'Duration', value: `${consultation.durationMinutes} minutes` },
                   { label: 'Held over', value: 'Video' },
-                  {
-                    label: 'Next available',
-                    value: nextSlot
-                      ? `${formatDate(nextSlot.startsAt, VIEWER_TZ)} · ${formatTime(nextSlot.startsAt, VIEWER_TZ)}`
-                      : 'Contact us',
-                  },
+                  // Read from the live diary. When nothing is free, or the
+                  // diary cannot be read, the row is left out rather than
+                  // showing a date that is no longer true.
+                  ...(nextSlot
+                    ? [
+                        {
+                          label: 'Next available',
+                          value: `${formatDate(nextSlot, VIEWER_TZ)} · ${formatTime(nextSlot, VIEWER_TZ)}`,
+                        },
+                      ]
+                    : []),
                   {
                     label: 'Fee',
                     value: formatMoney(consultation.priceAmount, consultation.currency),
@@ -152,11 +160,11 @@ export default async function HomePage() {
           />
 
           <ol className="mt-12 grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-            {STEPS.map((step, index) => (
+            {steps.map((step, index) => (
               <li key={step.title} className="bg-surface p-6">
                 <div className="flex items-center gap-2">
                   <span aria-hidden className="h-2 w-2 rounded-full border border-accent bg-accent" />
-                  {index < STEPS.length - 1 ? (
+                  {index < steps.length - 1 ? (
                     <span aria-hidden className="h-px w-6 bg-line" />
                   ) : null}
                 </div>
@@ -229,14 +237,20 @@ export default async function HomePage() {
               {doctor.bio.split('\n\n')[0]}
             </p>
             <dl className="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2">
-              <div>
-                <dt className="eyebrow">Registration</dt>
-                <dd className="mt-1.5 font-mono text-sm text-ink">GMC {doctor.gmcNumber}</dd>
-              </div>
-              <div>
-                <dt className="eyebrow">Qualifications</dt>
-                <dd className="mt-1.5 font-mono text-sm text-ink">{doctor.credentials}</dd>
-              </div>
+              {/* Each prints only when supplied, as on The doctor page, so an
+                  empty heading never shows. */}
+              {doctor.gmcNumber ? (
+                <div>
+                  <dt className="eyebrow">Registration</dt>
+                  <dd className="mt-1.5 font-mono text-sm text-ink">GMC {doctor.gmcNumber}</dd>
+                </div>
+              ) : null}
+              {doctor.credentials ? (
+                <div>
+                  <dt className="eyebrow">Qualifications</dt>
+                  <dd className="mt-1.5 font-mono text-sm text-ink">{doctor.credentials}</dd>
+                </div>
+              ) : null}
               <div className="sm:col-span-2">
                 <dt className="eyebrow">Areas</dt>
                 <dd className="mt-2 flex flex-wrap gap-2">
@@ -293,7 +307,7 @@ export default async function HomePage() {
                 </p>
                 <p className="mt-4 text-micro text-muted">
                   {GUIDE.compounds} compounds assessed. No dosing protocols, because that is a
-                  conversation, not a download.
+                  conversation rather than a download.
                 </p>
               </div>
 
@@ -321,17 +335,26 @@ export default async function HomePage() {
  * prescription. Peptide MD does not prescribe or dispense, and the rest of the
  * page says so plainly.
  */
-const STEPS = [
-  {
-    title: 'Book your slot',
-    body: 'A single fee through Stripe, then pick from the doctor’s genuinely free times in your own time zone. A short intake form covers what you are taking and what you want to discuss.',
-  },
-  {
-    title: 'Meet your doctor',
-    body: 'Twenty minutes by video call, one to one, with a doctor who works in this area every week.',
-  },
-  {
-    title: 'Leave with a plan',
-    body: 'A clear recommendation and next steps, written up by email within a day, plus the option to book a follow-up.',
-  },
-];
+function homepageSteps(durationMinutes: number) {
+  return [
+    {
+      title: 'Book your slot',
+      body: 'A single fee through Stripe, then pick from the doctor’s genuinely free times in your own time zone. A short intake form covers what you are taking and what you want to discuss.',
+    },
+    {
+      title: 'Meet your doctor',
+      body: `${minutesInWords(durationMinutes, { capitalise: true })} by video call, one to one, with a doctor who works in this area every week.`,
+    },
+    {
+      title: 'Leave with a plan',
+      body: 'A clear recommendation and next steps, written up by email within a day, plus the option to book a follow-up.',
+    },
+  ];
+}
+
+/** 'Dr Mark Jinks' -> 'Dr Jinks'. A name without a title is left as the surname. */
+function shortName(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/);
+  const surname = parts[parts.length - 1] ?? fullName;
+  return /^dr\.?$/i.test(parts[0] ?? '') && parts.length > 1 ? `Dr ${surname}` : surname;
+}

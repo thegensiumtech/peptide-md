@@ -1,6 +1,14 @@
 import Link from 'next/link';
 import { PageIntro } from './PageIntro';
 
+/**
+ * The date the current terms and medical disclaimer went live.
+ *
+ * Dr Jinks asked for "Last updated" to show the day the pages go live, so set
+ * this to the deploy date when the change list of 5 October 2026 ships.
+ */
+export const LEGAL_PAGES_LIVE_DATE = '5 October 2026';
+
 export interface LegalSection {
   heading: string;
   paragraphs: string[];

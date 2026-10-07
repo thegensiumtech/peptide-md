@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { minutesInWords } from '@peptide/shared';
 import { getConsultation } from '@/lib/api/public';
 import { formatMoney } from '@/lib/format';
-import { CtaBand } from '@/components/marketing/Primitives';
+import { CtaBand } from '@/components/marketing/CtaBand';
 import { PageIntro } from '@/components/marketing/PageIntro';
 
 export const metadata: Metadata = {
@@ -16,18 +17,19 @@ export default async function FaqPage() {
   if (!consultationRes.success) throw new Error('Consultation details unavailable');
   const consultation = consultationRes.data;
   const fee = formatMoney(consultation.priceAmount, consultation.currency);
+  const duration = minutesInWords(consultation.durationMinutes);
 
   const groups = [
     {
       title: 'The consultation',
       items: [
         {
-          q: 'What actually happens in the twenty minutes?',
+          q: `What actually happens in the ${duration}?`,
           a: 'The doctor will have read your intake answers before you join, so it starts at the substance. He will ask about what you are taking, your history and what you are trying to achieve, then give you his opinion and his reasoning. You get a written summary by email within 24 hours.',
         },
         {
           q: 'Can he prescribe me something?',
-          a: 'No. This is a consultation, not a prescribing or dispensing service. Peptide MD does not supply any compound. If your situation needs a prescription, he will tell you what to ask your GP or specialist for, and why.',
+          a: 'No. This is a consultation only. Peptide MD does not supply, prescribe or dispense any compound. If your situation needs a prescription or further investigation, he will explain why, and with your consent he will write to your GP or specialist setting out what he was consulted about and what he has advised.',
         },
         {
           q: 'Is it worth booking if I have not started anything yet?',
@@ -36,6 +38,10 @@ export default async function FaqPage() {
         {
           q: 'Will he just tell me not to take anything?',
           a: 'Sometimes, and he will explain why. Just as often the answer is that what you are doing is reasonable but the dose, the sourcing or the monitoring needs to change.',
+        },
+        {
+          q: 'Will you tell my GP?',
+          a: 'Only with your consent, and the doctor will always ask first. If something comes up that your GP should know about, he will offer to write to them directly, setting out what he was consulted about and what he has advised. The only exception is the rare situation where there is a serious risk to your safety or to someone else, where a doctor may have a duty to share information. He would discuss that with you wherever possible.',
         },
       ],
     },

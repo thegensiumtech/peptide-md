@@ -134,8 +134,8 @@ let bookingReference = null;
 
   // The price on the booking screen must come from the database, not a copy.
   const bookBody = await page.locator('main').innerText();
-  bookBody.includes('£95')
-    ? pass('Consultation price read live from the API', '£95 from the database')
+  bookBody.includes('£195')
+    ? pass('Consultation price read live from the API', '£195 from the database')
     : fail('Consultation price live', bookBody.slice(0, 80));
 
   await page.click('text=Continue to payment');
@@ -289,8 +289,8 @@ if (bookingReference && !REMOTE) {
     ? pass('Booking persisted as confirmed and paid')
     : fail('Booking persisted', `status=${booking?.status} payment=${booking?.paymentStatus}`);
 
-  booking?.amountPaid === 9500
-    ? pass('Amount recorded', '£95.00')
+  booking?.amountPaid === 19500
+    ? pass('Amount recorded', '£195.00')
     : fail('Amount recorded', String(booking?.amountPaid));
 
   booking?.payments.some((p) => p.type === 'SUCCEEDED' && p.stripePaymentIntentId)

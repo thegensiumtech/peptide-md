@@ -6,6 +6,10 @@
  * the E2E suite, so no PDF library is added for this.
  *
  *   node scripts/build-guide.mjs
+ *
+ * The back cover prints the fee and the length, so they are read from the
+ * running API rather than typed in here. Start the API first (./dev.sh), or
+ * point API_URL at another environment.
  */
 import { chromium } from '@playwright/test';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -29,6 +33,26 @@ const TIER_LABEL = eval(between('export const TIER_LABEL: Record<Tier, string> =
 const OPENING = eval(between('export const OPENING: GuideSection[] =', '\nexport const GROUPS'));
 const GROUPS = eval(between('export const GROUPS: CompoundGroup[] =', '\nexport const CLOSING'));
 const CLOSING = eval(between('export const CLOSING: GuideSection[] ='));
+
+// The fee and length, from the same settings the website reads.
+const API_URL = process.env.API_URL ?? 'http://localhost:4000';
+const consultation = await fetch(`${API_URL}/api/booking/consultation`)
+  .then((r) => r.json())
+  .then((body) => body.data)
+  .catch(() => null);
+if (!consultation) {
+  console.error(`Could not read the consultation fee and length from ${API_URL}. Start the API first.`);
+  process.exit(1);
+}
+const WORDS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty'];
+const LENGTH = consultation.durationMinutes;
+const LENGTH_WORDS =
+  LENGTH % 10 === 0 && WORDS[LENGTH / 10] ? `${WORDS[LENGTH / 10]} minutes` : `${LENGTH} minutes`;
+const FEE = new Intl.NumberFormat('en-GB', {
+  style: 'currency',
+  currency: consultation.currency,
+  minimumFractionDigits: consultation.priceAmount % 100 === 0 ? 0 : 2,
+}).format(consultation.priceAmount / 100);
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
@@ -219,10 +243,10 @@ ${CLOSING.map(section).join('')}
 <div class="end">
   <div class="motif">${chain(0.16, '40mm')}</div>
   <img class="logo" src="${LOGO}" alt="Peptide MD" />
-  <h3>Twenty minutes with a doctor who has <em>nothing to sell you</em>.</h3>
+  <h3>${esc(LENGTH_WORDS)} with a doctor who has <em>nothing to sell you</em>.</h3>
   <div class="price">
-    <div><span>Consultation</span><strong>&pound;95</strong></div>
-    <div><span>Length</span><strong>20 minutes</strong></div>
+    <div><span>Consultation</span><strong>${esc(FEE)}</strong></div>
+    <div><span>Length</span><strong>${esc(LENGTH)} minutes</strong></div>
     <div><span>Registration</span><strong>GMC</strong></div>
   </div>
   <div class="cta">

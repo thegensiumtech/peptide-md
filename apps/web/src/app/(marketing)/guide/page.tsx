@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { GUIDE, GUIDE_COVER_PATH } from '@peptide/shared';
 import { GuideForm } from '@/components/guide/GuideForm';
-import { CtaBand } from '@/components/marketing/Primitives';
+import { CtaBand } from '@/components/marketing/CtaBand';
 
 export const metadata: Metadata = {
   title: 'The peptide guide',
@@ -143,7 +143,9 @@ export default function GuidePage() {
 
       <CtaBand
         title="Or skip the reading and ask the doctor directly."
-        body="Twenty minutes, £95, and a straight answer about your own situation, including when the answer is that you should not be taking anything."
+        body={({ duration, fee }) =>
+          `${duration}, ${fee}, and a straight answer about your own situation, including when the answer is that you should not be taking anything.`
+        }
       />
     </>
   );

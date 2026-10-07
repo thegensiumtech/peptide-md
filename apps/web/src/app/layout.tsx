@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Newsreader, Inter, IBM_Plex_Mono } from 'next/font/google';
+import { minutesInWords } from '@peptide/shared';
+import { getConsultation } from '@/lib/api/public';
 import './globals.css';
 
 /**
@@ -35,14 +37,30 @@ const mono = IBM_Plex_Mono({
   weight: ['400', '500', '600'],
 });
 
-export const metadata: Metadata = {
+/**
+ * The search snippet names the consultation length, so it is built from the
+ * live setting like every other mention of it. If the API cannot be reached the
+ * description simply leaves the length out rather than guessing it.
+ */
+async function siteDescription(): Promise<string> {
+  const base =
+    'Book a private video consultation with a UK-registered doctor experienced in peptide therapy.';
+  const consultationRes = await getConsultation();
+  if (!consultationRes.success) return `${base} Honest guidance, no product to sell you.`;
+  const duration = minutesInWords(consultationRes.data.durationMinutes, { capitalise: true });
+  return `${base} ${duration}, honest guidance, no product to sell you.`;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  return { ...siteMetadata, description: await siteDescription() };
+}
+
+const siteMetadata: Metadata = {
   metadataBase: new URL('https://peptidemd.co.uk'),
   title: {
     default: 'Peptide MD. Consult a doctor who knows peptides',
     template: '%s · Peptide MD',
   },
-  description:
-    'Book a private video consultation with a UK-registered doctor experienced in peptide therapy. Twenty minutes, honest guidance, no product to sell you.',
   openGraph: {
     type: 'website',
     siteName: 'Peptide MD',

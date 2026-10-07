@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { cn } from '@/lib/cn';
 import { getConsultation } from '@/lib/api/public';
 import { formatMoney } from '@/lib/format';
-import { CtaBand, PortraitFrame, RequisitionCard } from '@/components/marketing/Primitives';
+import { CtaBand } from '@/components/marketing/CtaBand';
+import { PortraitFrame, RequisitionCard } from '@/components/marketing/Primitives';
 import { PageIntro } from '@/components/marketing/PageIntro';
 
 export const metadata: Metadata = {
@@ -107,7 +108,7 @@ export default async function DoctorPage() {
 
       <div className="mt-section">
         <CtaBand
-          title={`Twenty minutes with ${doctor.name}.`}
+          title={({ duration }) => `${duration} with ${doctor.name}.`}
           body="Bring what you are taking, what you are trying to fix, and your questions. You will get a straight answer."
         />
       </div>

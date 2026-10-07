@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getConsultation } from '@/lib/api/public';
 import { formatMoney } from '@/lib/format';
-import { CtaBand, SectionHeading } from '@/components/marketing/Primitives';
+import { CtaBand } from '@/components/marketing/CtaBand';
+import { SectionHeading } from '@/components/marketing/Primitives';
 import { PageIntro } from '@/components/marketing/PageIntro';
 
 export const metadata: Metadata = {

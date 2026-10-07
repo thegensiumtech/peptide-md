@@ -51,7 +51,7 @@ async function unpaidBooking(email) {
 const { body: avail } = await api('/api/booking/availability?days=21');
 const slot = avail.data.days[0].slots[0];
 
-console.log('\nTrying to book a £95 consultation without paying:\n');
+console.log('\nTrying to book a £195 consultation without paying:\n');
 
 // 1. The obvious one: create a booking, skip Stripe, grab a slot.
 {
@@ -126,7 +126,7 @@ console.log('\nTrying to book a £95 consultation without paying:\n');
     body: JSON.stringify({
       id: `evt_forged_${Date.now()}`,
       type: 'checkout.session.completed',
-      data: { object: { id: 'cs_forged', metadata: { bookingId: booking.bookingId }, amount_total: 9500 } },
+      data: { object: { id: 'cs_forged', metadata: { bookingId: booking.bookingId }, amount_total: 19500 } },
     }),
   });
 

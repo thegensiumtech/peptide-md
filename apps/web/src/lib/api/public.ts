@@ -26,3 +26,27 @@ export async function getConsultation(): Promise<ApiResponse<ConsultationRespons
   }
   return ok(result.data);
 }
+
+interface AvailabilityResponse {
+  days: Array<{ date: string; slots: Array<{ startsAt: string; endsAt: string }> }>;
+}
+
+/**
+ * The earliest bookable time, read from the live diary.
+ *
+ * Returns null when nothing is free or the diary cannot be read, and the page
+ * then shows nothing. A stale or invented date is worse than no date: it
+ * promises a time the patient will not find on the calendar.
+ */
+export async function getNextAvailableSlot(): Promise<string | null> {
+  const result = await apiFetch<AvailabilityResponse>('/api/booking/availability?days=21', {
+    authenticated: false,
+    // Sits on top of the API's own 60-second cache, so a time taken moments
+    // ago can show here for up to about a minute and a half. The slot picker
+    // reads the diary uncached, so nobody can book a time that has gone.
+    revalidate: 30,
+  });
+
+  if (!result.success || !result.data) return null;
+  return result.data.days[0]?.slots[0]?.startsAt ?? null;
+}

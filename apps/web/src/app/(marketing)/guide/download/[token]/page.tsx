@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { GUIDE_DOWNLOAD_ENABLED } from '@peptide/shared';
 import { ButtonLink } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
@@ -19,6 +20,29 @@ const API = process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL ?? '
  * link says so, rather than the PDF sitting on a guessable public path.
  */
 export default async function GuideDownloadPage({ params }: { params: { token: string } }) {
+  // Switched off for legal review. A link issued before then says so, rather
+  // than calling itself invalid and inviting a request that cannot be met.
+  if (!GUIDE_DOWNLOAD_ENABLED) {
+    return (
+      <section className="shell grid min-h-[60vh] place-items-center py-20 text-center">
+        <div className="max-w-md">
+          <h1 className="font-display text-h2 font-medium text-ink">
+            The guide is not available yet.
+          </h1>
+          <p className="mt-4 text-lead leading-relaxed text-muted">
+            It is in final review. It will be available from the guide page as soon as it is
+            ready.
+          </p>
+          <div className="mt-8">
+            <ButtonLink href="/guide" size="lg">
+              Back to the guide
+            </ButtonLink>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const response = await fetch(`${API}/api/guide/download/${params.token}`, { cache: 'no-store' }).catch(
     () => null
   );

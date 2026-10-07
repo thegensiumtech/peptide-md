@@ -39,7 +39,7 @@ export const OVERVIEW: DocsSection[] = [
     id: 'what-this-is',
     title: 'What this API is for',
     body: [
-      'Peptide MD is a private medical consultation service. A patient books twenty minutes with a GMC-registered doctor, by video, to talk through peptide therapy. There is one doctor and one diary.',
+      'Peptide MD is a private medical consultation service. A patient books a consultation with a GMC-registered doctor, by video, to talk through peptide therapy. There is one doctor and one diary.',
       'This API lets you book into that diary from your own website or app. Your patient never leaves your brand and never sees ours. You collect the payment on your side at whatever price you choose; we bill you a fixed fee per appointment at the end of the month.',
       'In practice you are doing three things: asking when the doctor is free, reserving one of those times while your patient fills in their details, and then turning that reservation into a confirmed appointment.',
     ],
@@ -59,7 +59,7 @@ export const OVERVIEW: DocsSection[] = [
     body: [
       'You are issued two sets of credentials. The sandbox pair books a completely separate practice diary that no real patient or doctor ever sees. Sandbox appointments are excluded from the real calendar, from reporting, and from your invoice.',
       'Build and test against the sandbox. You can create, reschedule and cancel as many appointments there as you like without consequence. The responses are identical in shape to live, so nothing about your code needs to change when you switch.',
-      'The live pair books the doctor’s real diary. Every appointment you confirm with it is a real twenty minutes of a real doctor’s time, and every one of them appears on your monthly invoice. Switch to live only once your flow is finished.',
+      'The live pair books the doctor’s real diary. Every appointment you confirm with it is a real consultation in a real doctor’s diary, and every one of them appears on your monthly invoice. Switch to live only once your flow is finished.',
     ],
   },
 ];
@@ -69,7 +69,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: 'Slot',
     definition:
-      'A single bookable twenty-minute window in the doctor’s diary, identified by the moment it starts. Slots come back from the availability endpoint. Asking for them reserves nothing.',
+      'A single bookable window in the doctor’s diary, one consultation long, identified by the moment it starts. The availability response gives the length as durationMinutes. Slots come back from the availability endpoint. Asking for them reserves nothing.',
   },
   {
     term: 'Hold',
@@ -165,7 +165,7 @@ export const WALKTHROUGH: { step: number; title: string; body: string; endpoint?
   {
     step: 4,
     title: 'Collect the patient’s details',
-    body: 'Name, email, phone and their time zone are required. Anything you send as intake is shown to the doctor before the call, which is what makes the twenty minutes useful. Your own reference is optional and is echoed back so you can reconcile.',
+    body: 'Name, email, phone and their time zone are required. Anything you send as intake is shown to the doctor before the call, which is what makes the consultation useful. Your own reference is optional and is echoed back so you can reconcile.',
   },
   {
     step: 5,
@@ -257,7 +257,7 @@ export const PARAMS: Record<string, ParamSpec[]> = {
       type: 'array of { question, answer }, max 20',
       required: false,
       description:
-        'What the doctor reads before the call. Strongly recommended: it is the difference between twenty useful minutes and twenty spent on basics.',
+        'What the doctor reads before the call. Strongly recommended: it is the difference between a consultation that starts at the useful part and one spent on basics.',
     },
     {
       name: 'reference',

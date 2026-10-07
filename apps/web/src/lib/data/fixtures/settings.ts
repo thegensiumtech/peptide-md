@@ -2,13 +2,13 @@ import type { PlatformSettings } from '@peptide/shared';
 
 export const platformSettings: PlatformSettings = {
   consultation: {
-    priceAmount: 9500,
+    priceAmount: 19500,
     currency: 'GBP',
-    durationMinutes: 20,
+    durationMinutes: 30,
     summary:
       'A private video consultation with Dr Jinks about peptide therapy, what you are taking, what you are trying to achieve, and whether it is the right route for you.',
     inclusions: [
-      'Twenty minutes of the doctor’s time, one to one',
+      'Thirty minutes of the doctor’s time, one to one',
       'Review of anything you are currently taking',
       'A written summary emailed within 24 hours',
       'A straight answer, including when that answer is no',

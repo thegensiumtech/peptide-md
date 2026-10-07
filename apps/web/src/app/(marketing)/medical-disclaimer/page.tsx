@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
-import { LegalDocument, type LegalSection } from '@/components/marketing/LegalDocument';
+import {
+  LEGAL_PAGES_LIVE_DATE,
+  LegalDocument,
+  type LegalSection,
+} from '@/components/marketing/LegalDocument';
 
 export const metadata: Metadata = {
   title: 'Medical disclaimer',
@@ -67,7 +71,7 @@ export default function MedicalDisclaimerPage() {
       eyebrow="Legal"
       title="Medical disclaimer"
       lede="The limits of what this service is, stated plainly, so there is no room for misunderstanding."
-      lastUpdated="31 July 2026"
+      lastUpdated={LEGAL_PAGES_LIVE_DATE}
       sections={sections}
     />
   );

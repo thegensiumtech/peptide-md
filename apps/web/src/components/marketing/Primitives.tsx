@@ -1,7 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { cn } from '@/lib/cn';
-import { ButtonLink } from '@/components/ui/Button';
 
 /** Section heading with an eyebrow that names the region rather than decorating it. */
 export function SectionHeading({
@@ -135,41 +133,6 @@ export function RequisitionCard({
         </div>
       ))}
     </dl>
-  );
-}
-
-/** Closing call to action, repeated at the foot of every marketing page. */
-export function CtaBand({
-  title = 'Talk to the doctor before you take anything else.',
-  body = 'Twenty minutes, £95, and an honest answer, including when the answer is that you should not be taking anything at all.',
-  className,
-}: {
-  title?: string;
-  body?: string;
-  className?: string;
-}) {
-  return (
-    <section className={cn('shell', className)}>
-      <div className="relative overflow-hidden rounded-lg border border-line bg-ink px-6 py-12 sm:px-12 sm:py-16">
-        <div className="relative max-w-2xl">
-          <h2 className="font-display text-h2 font-medium tracking-tight text-paper">{title}</h2>
-          <p className="mt-4 text-lead text-paper/70">{body}</p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <ButtonLink href="/book" size="lg">
-              Book a consultation
-            </ButtonLink>
-            <Link
-              href="/how-it-works"
-              className="link-cta text-sm text-paper/70 underline decoration-paper/30 underline-offset-4 transition-colors hover:text-paper"
-            >
-              See how it works
-            </Link>
-          </div>
-        </div>
-        {/* Ambient chain, held back so the type stays the loudest thing here. */}
-        <ChainMotif className="pointer-events-none absolute -right-8 top-1/2 hidden -translate-y-1/2 text-paper/10 lg:block" />
-      </div>
-    </section>
   );
 }
 
